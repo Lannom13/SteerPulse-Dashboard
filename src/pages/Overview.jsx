@@ -4,6 +4,7 @@ import { useState } from 'react'
 import KpiCard from '../components/KpiCard'
 import BudgetRing from '../components/BudgetRing'
 import CashFlowChart from '../components/CashFlowChart'
+import InsightCard from '../components/InsightCard'
 
 export default function Overview() {
   const [scenario, setScenario] = useState('MTD')
@@ -59,8 +60,22 @@ export default function Overview() {
           <div className="md:col-span-2 bg-gray-800 p-4 rounded-xl shadow">
             Recent Transactions Preview
           </div>
-          <div className="bg-gray-800 p-4 rounded-xl shadow">
-            Smart Insights / Alerts
+          <div className="bg-gray-800 p-4 rounded-xl shadow space-y-4">
+            <InsightCard
+              title="Dining Budget Warning"
+              message="You're 85% through your dining budget for the month."
+              type="warning"
+            />
+            <InsightCard
+              title="Cash Flow Up"
+              message="You brought in $630 more than you spent so far this month."
+              type="success"
+            />
+            <InsightCard
+              title="Idle Funds Detected"
+              message="You have $2,300 sitting in checking. Consider moving to high-yield savings."
+              type="info"
+            />
           </div>
         </div>
 
