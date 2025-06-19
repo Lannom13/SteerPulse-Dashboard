@@ -46,7 +46,7 @@ export default function Goals() {
 
         <button
           onClick={() => setShowModal(true)}
-          className="mb-6 flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-md text-sm font-medium"
+          className="mb-6 flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-transform transform hover:scale-105"
         >
           <span className="text-lg">➕</span>
           Add Goal
@@ -73,7 +73,7 @@ export default function Goals() {
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-gray-900 p-6 rounded-xl w-full max-w-md shadow-xl"
+                className="bg-gray-900 p-6 rounded-xl w-full max-w-md shadow-xl border border-sky-700/30"
               >
                 <h2 className="text-xl font-semibold text-white mb-4">Add New Goal</h2>
                 <form className="space-y-4" onSubmit={handleSaveGoal}>
