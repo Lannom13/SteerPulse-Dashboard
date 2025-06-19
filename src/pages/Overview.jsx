@@ -6,6 +6,7 @@ import BudgetRing from '../components/BudgetRing'
 import CashFlowChart from '../components/CashFlowChart'
 import InsightCard from '../components/InsightCard'
 import TransactionPreview from '../components/TransactionPreview'
+import InvestmentSnapshot from '../components/InvestmentSnapshot'
 
 export default function Overview() {
   const [scenario, setScenario] = useState('MTD')
@@ -86,7 +87,7 @@ export default function Overview() {
             <BudgetRing percentage={72} label="Debt Payoff Progress" />
           </div>
           <div className="bg-gray-800 p-4 rounded-xl shadow">
-            Investment Snapshot
+            <InvestmentSnapshot />
           </div>
         </div>
       </div>
