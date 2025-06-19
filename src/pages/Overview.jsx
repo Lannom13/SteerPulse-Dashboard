@@ -2,6 +2,7 @@
 import AnimatedPage from '../components/AnimatedPage'
 import { useState } from 'react'
 import KpiCard from '../components/KpiCard'
+import BudgetRing from '../components/BudgetRing'
 
 export default function Overview() {
   const [scenario, setScenario] = useState('MTD')
@@ -60,7 +61,7 @@ export default function Overview() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Row 3 – Debt & Investment Overview */}
           <div className="bg-gray-800 p-4 rounded-xl shadow">
-            Debt Status Ring
+            <BudgetRing percentage={72} label="Debt Payoff Progress" />
           </div>
           <div className="bg-gray-800 p-4 rounded-xl shadow">
             Investment Snapshot
