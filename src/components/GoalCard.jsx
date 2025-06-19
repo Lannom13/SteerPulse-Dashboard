@@ -1,5 +1,4 @@
-// src/components/GoalCard.jsx
-export default function GoalCard({ goal, onEdit }) {
+export default function GoalCard({ goal, onEdit, onDelete }) {
   const percent = Math.min((goal.saved / goal.target) * 100, 100)
 
   return (
@@ -22,14 +21,23 @@ export default function GoalCard({ goal, onEdit }) {
         ${goal.saved.toLocaleString()} saved • {percent.toFixed(0)}% complete
       </div>
 
-      {/* ✏️ Edit Button (top-right corner) */}
-      <button
-        onClick={onEdit}
-        className="absolute top-2 right-2 text-xs text-sky-400 hover:text-sky-300 hidden group-hover:inline"
-        title="Edit Goal"
-      >
-        ✏️ Edit
-      </button>
+      {/* Action Buttons on Hover */}
+      <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <button
+          onClick={onEdit}
+          title="Edit Goal"
+          className="text-xs text-sky-400 hover:text-sky-300"
+        >
+          ✏️
+        </button>
+        <button
+          onClick={onDelete}
+          title="Delete Goal"
+          className="text-xs text-red-400 hover:text-red-300"
+        >
+          🗑️
+        </button>
+      </div>
     </div>
   )
 }
