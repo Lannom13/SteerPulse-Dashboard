@@ -3,6 +3,7 @@ import AnimatedPage from '../components/AnimatedPage'
 import { useState } from 'react'
 import KpiCard from '../components/KpiCard'
 import BudgetRing from '../components/BudgetRing'
+import CashFlowChart from '../components/CashFlowChart'
 
 export default function Overview() {
   const [scenario, setScenario] = useState('MTD')
@@ -46,6 +47,11 @@ export default function Overview() {
           <KpiCard title="Net Worth" value="$128,450" scenario={scenario} />
           <KpiCard title="Budget Used" value="$1,920 / $2,500" scenario={scenario} />
           <KpiCard title="Cash Flow" value="+$630" scenario={scenario} />
+        </div>
+
+        <div className="mb-6">
+          {/* Cash Flow Line Chart */}
+          <CashFlowChart />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
