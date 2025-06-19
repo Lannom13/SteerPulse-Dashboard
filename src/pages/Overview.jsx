@@ -5,6 +5,7 @@ import KpiCard from '../components/KpiCard'
 import BudgetRing from '../components/BudgetRing'
 import CashFlowChart from '../components/CashFlowChart'
 import InsightCard from '../components/InsightCard'
+import TransactionPreview from '../components/TransactionPreview'
 
 export default function Overview() {
   const [scenario, setScenario] = useState('MTD')
@@ -58,7 +59,7 @@ export default function Overview() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {/* Row 2 – Recent Transactions + Smart Insights */}
           <div className="md:col-span-2 bg-gray-800 p-4 rounded-xl shadow">
-            Recent Transactions Preview
+            <TransactionPreview />
           </div>
           <div className="bg-gray-800 p-4 rounded-xl shadow space-y-4">
             <InsightCard
