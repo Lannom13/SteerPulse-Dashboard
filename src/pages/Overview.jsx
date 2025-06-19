@@ -81,7 +81,7 @@ export default function Overview() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           {/* Row 3 – Debt & Investment Overview */}
           <div className="bg-gray-800 p-4 rounded-xl shadow">
             <BudgetRing percentage={72} label="Debt Payoff Progress" />
@@ -89,6 +89,11 @@ export default function Overview() {
           <div className="bg-gray-800 p-4 rounded-xl shadow">
             <InvestmentSnapshot />
           </div>
+        </div>
+
+        {/* Row 4 – Future Market Comparison & AI Investment Intelligence */}
+        <div className="bg-gray-800 p-4 rounded-xl shadow border border-dashed border-brand-500 text-gray-400 text-sm">
+          📊 Performance vs S&P / NASDAQ & AI Investment Insights — Coming Soon in Pro Tier
         </div>
       </div>
     </AnimatedPage>
