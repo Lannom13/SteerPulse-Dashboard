@@ -5,6 +5,38 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 export default function Goals() {
   const [showModal, setShowModal] = useState(false)
+  const [goals, setGoals] = useState([
+    {
+      id: 1,
+      name: 'Family Vacation',
+      target: 3000,
+      saved: 1350,
+      date: '2025-12-31',
+    },
+    {
+      id: 2,
+      name: 'Pay Off Credit Card',
+      target: 1200,
+      saved: 800,
+      date: '2025-09-30',
+    },
+  ])
+
+  const [formData, setFormData] = useState({ name: '', target: '', saved: '', date: '' })
+
+  const handleSaveGoal = (e) => {
+    e.preventDefault()
+    const newGoal = {
+      id: Date.now(),
+      name: formData.name,
+      target: parseFloat(formData.target),
+      saved: parseFloat(formData.saved),
+      date: formData.date,
+    }
+    setGoals([...goals, newGoal])
+    setFormData({ name: '', target: '', saved: '', date: '' })
+    setShowModal(false)
+  }
 
   return (
     <AnimatedPage>
@@ -19,24 +51,23 @@ export default function Goals() {
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Sample Goal Cards */}
-          <div className="bg-gray-800 p-5 rounded-xl shadow">
-            <div className="text-xl font-semibold text-white mb-2">Family Vacation</div>
-            <div className="text-sm text-gray-400 mb-1">Target: $3,000 by Dec 2025</div>
-            <div className="w-full h-4 bg-gray-700 rounded-full overflow-hidden">
-              <div className="h-full bg-brand-500 rounded-full" style={{ width: '45%' }}></div>
-            </div>
-            <div className="text-sm text-gray-300 mt-2">$1,350 saved • 45% complete</div>
-          </div>
-
-          <div className="bg-gray-800 p-5 rounded-xl shadow">
-            <div className="text-xl font-semibold text-white mb-2">Pay Off Credit Card</div>
-            <div className="text-sm text-gray-400 mb-1">Target: $1,200 by Sept 2025</div>
-            <div className="w-full h-4 bg-gray-700 rounded-full overflow-hidden">
-              <div className="h-full bg-green-500 rounded-full" style={{ width: '66%' }}></div>
-            </div>
-            <div className="text-sm text-gray-300 mt-2">$800 paid • 66% complete</div>
-          </div>
+          {goals.map((goal) => {
+            const percent = Math.min((goal.saved / goal.target) * 100, 100)
+            return (
+              <div key={goal.id} className="bg-gray-800 p-5 rounded-xl shadow">
+                <div className="text-xl font-semibold text-white mb-2">{goal.name}</div>
+                <div className="text-sm text-gray-400 mb-1">
+                  Target: ${goal.target.toLocaleString()} by {new Date(goal.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                </div>
+                <div className="w-full h-4 bg-gray-700 rounded-full overflow-hidden">
+                  <div className="h-full bg-brand-500 rounded-full" style={{ width: `${percent}%` }}></div>
+                </div>
+                <div className="text-sm text-gray-300 mt-2">
+                  ${goal.saved.toLocaleString()} saved • {percent.toFixed(0)}% complete
+                </div>
+              </div>
+            )
+          })}
         </div>
 
         <p className="text-sm text-gray-500 mt-6">More goal types, charts, and AI milestone alerts coming soon.</p>
@@ -57,25 +88,37 @@ export default function Goals() {
                 className="bg-gray-900 p-6 rounded-xl w-full max-w-md shadow-xl"
               >
                 <h2 className="text-xl font-semibold text-white mb-4">Add New Goal</h2>
-                <form className="space-y-4">
+                <form className="space-y-4" onSubmit={handleSaveGoal}>
                   <input
                     type="text"
                     placeholder="Goal Name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full p-2 rounded-md bg-gray-800 text-white placeholder-gray-500"
+                    required
                   />
                   <input
                     type="number"
                     placeholder="Target Amount ($)"
+                    value={formData.target}
+                    onChange={(e) => setFormData({ ...formData, target: e.target.value })}
                     className="w-full p-2 rounded-md bg-gray-800 text-white placeholder-gray-500"
+                    required
                   />
                   <input
                     type="date"
+                    value={formData.date}
+                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                     className="w-full p-2 rounded-md bg-gray-800 text-white"
+                    required
                   />
                   <input
                     type="number"
                     placeholder="Current Saved"
+                    value={formData.saved}
+                    onChange={(e) => setFormData({ ...formData, saved: e.target.value })}
                     className="w-full p-2 rounded-md bg-gray-800 text-white placeholder-gray-500"
+                    required
                   />
                   <div className="flex justify-end gap-3 pt-4">
                     <button
@@ -87,10 +130,6 @@ export default function Goals() {
                     </button>
                     <button
                       type="submit"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        setShowModal(false)
-                      }}
                       className="px-4 py-2 rounded-md bg-brand-500 hover:bg-brand-600 text-white text-sm"
                     >
                       Save Goal
