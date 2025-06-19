@@ -45,9 +45,10 @@ export default function Goals() {
 
         <button
           onClick={() => setShowModal(true)}
-          className="mb-6 bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-md text-sm font-medium"
+          className="mb-6 flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-md text-sm font-medium"
         >
-          + Add Goal
+          <span className="text-lg">➕</span>
+          Add Goal
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -60,7 +61,7 @@ export default function Goals() {
                   Target: ${goal.target.toLocaleString()} by {new Date(goal.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                 </div>
                 <div className="w-full h-4 bg-gray-700 rounded-full overflow-hidden">
-                  <div className="h-full bg-brand-500 rounded-full" style={{ width: `${percent}%` }}></div>
+                  <div className="h-full bg-sky-500 rounded-full" style={{ width: `${percent}%` }}></div>
                 </div>
                 <div className="text-sm text-gray-300 mt-2">
                   ${goal.saved.toLocaleString()} saved • {percent.toFixed(0)}% complete
@@ -130,7 +131,7 @@ export default function Goals() {
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-2 rounded-md bg-brand-500 hover:bg-brand-600 text-white text-sm"
+                      className="px-4 py-2 rounded-md bg-sky-500 hover:bg-sky-600 text-white text-sm"
                     >
                       Save Goal
                     </button>
