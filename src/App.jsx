@@ -11,6 +11,9 @@ import Debt from './pages/Debt'
 import Transactions from './pages/Transactions'
 import Recurring from './pages/Recurring'
 import Investments from './pages/Investments'
+import Goals from './pages/Goals'
+import Insights from './pages/Insights'
+import Notifications from './pages/Notifications'
 import Settings from './pages/Settings'
 
 function App() {
@@ -28,6 +31,9 @@ function App() {
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/recurring" element={<Recurring />} />
             <Route path="/investments" element={<Investments />} />
+            <Route path="/goals" element={<Goals />} />
+            <Route path="/insights" element={<Insights />} />
+            <Route path="/notifications" element={<Notifications />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </DashboardLayout>
