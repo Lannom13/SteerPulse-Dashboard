@@ -1,7 +1,10 @@
 // src/pages/Overview.jsx
 import AnimatedPage from '../components/AnimatedPage'
+import { useState } from 'react'
 
 export default function Overview() {
+  const [scenario, setScenario] = useState('MTD')
+
   return (
     <AnimatedPage>
       <div className="text-white">
@@ -9,10 +12,20 @@ export default function Overview() {
 
         {/* Performance Scenario Row */}
         <div className="flex flex-wrap items-center gap-4 mb-6">
-          <button className="bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium px-4 py-2 rounded-full">
+          <button
+            onClick={() => setScenario('MTD')}
+            className={`${
+              scenario === 'MTD' ? 'bg-brand-500 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+            } text-sm font-medium px-4 py-2 rounded-full`}
+          >
             MTD
           </button>
-          <button className="bg-gray-800 text-gray-300 text-sm font-medium px-4 py-2 rounded-full hover:bg-gray-700">
+          <button
+            onClick={() => setScenario('YTD')}
+            className={`${
+              scenario === 'YTD' ? 'bg-brand-500 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+            } text-sm font-medium px-4 py-2 rounded-full`}
+          >
             YTD
           </button>
           <div className="text-sm bg-gray-800 text-gray-300 px-4 py-2 rounded-full">
@@ -28,9 +41,15 @@ export default function Overview() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {/* Row 1 – KPI Cards */}
-          <div className="bg-gray-800 p-4 rounded-xl shadow">Net Worth</div>
-          <div className="bg-gray-800 p-4 rounded-xl shadow">Budget Used</div>
-          <div className="bg-gray-800 p-4 rounded-xl shadow">Cash Flow</div>
+          <div className="bg-gray-800 p-4 rounded-xl shadow">
+            Net Worth <span className="block text-xs text-gray-400 mt-1">Scenario: {scenario}</span>
+          </div>
+          <div className="bg-gray-800 p-4 rounded-xl shadow">
+            Budget Used <span className="block text-xs text-gray-400 mt-1">Scenario: {scenario}</span>
+          </div>
+          <div className="bg-gray-800 p-4 rounded-xl shadow">
+            Cash Flow <span className="block text-xs text-gray-400 mt-1">Scenario: {scenario}</span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -45,8 +64,12 @@ export default function Overview() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Row 3 – Debt & Investment Overview */}
-          <div className="bg-gray-800 p-4 rounded-xl shadow">Debt Status Ring</div>
-          <div className="bg-gray-800 p-4 rounded-xl shadow">Investment Snapshot</div>
+          <div className="bg-gray-800 p-4 rounded-xl shadow">
+            Debt Status Ring
+          </div>
+          <div className="bg-gray-800 p-4 rounded-xl shadow">
+            Investment Snapshot
+          </div>
         </div>
       </div>
     </AnimatedPage>
