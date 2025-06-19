@@ -1,3 +1,11 @@
+import AnimatedPage from '../components/AnimatedPage'
+
 export default function Insights() {
-  return <div className="text-white">📈 Insights Section Coming Soon</div>
+  return (
+    <AnimatedPage>
+      <div className="text-white">
+        🧠 AI-Powered Financial Insights Coming Soon
+      </div>
+    </AnimatedPage>
+  )
 }
