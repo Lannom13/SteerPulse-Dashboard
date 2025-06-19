@@ -75,7 +75,7 @@ export default function Goals() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {goals.map((goal) => (
-            <GoalCard key={goal.id} goal={goal} onEdit={() => handleEdit(goal)} />
+            <GoalCard key={goal.id} goal={goal} onEdit={() => handleEdit(goal)} onDelete={() => setGoals(goals.filter(g => g.id !== goal.id))} />
           ))}
         </div>
 
