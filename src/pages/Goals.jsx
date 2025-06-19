@@ -73,11 +73,27 @@ export default function Goals() {
           Add Goal
         </button>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {goals.map((goal) => (
-            <GoalCard key={goal.id} goal={goal} onEdit={() => handleEdit(goal)} onDelete={() => setGoals(goals.filter(g => g.id !== goal.id))} />
-          ))}
-        </div>
+        <motion.div
+  layout
+  className="grid grid-cols-1 md:grid-cols-2 gap-6"
+>
+  {goals.map((goal) => (
+    <motion.div
+      key={goal.id}
+      layout
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.3 }}
+    >
+      <GoalCard
+        goal={goal}
+        onEdit={() => handleEdit(goal)}
+        onDelete={() => setGoals(goals.filter(g => g.id !== goal.id))}
+      />
+    </motion.div>
+  ))}
+</motion.div>
 
         <p className="text-sm text-gray-500 mt-6">More goal types, charts, and AI milestone alerts coming soon.</p>
 
