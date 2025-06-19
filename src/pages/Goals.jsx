@@ -73,31 +73,27 @@ export default function Goals() {
           Add Goal
         </button>
 
-        <motion.div
-  layout
-  className="grid grid-cols-1 md:grid-cols-2 gap-6"
->
-  {goals.map((goal) => (
-    <motion.div
-      key={goal.id}
-      layout
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.3 }}
-    >
-      <GoalCard
-        goal={goal}
-        onEdit={() => handleEdit(goal)}
-        onDelete={() => setGoals(goals.filter(g => g.id !== goal.id))}
-      />
-    </motion.div>
-  ))}
-</motion.div>
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {goals.map((goal) => (
+            <motion.div
+              key={goal.id}
+              layout
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+            >
+              <GoalCard
+                goal={goal}
+                onEdit={() => handleEdit(goal)}
+                onDelete={() => setGoals(goals.filter(g => g.id !== goal.id))}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
 
         <p className="text-sm text-gray-500 mt-6">More goal types, charts, and AI milestone alerts coming soon.</p>
 
-        {/* Modal Overlay */}
         <AnimatePresence>
           {showModal && (
             <motion.div
@@ -112,7 +108,9 @@ export default function Goals() {
                 exit={{ scale: 0.9, opacity: 0 }}
                 className="bg-gray-900 p-6 rounded-xl w-full max-w-md shadow-xl border border-sky-700/30"
               >
-                <h2 className="text-xl font-semibold text-white mb-4">{editId ? 'Edit Goal' : 'Add New Goal'}</h2>
+                <h2 className="text-xl font-semibold text-white mb-4">
+                  {editId ? 'Edit Goal' : 'Add New Goal'}
+                </h2>
                 <form className="space-y-4" onSubmit={handleSaveGoal}>
                   <input
                     type="text"
@@ -131,14 +129,11 @@ export default function Goals() {
                     required
                   />
                   <input
-  type="date"
-  placeholder="End Date"
-  value={formData.date}
-  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-  className="w-full p-2 rounded-md bg-gray-800 text-white placeholder-gray-500"
-  required
-/> setFormData({ ...formData, date: e.target.value })}
-                    className="w-full p-2 rounded-md bg-gray-800 text-white"
+                    type="date"
+                    placeholder="End Date"
+                    value={formData.date}
+                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                    className="w-full p-2 rounded-md bg-gray-800 text-white placeholder-gray-500"
                     required
                   />
                   <input
