@@ -1,3 +1,11 @@
+import AnimatedPage from '../components/AnimatedPage'
+
 export default function Recurring() {
-  return <div className="text-white">📆 Recurring Section Coming Soon</div>
+  return (
+    <AnimatedPage>
+      <div className="text-white">
+        📆 Recurring Section Coming Soon
+      </div>
+    </AnimatedPage>
+  )
 }
