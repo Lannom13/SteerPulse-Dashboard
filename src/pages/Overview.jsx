@@ -5,7 +5,30 @@ export default function Overview() {
   return (
     <AnimatedPage>
       <div className="text-white">
-        🧭 <strong>SteerPulse Overview</strong> – At-a-glance dashboard coming soon!
+        <h1 className="text-3xl font-bold mb-6">🧭 SteerPulse Overview</h1>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          {/* Row 1 – KPI Cards */}
+          <div className="bg-gray-800 p-4 rounded-xl shadow">Net Worth</div>
+          <div className="bg-gray-800 p-4 rounded-xl shadow">Budget Used</div>
+          <div className="bg-gray-800 p-4 rounded-xl shadow">Cash Flow</div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          {/* Row 2 – Recent Transactions + Smart Insights */}
+          <div className="md:col-span-2 bg-gray-800 p-4 rounded-xl shadow">
+            Recent Transactions Preview
+          </div>
+          <div className="bg-gray-800 p-4 rounded-xl shadow">
+            Smart Insights / Alerts
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Row 3 – Debt & Investment Overview */}
+          <div className="bg-gray-800 p-4 rounded-xl shadow">Debt Status Ring</div>
+          <div className="bg-gray-800 p-4 rounded-xl shadow">Investment Snapshot</div>
+        </div>
       </div>
     </AnimatedPage>
   )
