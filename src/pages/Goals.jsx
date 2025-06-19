@@ -24,19 +24,36 @@ export default function Goals() {
   ])
 
   const [formData, setFormData] = useState({ name: '', target: '', saved: '', date: '' })
+  const [editId, setEditId] = useState(null)
 
   const handleSaveGoal = (e) => {
     e.preventDefault()
-    const newGoal = {
-      id: Date.now(),
+    const updatedGoal = {
+      id: editId ?? Date.now(),
       name: formData.name,
       target: parseFloat(formData.target),
       saved: parseFloat(formData.saved),
       date: formData.date,
     }
-    setGoals([...goals, newGoal])
+    if (editId) {
+      setGoals(goals.map(g => (g.id === editId ? updatedGoal : g)))
+    } else {
+      setGoals([...goals, updatedGoal])
+    }
     setFormData({ name: '', target: '', saved: '', date: '' })
+    setEditId(null)
     setShowModal(false)
+  }
+
+  const handleEdit = (goal) => {
+    setFormData({
+      name: goal.name,
+      target: goal.target.toString(),
+      saved: goal.saved.toString(),
+      date: goal.date,
+    })
+    setEditId(goal.id)
+    setShowModal(true)
   }
 
   return (
@@ -45,7 +62,11 @@ export default function Goals() {
         <h1 className="text-3xl font-bold mb-6">🎯 Goals Tracker</h1>
 
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setFormData({ name: '', target: '', saved: '', date: '' })
+            setEditId(null)
+            setShowModal(true)
+          }}
           className="mb-6 flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-transform transform hover:scale-105"
         >
           <span className="text-lg">➕</span>
@@ -54,7 +75,7 @@ export default function Goals() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {goals.map((goal) => (
-            <GoalCard key={goal.id} goal={goal} />
+            <GoalCard key={goal.id} goal={goal} onEdit={() => handleEdit(goal)} />
           ))}
         </div>
 
@@ -75,7 +96,7 @@ export default function Goals() {
                 exit={{ scale: 0.9, opacity: 0 }}
                 className="bg-gray-900 p-6 rounded-xl w-full max-w-md shadow-xl border border-sky-700/30"
               >
-                <h2 className="text-xl font-semibold text-white mb-4">Add New Goal</h2>
+                <h2 className="text-xl font-semibold text-white mb-4">{editId ? 'Edit Goal' : 'Add New Goal'}</h2>
                 <form className="space-y-4" onSubmit={handleSaveGoal}>
                   <input
                     type="text"
@@ -111,7 +132,11 @@ export default function Goals() {
                   <div className="flex justify-end gap-3 pt-4">
                     <button
                       type="button"
-                      onClick={() => setShowModal(false)}
+                      onClick={() => {
+                        setShowModal(false)
+                        setFormData({ name: '', target: '', saved: '', date: '' })
+                        setEditId(null)
+                      }}
                       className="px-4 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white text-sm"
                     >
                       Cancel
@@ -120,7 +145,7 @@ export default function Goals() {
                       type="submit"
                       className="px-4 py-2 rounded-md bg-sky-500 hover:bg-sky-600 text-white text-sm"
                     >
-                      Save Goal
+                      {editId ? 'Update Goal' : 'Save Goal'}
                     </button>
                   </div>
                 </form>
