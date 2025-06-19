@@ -115,9 +115,13 @@ export default function Goals() {
                     required
                   />
                   <input
-                    type="date"
-                    value={formData.date}
-                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+  type="date"
+  placeholder="End Date"
+  value={formData.date}
+  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+  className="w-full p-2 rounded-md bg-gray-800 text-white placeholder-gray-500"
+  required
+/> setFormData({ ...formData, date: e.target.value })}
                     className="w-full p-2 rounded-md bg-gray-800 text-white"
                     required
                   />
