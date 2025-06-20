@@ -21,7 +21,3 @@ export default function BudgetSpreadsheet() {
     </AnimatedPage>
   )
 }
-
-    </AnimatedPage>
-  )
-}
