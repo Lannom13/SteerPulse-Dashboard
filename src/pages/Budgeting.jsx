@@ -41,8 +41,6 @@ export default function Budgeting() {
   </ul>
   <p className="text-xs text-gray-600 mt-3 italic">AI-driven recommendations will adapt to your real-time trends and spending habits.</p>
 </div>
-</div>
-
 <p className="text-xs text-gray-500 mt-6">
   More categories, AI-driven adjustments, and automated syncing with your bank are coming soon.
 </p>
