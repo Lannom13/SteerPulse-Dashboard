@@ -1,5 +1,6 @@
 // src/pages/Budgeting.jsx
 import AnimatedPage from '../components/AnimatedPage'
+import BudgetCategoryCard from '../components/BudgetCategoryCard'
 
 export default function Budgeting() {
   return (
@@ -17,28 +18,14 @@ export default function Budgeting() {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-  {/* BudgetCategoryCard components will be modularized here soon */}
-  <div className="bg-gray-800 p-4 rounded-xl shadow">
-    <h2 className="text-white text-md font-semibold mb-1">Groceries</h2>
-    <p className="text-sm text-gray-300 mb-1">$340 of $500</p>
-    <div className="w-full h-3 bg-gray-700 rounded-full overflow-hidden">
-      <div className="h-full bg-sky-500 rounded-full transition-all duration-700" style={{ width: '68%' }}></div>
+  <BudgetCategoryCard title="Groceries" spent={340} budget={500} color="sky" />
+  <BudgetCategoryCard title="Dining Out" spent={290} budget={300} color="red" />
+  <BudgetCategoryCard title="Utilities" spent={120} budget={200} color="green" />
+</div>
     </div>
   </div>
 
-  <div className="bg-gray-800 p-4 rounded-xl shadow">
-    <h2 className="text-white text-md font-semibold mb-1">Dining Out</h2>
-    <p className="text-sm text-gray-300 mb-1">$290 of $300</p>
-    <div className="w-full h-3 bg-gray-700 rounded-full overflow-hidden">
-      <div className="h-full bg-red-500 rounded-full transition-all duration-700" style={{ width: '97%' }}></div>
-    </div>
-  </div>
-
-  <div className="bg-gray-800 p-4 rounded-xl shadow">
-    <h2 className="text-white text-md font-semibold mb-1">Utilities</h2>
-    <p className="text-sm text-gray-300 mb-1">$120 of $200</p>
-    <div className="w-full h-3 bg-gray-700 rounded-full overflow-hidden">
-      <div className="h-full bg-green-500 rounded-full transition-all duration-700" style={{ width: '60%' }}></div>
+  
     </div>
   </div>
 </div>
