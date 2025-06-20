@@ -1,9 +1,11 @@
 // BudgetRow.jsx
 import { useState } from 'react';
 
-export default function BudgetRow({ row }) {
+export default function BudgetRow({ row, isVisible }) {
   const [planned, setPlanned] = useState(row.planned);
   const [notes, setNotes] = useState(row.notes);
+
+  if (!isVisible) return null;
 
   const difference = planned - row.actual;
   const percent = ((row.actual / planned) * 100).toFixed(0);
@@ -24,7 +26,12 @@ export default function BudgetRow({ row }) {
       <td className={`px-4 py-2 ${isOver ? 'text-red-400' : 'text-green-400'}`}>{isOver ? '-' : '+'}${Math.abs(difference)}</td>
       <td className={`px-4 py-2 ${percent > 100 ? 'text-red-400' : 'text-green-400'}`}>{percent}%</td>
       <td className="px-4 py-2">
-        <div className={`w-20 h-2 rounded-full ${percent > 100 ? 'bg-red-500' : 'bg-green-500'}`} style={{ width: `${Math.min(percent, 100)}%` }}></div>
+        <div className="w-full bg-gray-700 h-2 rounded">
+          <div
+            className={`${percent > 100 ? 'bg-red-500' : 'bg-green-500'} h-2 rounded`}
+            style={{ width: `${Math.min(percent, 100)}%` }}
+          ></div>
+        </div>
       </td>
       <td className={`px-4 py-2 ${isOver ? 'text-red-400' : 'text-green-500'}`}>{isOver ? 'Overspent' : 'On Track'}</td>
       <td className="px-4 py-2">
