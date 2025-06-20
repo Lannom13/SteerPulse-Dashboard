@@ -1,4 +1,3 @@
-// src/pages/Goals.jsx
 import AnimatedPage from '../components/AnimatedPage'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -59,11 +58,6 @@ export default function Goals() {
   return (
     <AnimatedPage>
       <div className="text-white">
-        <h1 className="text-3xl font-bold mb-6">
-          <span role="img" aria-label="steering" className="mr-2">🛞</span>
-          SteerPulse Overview
-        </h1>
-
         <button
           onClick={() => {
             setFormData({ name: '', target: '', saved: '', date: '' })
