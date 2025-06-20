@@ -32,23 +32,38 @@ export default function BudgetSpreadsheet() {
   return (
     <AnimatedPage>
       <div className="text-white">
+        {/* Toolbar */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold">📋 Budget Spreadsheet</h1>
-          <div className="text-sm flex gap-4 items-center">
-            <label className="text-gray-400">View Month:</label>
-            <select className="bg-gray-800 text-white px-3 py-1 rounded" value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}>
-              <option>June 2025</option>
-              <option>May 2025</option>
-              <option>April 2025</option>
-            </select>
+          <div className="flex gap-2 text-sm">
+            <button className="bg-sky-700 hover:bg-sky-600 px-3 py-1 rounded shadow text-white">+ Add Category</button>
+            <button className="bg-red-700 hover:bg-red-600 px-3 py-1 rounded shadow text-white">🗑 Remove Category</button>
+            <button className="bg-green-700 hover:bg-green-600 px-3 py-1 rounded shadow text-white">💾 Save</button>
+            <button className="bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded shadow text-white">↩ Undo</button>
+            <button className="bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded shadow text-white">↪ Redo</button>
+            <button className="bg-blue-700 hover:bg-blue-600 px-3 py-1 rounded shadow text-white">🔄 Update from Plaid</button>
+            <button className="bg-yellow-700 hover:bg-yellow-600 px-3 py-1 rounded shadow text-white">⬇ Export</button>
+            <button className="bg-indigo-700 hover:bg-indigo-600 px-2 py-1 rounded shadow text-white">❔ Help</button>
           </div>
         </div>
 
-        <nav className="mb-8 flex justify-start gap-4 border-b border-gray-700 pb-3">
+        {/* Month Selector */}
+        <div className="text-sm flex gap-4 items-center mb-4">
+          <label className="text-gray-400">View Month:</label>
+          <select className="bg-gray-800 text-white px-3 py-1 rounded" value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}>
+            <option>June 2025</option>
+            <option>May 2025</option>
+            <option>April 2025</option>
+          </select>
+        </div>
+
+        {/* Navigation */}
+        <nav className="mb-6 flex justify-start gap-4 border-b border-gray-700 pb-3">
           <Link to="/budgeting" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 px-2 pb-1 transition-colors">Dashboard</Link>
           <Link to="/budgeting/spreadsheet" className="text-sm text-white border-b-2 border-sky-500 px-2 pb-1">Spreadsheet</Link>
         </nav>
 
+        {/* Budget Table */}
         <div className="bg-gray-800 p-4 rounded-xl shadow">
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm text-left text-gray-400">
@@ -58,9 +73,9 @@ export default function BudgetSpreadsheet() {
                   <th className="px-4 py-2">Planned</th>
                   <th className="px-4 py-2">Actual</th>
                   <th className="px-4 py-2">Difference</th>
-                  <th className="px-4 py-2" colSpan="2">Usage</th>
-                  <th className="px-4 py-2">Status</th>
-                  <th className="px-4 py-2">% of Total Budget</th>
+                  <th className="px-4 py-2 pr-10">Usage</th>
+                  <th className="px-4 py-2 pl-0">Status</th>
+                  <th className="px-4 py-2 text-center">% of Total Budget</th>
                 </tr>
               </thead>
               <tbody>
@@ -68,7 +83,6 @@ export default function BudgetSpreadsheet() {
                   const groupRows = dummyData.filter(row => row.group === group);
                   const groupPlanned = groupRows.reduce((sum, row) => sum + row.planned, 0);
                   const groupActual = groupRows.reduce((sum, row) => sum + row.actual, 0);
-                  const groupDiff = groupPlanned - groupActual;
 
                   return [
                     <BudgetRow
@@ -93,7 +107,8 @@ export default function BudgetSpreadsheet() {
                   <td className="px-4 py-2 font-bold">${totals.planned}</td>
                   <td className="px-4 py-2 font-bold">${totals.actual}</td>
                   <td className={`px-4 py-2 font-bold ${totals.difference >= 0 ? 'text-green-400' : 'text-red-400'}`}>${totals.difference}</td>
-                  <td className="px-4 py-2 font-bold text-sky-400" colSpan={4}>% of Total Budget: 100%</td>
+                  <td className="px-4 py-2" colSpan={2}></td>
+                  <td className="px-4 py-2 font-bold text-sky-400 text-center">% of Total Budget: 100%</td>
                 </tr>
               </tbody>
             </table>
