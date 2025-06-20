@@ -1,4 +1,4 @@
-// Dashboard.jsx
+// src/pages/budgeting/Dashboard.jsx
 import { Link } from 'react-router-dom';
 import AnimatedPage from '../../components/AnimatedPage';
 import BudgetDashboardCharts from '../../components/BudgetDashboardCharts';
@@ -20,7 +20,6 @@ export default function Dashboard() {
           <Link to="/budgeting" className="text-sm text-white border-b-2 border-sky-500 px-2 pb-1">Dashboard</Link>
           <Link to="/budgeting/spreadsheet" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 px-2 pb-1 transition-colors">Spreadsheet</Link>
         </nav>
-
         <BudgetDashboardCharts data={dummyData} />
       </div>
     </AnimatedPage>
