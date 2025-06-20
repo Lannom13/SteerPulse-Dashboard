@@ -170,7 +170,21 @@ export default function Goals() {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
-    </AnimatedPage>
+      <div className="bg-gray-800 p-4 rounded-xl shadow border border-dashed border-sky-400 text-gray-300 text-sm mt-10">
+  <iframe
+    src="https://flo.uri.sh/story/123456/embed"
+    width="100%"
+    height="400"
+    frameBorder="0"
+    title="Flourish Chart"
+    allowFullScreen
+    className="rounded-lg w-full h-[400px]"
+  ></iframe>
+  <p className="text-xs text-gray-500 mt-2">
+    Sample Flourish chart embedded here – replace the link above with your published chart URL.
+  </p>
+</div>
+</div>
+</AnimatedPage>
   )
 }
