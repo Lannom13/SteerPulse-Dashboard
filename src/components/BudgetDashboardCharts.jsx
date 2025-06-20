@@ -4,6 +4,7 @@ import {
   BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell,
   LineChart, Line, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
+import { motion } from 'framer-motion';
 
 const COLORS = ['#38bdf8', '#60a5fa', '#a78bfa', '#f472b6', '#facc15'];
 
@@ -48,7 +49,7 @@ export default function BudgetDashboardCharts({ data }) {
   ];
 
   return (
-    <div>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
       {/* Insight Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-gray-800 p-4 rounded-lg shadow text-center">
@@ -85,14 +86,10 @@ export default function BudgetDashboardCharts({ data }) {
             Year to Date
           </button>
         </div>
-        <div className="ml-auto">
-          <label className="text-sm text-gray-300 mr-2">Show Prior Year</label>
-          <input type="checkbox" checked={showPriorYear} onChange={() => setShowPriorYear(!showPriorYear)} />
-        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-gray-800 rounded-xl p-4 shadow h-72">
+        <motion.div key={viewMode} animate={{ scale: [0.95, 1.05, 1] }} transition={{ duration: 0.6 }} className="bg-gray-800 rounded-xl p-4 shadow h-72">
           <h2 className="text-white text-sm font-semibold mb-2">Planned vs Actual</h2>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={summary} barCategoryGap={20}>
@@ -104,9 +101,9 @@ export default function BudgetDashboardCharts({ data }) {
               <Bar dataKey="Actual" fill="#facc15" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
-        </div>
+        </motion.div>
 
-        <div className="bg-gray-800 rounded-xl p-4 shadow h-72">
+        <motion.div key={`${viewMode}-pie`} animate={{ rotate: [0, 15, -15, 0] }} transition={{ duration: 0.6 }} className="bg-gray-800 rounded-xl p-4 shadow h-72">
           <h2 className="text-white text-sm font-semibold mb-2">Spending Breakdown</h2>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -126,10 +123,16 @@ export default function BudgetDashboardCharts({ data }) {
               <Legend verticalAlign="bottom" height={36} iconType="circle" />
             </PieChart>
           </ResponsiveContainer>
-        </div>
+        </motion.div>
 
-        <div className="bg-gray-800 rounded-xl p-4 shadow h-80 md:col-span-2">
-          <h2 className="text-white text-sm font-semibold mb-2">Monthly Trend</h2>
+        <motion.div key={`${viewMode}-trend`} animate={{ opacity: [0.5, 1] }} transition={{ duration: 0.5 }} className="bg-gray-800 rounded-xl p-4 shadow h-80 md:col-span-2">
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-white text-sm font-semibold">Monthly Trend</h2>
+            <label className="text-sm text-gray-300 flex items-center gap-2">
+              <input type="checkbox" checked={showPriorYear} onChange={() => setShowPriorYear(!showPriorYear)} />
+              Show Prior Year
+            </label>
+          </div>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={monthlyTrend}>
               <XAxis dataKey="month" stroke="#ccc" />
@@ -141,8 +144,8 @@ export default function BudgetDashboardCharts({ data }) {
               {showPriorYear && <Line type="monotone" dataKey="prior" stroke="#a78bfa" strokeWidth={2} name="Prior Year" strokeDasharray="4 2" />}  
             </LineChart>
           </ResponsiveContainer>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
