@@ -59,7 +59,10 @@ export default function Goals() {
   return (
     <AnimatedPage>
       <div className="text-white">
-        <h1 className="text-3xl font-bold mb-6">🎯 Goals Tracker</h1>
+        <h1 className="text-3xl font-bold mb-6">
+          <span role="img" aria-label="steering" className="mr-2">🛞</span>
+          SteerPulse Overview
+        </h1>
 
         <button
           onClick={() => {
@@ -92,8 +95,11 @@ export default function Goals() {
           ))}
         </motion.div>
 
-        <p className="text-sm text-gray-500 mt-6">More goal types, charts, and AI milestone alerts coming soon.</p>
+        <p className="text-sm text-gray-500 mt-6">
+          More goal types, charts, and AI milestone alerts coming soon.
+        </p>
 
+        {/* Modal Overlay */}
         <AnimatePresence>
           {showModal && (
             <motion.div
