@@ -94,7 +94,6 @@ export default function BudgetSpreadsheet() {
                   <th className="px-4 py-2">Difference</th>
                   <th className="px-6 py-2">Usage</th>
                   <th className="px-6 py-2">Status</th>
-                  <th className="px-4 py-2 text-center">% of Total Budget</th>
                   <th className="px-4 py-2">Notes</th>
                 </tr>
               </thead>
@@ -107,7 +106,7 @@ export default function BudgetSpreadsheet() {
                   return [
                     <BudgetRow
                       key={`summary-${group}`}
-                      row={{ category: group, planned: groupPlanned, actual: groupActual, percentOfTotal: (groupActual / totals.actual) * 100 }}
+                      row={{ category: group, planned: groupPlanned, actual: groupActual }}
                       showSummary={true}
                       isVisible={false}
                       onClick={() => setExpandedGroup(group === expandedGroup ? null : group)}
@@ -115,7 +114,7 @@ export default function BudgetSpreadsheet() {
                     ...(expandedGroup === group ? groupRows.map((row, idx) => (
                       <BudgetRow
                         key={`${group}-detail-${idx}`}
-                        row={{ ...row, percentOfTotal: (row.actual / totals.actual) * 100 }}
+                        row={row}
                         showSummary={false}
                         isVisible={true}
                       />
