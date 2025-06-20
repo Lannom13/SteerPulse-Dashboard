@@ -2,12 +2,12 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Sidebar from './components/Sidebar'
 import DashboardLayout from './layouts/DashboardLayout'
 
-// Pages
+// Budgeting Views
+import BudgetDashboard from './pages/Budgeting/Dashboard'
+import BudgetSpreadsheet from './pages/Budgeting/BudgetSpreadsheet'
+
+// Core Pages
 import Overview from './pages/Overview'
-import Budgeting from './pages/Budgeting'
-import BudgetSpreadsheet from './pages/BudgetSpreadsheet'
-import BudgetInsights from './pages/BudgetInsights'
-import BudgetHistory from './pages/BudgetHistory'
 import Investments from './pages/Investments'
 import Debt from './pages/Debt'
 import Transactions from './pages/Transactions'
@@ -26,10 +26,12 @@ function App() {
           <Routes>
             <Route path="/" element={<Navigate to="/overview" />} />
             <Route path="/overview" element={<Overview />} />
-            <Route path="/budgeting" element={<Budgeting />} />
+
+            {/* Budgeting Routes */}
+            <Route path="/budgeting" element={<BudgetDashboard />} />
             <Route path="/budgeting/spreadsheet" element={<BudgetSpreadsheet />} />
-            <Route path="/budgeting/insights" element={<BudgetInsights />} />
-            <Route path="/budgeting/history" element={<BudgetHistory />} />
+
+            {/* Other Main Tabs */}
             <Route path="/investments" element={<Investments />} />
             <Route path="/debt" element={<Debt />} />
             <Route path="/transactions" element={<Transactions />} />
