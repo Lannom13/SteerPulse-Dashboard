@@ -4,7 +4,7 @@ import DashboardLayout from './layouts/DashboardLayout'
 
 // Budgeting Views
 import BudgetDashboard from './pages/Budgeting/Dashboard'
-import BudgetSpreadsheet from './pages/Budgeting/BudgetSpreadsheet
+import BudgetSpreadsheet from './pages/Budgeting/BudgetSpreadsheet'
 
 // Core Pages
 import Overview from './pages/Overview'
