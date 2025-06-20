@@ -1,3 +1,4 @@
+// src/pages/BudgetInsights.jsx
 import AnimatedPage from '../components/AnimatedPage'
 
 export default function BudgetInsights() {
