@@ -1,4 +1,4 @@
-// BudgetSpreadsheet.jsx
+// src/pages/budgeting/budgetspreadsheet.jsx
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedPage from '../../components/AnimatedPage';
@@ -78,14 +78,41 @@ export default function BudgetSpreadsheet() {
                 </tr>
               </thead>
               <tbody>
-                {groups.map(group => (
-                  [
+                {groups.map(group => {
+                  const groupRows = dummyData.filter(row => row.group === group);
+                  const groupPlanned = groupRows.reduce((sum, row) => sum + row.planned, 0);
+                  const groupActual = groupRows.reduce((sum, row) => sum + row.actual, 0);
+                  const groupPercent = (groupActual / groupPlanned) * 100;
+
+                  return [
                     <GroupToggle key={`toggle-${group}`} label={group} isOpen={!!groupOpen[group]} onToggle={() => setGroupOpen(prev => ({ ...prev, [group]: !prev[group] }))} />,
-                    ...dummyData.filter(row => row.group === group).map((row, idx) => (
-                      <BudgetRow key={`${group}-${idx}`} row={row} isVisible={!!groupOpen[group]} />
-                    ))
-                  ]
-                ))}
+                    <BudgetRow
+                      key={`summary-${group}`}
+                      row={{
+                        category: group,
+                        planned: groupPlanned,
+                        actual: groupActual,
+                        notes: '',
+                        percentOfTotal: (groupActual / totals.actual) * 100
+                      }}
+                      showSummary={true}
+                      isVisible={false}
+                    />,
+                    ...(groupOpen[group] ?
+                      groupRows.map((row, idx) => (
+                        <BudgetRow
+                          key={`${group}-detail-${idx}`}
+                          row={{
+                            ...row,
+                            percentOfTotal: (row.actual / totals.actual) * 100
+                          }}
+                          showSummary={false}
+                          isVisible={true}
+                        />
+                      ))
+                      : [])
+                  ];
+                })}
                 <tr className="border-t border-gray-600 bg-gray-900">
                   <td className="px-4 py-2 font-bold">Totals</td>
                   <td className="px-4 py-2 font-bold">${totals.planned}</td>
@@ -98,5 +125,8 @@ export default function BudgetSpreadsheet() {
         </div>
       </div>
     </AnimatedPage>
+  );
+}
+age>
   );
 }
