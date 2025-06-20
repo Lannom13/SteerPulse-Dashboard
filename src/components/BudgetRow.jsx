@@ -1,4 +1,4 @@
-// BudgetRow.jsx
+// src/components/BudgetRow.jsx
 import { useState, useEffect } from 'react';
 
 export default function BudgetRow({ row, isVisible, showSummary }) {
@@ -20,7 +20,7 @@ export default function BudgetRow({ row, isVisible, showSummary }) {
   const displayRow = isVisible || showSummary;
 
   return displayRow ? (
-    <tr className="border-t border-gray-700">
+    <tr className={`border-t border-gray-700 ${showSummary ? 'bg-gray-900 font-semibold text-white' : ''}`}>
       <td className="px-4 py-2">{row.category}</td>
       <td className="px-4 py-2">${planned}</td>
       <td className="px-4 py-2">${row.actual}</td>
@@ -38,7 +38,11 @@ export default function BudgetRow({ row, isVisible, showSummary }) {
         </div>
       </td>
       <td className={`px-4 py-2 ${isOver ? 'text-red-400' : 'text-green-500'}`}>{isOver ? 'Overspent' : 'On Track'}</td>
-      {isVisible ? (
+      {showSummary ? (
+        <td className="px-4 py-2 text-right text-sm text-gray-400">
+          {percentOfTotal.toFixed(1)}%
+        </td>
+      ) : (
         <td className="px-4 py-2">
           <input
             type="text"
@@ -47,8 +51,6 @@ export default function BudgetRow({ row, isVisible, showSummary }) {
             onChange={(e) => setNotes(e.target.value)}
           />
         </td>
-      ) : (
-        <td className="px-4 py-2 text-right text-sm text-gray-400">{percentOfTotal.toFixed(1)}%</td>
       )}
     </tr>
   ) : null;
