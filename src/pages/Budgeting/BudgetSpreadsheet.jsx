@@ -66,7 +66,6 @@ export default function BudgetSpreadsheet() {
   return (
     <AnimatedPage>
       <div className="text-white">
-        {/* Minimalist Toolbar */}
         <div className="flex justify-between mb-4 border-b border-gray-700 pb-2">
           <nav className="flex gap-4">
             <Link to="/budgeting" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 pb-1">Dashboard</Link>
@@ -127,8 +126,9 @@ export default function BudgetSpreadsheet() {
                   <td className="px-4 py-2 font-bold">${totals.planned}</td>
                   <td className="px-4 py-2 font-bold">${totals.actual}</td>
                   <td className={`px-4 py-2 font-bold ${totals.difference >= 0 ? 'text-green-400' : 'text-red-400'}`}>${totals.difference}</td>
-                  <td colSpan={2}></td>
+                  <td></td>
                   <td className="px-4 py-2 font-bold text-sky-400 text-center">% of Total Budget: 100%</td>
+                  <td></td>
                 </tr>
               </tbody>
             </table>
