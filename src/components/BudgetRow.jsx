@@ -22,16 +22,7 @@ export default function BudgetRow({ row, isVisible, showSummary }) {
   return (
     <tr className="border-t border-gray-700">
       <td className="px-4 py-2">{row.category}</td>
-      <td className="px-4 py-2">
-        {showSummary ? `$${planned}` : (
-          <input
-            type="number"
-            className="bg-gray-900 text-white px-2 py-1 rounded w-24"
-            value={planned}
-            onChange={(e) => setPlanned(Number(e.target.value))}
-          />
-        )}
-      </td>
+      <td className="px-4 py-2">${planned}</td>
       <td className="px-4 py-2">${row.actual}</td>
       <td className={`px-4 py-2 ${isOver ? 'text-red-400' : 'text-green-400'}`}>{isOver ? '-' : '+'}${Math.abs(difference)}</td>
       <td className={`px-4 py-2 ${percent > 100 ? 'text-red-400' : 'text-green-400'}`}>{percent}%</td>
