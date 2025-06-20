@@ -170,33 +170,8 @@ export default function Goals() {
             </motion.div>
           )}
         </AnimatePresence>
-      <div className="bg-gray-800 p-4 rounded-xl shadow border border-dashed border-sky-400 text-gray-300 text-sm mt-10">
-  <iframe src="https://flo.uri.sh/story/1995916/embed"
-    width="100%"
-    height="400"
-    frameBorder="0"
-    title="Flourish Chart"
-    allowFullScreen
-    className="rounded-lg w-full h-[400px]"
-  ></iframe>
-  <p className="text-xs text-gray-500 mt-2">
-    Sample Flourish chart embedded here – replace the link above with your published chart URL.
-  </p>
-</div>
-<div className="bg-gray-800 p-4 rounded-xl shadow border border-dashed border-purple-400 text-gray-300 text-sm mt-6">
-  <iframe
-    src="https://flo.uri.sh/story/1995916/embed"
-    width="100%"
-    height="400"
-    frameBorder="0"
-    title="Flourish Chart - Overview"
-    allowFullScreen
-    className="rounded-lg w-full h-[400px]"
-  ></iframe>
-  <p className="text-xs text-gray-500 mt-2">
-    Live preview of Flourish Bar Chart Race in Overview. Replace with your chart to visualize real budget, net worth, or debt racing categories.
-  </p>
-</div>
+      
+
 </div>
 </AnimatedPage>
   )
