@@ -33,12 +33,14 @@ export default function Budgeting() {
   />
   </div>
   <div className="bg-gray-800 p-4 rounded-xl shadow">
-    <h2 className="text-white text-md font-semibold mb-2">💡 Smart Budget Insight</h2>
-    <p className="text-sm text-gray-400">
-      Your utilities budget may be overestimated. You've only used 60% of it. Consider reallocating to savings or a different category.
-    </p>
-    <p className="text-xs text-gray-600 mt-3 italic">AI insights will refine these suggestions as your trends evolve.</p>
-  </div>
+  <h2 className="text-white text-md font-semibold mb-2">💡 Smart Budget Insight</h2>
+  <ul className="text-sm text-gray-400 list-disc list-inside space-y-1">
+    <li>Your utilities budget may be overestimated. You’ve only used 60%.</li>
+    <li>Dining out is nearing your limit — 97% spent.</li>
+    <li>Groceries still have 32% available — could be used elsewhere.</li>
+  </ul>
+  <p className="text-xs text-gray-600 mt-3 italic">AI-driven recommendations will adapt to your real-time trends and spending habits.</p>
+</div>
 </div>
 
 <p className="text-xs text-gray-500 mt-6">
