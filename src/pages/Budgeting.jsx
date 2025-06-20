@@ -31,8 +31,7 @@ export default function Budgeting() {
       { category: 'Utilities', budget: 200, spent: 120 }
     ]}
   />
-  </div>
-  <div className="bg-gray-800 p-4 rounded-xl shadow">
+  <div className="bg-gray-800 p-4 rounded-xl shadow mt-6">
   <h2 className="text-white text-md font-semibold mb-2">💡 Smart Budget Insight</h2>
   <ul className="text-sm text-gray-400 list-disc list-inside space-y-1">
     <li>Your utilities budget may be overestimated. You’ve only used 60%.</li>
