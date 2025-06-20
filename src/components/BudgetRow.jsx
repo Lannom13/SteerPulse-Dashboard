@@ -1,47 +1,64 @@
 // BudgetRow.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function BudgetRow({ row, isVisible }) {
+export default function BudgetRow({ row, isVisible, showSummary }) {
   const [planned, setPlanned] = useState(row.planned);
   const [notes, setNotes] = useState(row.notes);
-
-  if (!isVisible) return null;
+  const [usageColor, setUsageColor] = useState('bg-green-500');
 
   const difference = planned - row.actual;
   const percent = ((row.actual / planned) * 100).toFixed(0);
   const isOver = row.actual > planned;
+  const percentOfTotal = row.percentOfTotal || 0;
+
+  useEffect(() => {
+    if (percent > 100) setUsageColor('bg-red-500');
+    else if (percent > 80) setUsageColor('bg-yellow-400');
+    else setUsageColor('bg-green-500');
+  }, [percent]);
+
+  if (!isVisible && !showSummary) return null;
 
   return (
     <tr className="border-t border-gray-700">
       <td className="px-4 py-2">{row.category}</td>
       <td className="px-4 py-2">
-        <input
-          type="number"
-          className="bg-gray-900 text-white px-2 py-1 rounded w-24"
-          value={planned}
-          onChange={(e) => setPlanned(Number(e.target.value))}
-        />
+        {showSummary ? `$${planned}` : (
+          <input
+            type="number"
+            className="bg-gray-900 text-white px-2 py-1 rounded w-24"
+            value={planned}
+            onChange={(e) => setPlanned(Number(e.target.value))}
+          />
+        )}
       </td>
       <td className="px-4 py-2">${row.actual}</td>
       <td className={`px-4 py-2 ${isOver ? 'text-red-400' : 'text-green-400'}`}>{isOver ? '-' : '+'}${Math.abs(difference)}</td>
       <td className={`px-4 py-2 ${percent > 100 ? 'text-red-400' : 'text-green-400'}`}>{percent}%</td>
       <td className="px-4 py-2">
-        <div className="w-full bg-gray-700 h-2 rounded">
+        <div className="w-full bg-gray-700 h-5 rounded relative">
           <div
-            className={`${percent > 100 ? 'bg-red-500' : 'bg-green-500'} h-2 rounded`}
+            className={`${usageColor} h-5 rounded`} 
             style={{ width: `${Math.min(percent, 100)}%` }}
           ></div>
+          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 text-xs text-white font-semibold">
+            {percent}%
+          </div>
         </div>
       </td>
       <td className={`px-4 py-2 ${isOver ? 'text-red-400' : 'text-green-500'}`}>{isOver ? 'Overspent' : 'On Track'}</td>
-      <td className="px-4 py-2">
-        <input
-          type="text"
-          className="bg-gray-900 text-white px-2 py-1 rounded w-full"
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-        />
-      </td>
+      {showSummary ? (
+        <td className="px-4 py-2 text-right text-sm text-gray-400">{percentOfTotal.toFixed(1)}%</td>
+      ) : (
+        <td className="px-4 py-2">
+          <input
+            type="text"
+            className="bg-gray-900 text-white px-2 py-1 rounded w-full"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+          />
+        </td>
+      )}
     </tr>
   );
 }
