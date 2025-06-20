@@ -171,8 +171,7 @@ export default function Goals() {
           )}
         </AnimatePresence>
       <div className="bg-gray-800 p-4 rounded-xl shadow border border-dashed border-sky-400 text-gray-300 text-sm mt-10">
-  <iframe
-    src="https://flo.uri.sh/story/123456/embed"
+  <iframe src="https://flo.uri.sh/story/1995916/embed"
     width="100%"
     height="400"
     frameBorder="0"
