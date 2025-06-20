@@ -8,14 +8,31 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function BudgetSpreadsheet() {
   const dummyData = [
-    { category: 'Income - Austin', planned: 3000, actual: 3000, notes: 'Salary', group: 'Income' },
-    { category: 'Income - Megan', planned: 2000, actual: 2000, notes: 'Part-time', group: 'Income' },
-    { category: 'Groceries', planned: 500, actual: 420, notes: 'Meal prep', group: 'Food' },
-    { category: 'Fast Food', planned: 150, actual: 180, notes: 'Dining out', group: 'Food' },
-    { category: 'Mortgage', planned: 1200, actual: 1200, notes: 'Home loan', group: 'Housing' },
-    { category: 'Utilities', planned: 250, actual: 230, notes: 'All utilities', group: 'Housing' },
-    { category: 'Entertainment', planned: 200, actual: 260, notes: 'Concert', group: 'Lifestyle' },
-    { category: 'Subscriptions', planned: 100, actual: 110, notes: 'Annual renewals', group: 'Lifestyle' }
+    { category: 'Income - Austin', planned: 3000, actual: 3000, group: 'Income' },
+    { category: 'Income - Megan', planned: 2000, actual: 2000, group: 'Income' },
+    { category: 'Groceries', planned: 500, actual: 420, group: 'Food' },
+    { category: 'Fast Food', planned: 150, actual: 180, group: 'Food' },
+    { category: 'Mortgage', planned: 1200, actual: 1200, group: 'Housing' },
+    { category: 'Utilities', planned: 250, actual: 230, group: 'Housing' },
+    { category: 'Entertainment', planned: 200, actual: 260, group: 'Lifestyle' },
+    { category: 'Subscriptions', planned: 100, actual: 110, group: 'Lifestyle' },
+    { category: 'Credit Card', planned: 500, actual: 480, group: 'Debt' },
+    { category: 'Student Loan', planned: 300, actual: 300, group: 'Debt' },
+    { category: 'Emergency Fund', planned: 200, actual: 200, group: 'Savings & Investments' },
+    { category: 'Brokerage', planned: 150, actual: 150, group: 'Savings & Investments' },
+    { category: 'Medical Bills', planned: 100, actual: 90, group: 'Healthcare' },
+    { category: 'Prescriptions', planned: 50, actual: 60, group: 'Healthcare' },
+    { category: 'Tithes', planned: 100, actual: 100, group: 'Donations' },
+    { category: 'Charity', planned: 50, actual: 50, group: 'Donations' },
+    { category: 'Daycare', planned: 400, actual: 400, group: 'Childcare' },
+    { category: 'Gas', planned: 150, actual: 140, group: 'Transportation' },
+    { category: 'Auto Maintenance', planned: 100, actual: 120, group: 'Transportation' },
+    { category: 'Clothing', planned: 200, actual: 190, group: 'Shopping' },
+    { category: 'Household Goods', planned: 100, actual: 100, group: 'Shopping' },
+    { category: 'Gifts', planned: 80, actual: 90, group: 'Miscellaneous' },
+    { category: 'Misc. Spending', planned: 60, actual: 70, group: 'Miscellaneous' },
+    { category: 'Health Insurance', planned: 300, actual: 300, group: 'Insurance' },
+    { category: 'Car Insurance', planned: 150, actual: 150, group: 'Insurance' }
   ];
 
   const [selectedMonth, setSelectedMonth] = useState('June 2025');
@@ -26,7 +43,7 @@ export default function BudgetSpreadsheet() {
   const [future, setFuture] = useState([]);
 
   const handleAddRow = () => {
-    const newRow = { category: 'New Category', planned: 0, actual: 0, notes: '', group: 'Custom' };
+    const newRow = { category: 'New Category', planned: 0, actual: 0, group: 'Custom' };
     setHistory([...history, rows]);
     setRows([...rows, newRow]);
     setFuture([]);
@@ -96,9 +113,6 @@ export default function BudgetSpreadsheet() {
                   <th className="px-4 py-2">Planned</th>
                   <th className="px-4 py-2">Actual</th>
                   <th className="px-4 py-2">Difference</th>
-                  <th className="px-6 py-2">Usage</th>
-                  <th className="px-6 py-2">Status</th>
-                  <th className="px-4 py-2">Notes</th>
                 </tr>
               </thead>
               <tbody>
