@@ -1,56 +1,44 @@
 // BudgetRow.jsx
-import { useState, useEffect } from 'react';
+import React from 'react';
 
 export default function BudgetRow({ row, isVisible, showSummary, onClick }) {
-  const [planned, setPlanned] = useState(row.planned);
-  const [notes, setNotes] = useState(row.notes);
-  const [usageColor, setUsageColor] = useState('bg-sky-500');
-
-  const difference = planned - row.actual;
-  const percent = ((row.actual / planned) * 100).toFixed(0);
-  const isOver = row.actual > planned;
-  const percentOfTotal = row.percentOfTotal || 0;
-
-  useEffect(() => {
-    if (percent > 100) setUsageColor('bg-sky-700');
-    else if (percent > 80) setUsageColor('bg-sky-600');
-    else setUsageColor('bg-sky-500');
-  }, [percent]);
-
+  const difference = row.planned - row.actual;
+  const percent = ((row.actual / row.planned) * 100).toFixed(0);
+  const isOver = row.actual > row.planned;
   const displayRow = isVisible || showSummary;
   const indentStyle = isVisible ? 'pl-6' : showSummary ? 'font-bold' : '';
 
+  const getStatus = () => {
+    if (percent > 110) return 'Needs Review';
+    if (percent > 100) return 'Overspent';
+    return 'On Track';
+  };
+
+  const getStatusColor = () => {
+    if (percent > 110) return 'text-yellow-400';
+    if (percent > 100) return 'text-red-400';
+    return 'text-green-400';
+  };
+
   return displayRow ? (
     <tr
-      className={`border-t border-gray-700 ${
-        showSummary ? 'bg-gray-900 text-white cursor-pointer hover:bg-gray-800' : ''
-      }`}
+      className={`border-t border-gray-700 ${showSummary ? 'bg-gray-900 text-white cursor-pointer hover:bg-gray-800' : ''}`}
       onClick={showSummary ? onClick : undefined}
     >
       <td className={`px-4 py-2 ${indentStyle}`}>{row.category}</td>
-      <td className="px-4 py-2">${planned}</td>
+      <td className="px-4 py-2">${row.planned}</td>
       <td className="px-4 py-2">${row.actual}</td>
-      <td className={`px-4 py-2 ${isOver ? 'text-red-400' : 'text-green-400'}`}>
-        {isOver ? '-' : '+'}${Math.abs(difference)}
-      </td>
+      <td className={`px-4 py-2 ${isOver ? 'text-red-400' : 'text-green-400'}`}>{isOver ? '-' : '+'}${Math.abs(difference)}</td>
+      <td className={`px-4 py-2 ${isOver ? 'text-red-400' : 'text-green-400'}`}>{percent}%</td>
+      <td className="px-4 py-2">📈 {/* Placeholder for trend indicator */}</td>
       <td className="px-4 py-2">
-        <div className="w-full bg-gray-700 h-5 rounded relative">
-          <div
-            className={`${usageColor} h-full rounded`}
-            style={{ width: `${Math.min(percent, 100)}%` }}
-          ></div>
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 text-xs text-white font-semibold">
-            {percent}%
-          </div>
-        </div>
+        <textarea
+          className="bg-transparent text-white border border-gray-600 rounded w-full px-2 py-1 text-sm"
+          defaultValue={row.notes || ''}
+          placeholder="Add notes..."
+        />
       </td>
-      <td className={`px-4 py-2 ${isOver ? 'text-red-400' : 'text-green-500'}`}>
-        {isOver ? 'Overspent' : 'On Track'}
-      </td>
-      <td className="px-4 py-2 text-right text-sm text-gray-400">
-        {percentOfTotal.toFixed(1)}%
-      </td>
-      <td className="px-4 py-2 text-gray-500 italic">{notes}</td>
+      <td className={`px-4 py-2 ${getStatusColor()}`}>{getStatus()}</td>
     </tr>
   ) : null;
 }
