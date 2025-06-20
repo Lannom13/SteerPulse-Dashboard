@@ -1,3 +1,4 @@
+// src/pages/BudgetHistory.jsx
 import AnimatedPage from '../components/AnimatedPage'
 
 export default function BudgetHistory() {
