@@ -1,8 +1,17 @@
 // Dashboard.jsx
 import { Link } from 'react-router-dom';
 import AnimatedPage from '../../components/AnimatedPage';
+import BudgetDashboardCharts from '../../components/BudgetDashboardCharts';
 
 export default function Dashboard() {
+  const dummyData = [
+    { category: "Groceries", planned: 500, actual: 420 },
+    { category: "Mortgage", planned: 1200, actual: 1200 },
+    { category: "Entertainment", planned: 200, actual: 260 },
+    { category: "Subscriptions", planned: 100, actual: 110 },
+    { category: "Utilities", planned: 250, actual: 230 },
+  ];
+
   return (
     <AnimatedPage>
       <div className="text-white">
@@ -11,15 +20,8 @@ export default function Dashboard() {
           <Link to="/budgeting" className="text-sm text-white border-b-2 border-sky-500 px-2 pb-1">Dashboard</Link>
           <Link to="/budgeting/spreadsheet" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 px-2 pb-1 transition-colors">Spreadsheet</Link>
         </nav>
-        {/* Charts Placeholder */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-gray-800 rounded-xl p-4 shadow h-64">Bar Chart (Planned vs Actual)</div>
-          <div className="bg-gray-800 rounded-xl p-4 shadow h-64">Pie Chart (Spending Breakdown)</div>
-          <div className="bg-gray-800 rounded-xl p-4 shadow h-64 md:col-span-2">Line Chart (Monthly Trend)</div>
-        </div>
-        <div className="bg-gray-800 p-6 rounded-xl shadow">
-          <p className="text-gray-400 text-sm">Welcome to your budget. Choose a tool above to get started.</p>
-        </div>
+
+        <BudgetDashboardCharts data={dummyData} />
       </div>
     </AnimatedPage>
   );
