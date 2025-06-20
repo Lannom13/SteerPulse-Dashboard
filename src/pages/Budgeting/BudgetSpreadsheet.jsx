@@ -9,6 +9,9 @@ export default function BudgetSpreadsheet() {
   const [selectedMonth, setSelectedMonth] = useState('June 2025');
   const [expandedGroup, setExpandedGroup] = useState(null);
   const [selectedCategoryForInsights, setSelectedCategoryForInsights] = useState(null);
+  const [rows, setRows] = useState([...dummyData]);
+  const [history, setHistory] = useState([]);
+  const [future, setFuture] = useState([]);
 
   const dummyData = [
     { category: 'Income - Austin', planned: 3000, actual: 3000, notes: 'Salary', group: 'Income' },
@@ -21,8 +24,39 @@ export default function BudgetSpreadsheet() {
     { category: 'Subscriptions', planned: 100, actual: 110, notes: 'Annual renewals', group: 'Lifestyle' }
   ];
 
-  const groups = [...new Set(dummyData.map(row => row.group))];
-  const totals = dummyData.reduce((acc, row) => {
+  const handleAddRow = () => {
+    const newRow = { category: 'New Category', planned: 0, actual: 0, notes: '', group: 'Custom' };
+    setHistory([...history, rows]);
+    setRows([...rows, newRow]);
+    setFuture([]);
+  };
+
+  const handleRemoveRow = () => {
+    setHistory([...history, rows]);
+    setRows(rows.slice(0, -1));
+    setFuture([]);
+  };
+
+  const handleUndo = () => {
+    if (history.length > 0) {
+      const prev = history[history.length - 1];
+      setFuture([rows, ...future]);
+      setRows(prev);
+      setHistory(history.slice(0, -1));
+    }
+  };
+
+  const handleRedo = () => {
+    if (future.length > 0) {
+      const next = future[0];
+      setHistory([...history, rows]);
+      setRows(next);
+      setFuture(future.slice(1));
+    }
+  };
+
+  const groups = [...new Set(rows.map(row => row.group))];
+  const totals = rows.reduce((acc, row) => {
     acc.planned += row.planned;
     acc.actual += row.actual;
     acc.difference += row.planned - row.actual;
@@ -36,11 +70,11 @@ export default function BudgetSpreadsheet() {
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold">📋 Budget Spreadsheet</h1>
           <div className="flex gap-2 text-sm">
-            <button className="bg-sky-700 hover:bg-sky-600 px-3 py-1 rounded shadow text-white">+ Add Category</button>
-            <button className="bg-red-700 hover:bg-red-600 px-3 py-1 rounded shadow text-white">🗑 Remove Category</button>
+            <button onClick={handleAddRow} className="bg-sky-700 hover:bg-sky-600 px-3 py-1 rounded shadow text-white">+ Add Category</button>
+            <button onClick={handleRemoveRow} className="bg-red-700 hover:bg-red-600 px-3 py-1 rounded shadow text-white">🗑 Remove Category</button>
             <button className="bg-green-700 hover:bg-green-600 px-3 py-1 rounded shadow text-white">💾 Save</button>
-            <button className="bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded shadow text-white">↩ Undo</button>
-            <button className="bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded shadow text-white">↪ Redo</button>
+            <button onClick={handleUndo} className="bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded shadow text-white">↩ Undo</button>
+            <button onClick={handleRedo} className="bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded shadow text-white">↪ Redo</button>
             <button className="bg-blue-700 hover:bg-blue-600 px-3 py-1 rounded shadow text-white">🔄 Update from Plaid</button>
             <button className="bg-yellow-700 hover:bg-yellow-600 px-3 py-1 rounded shadow text-white">⬇ Export</button>
             <button className="bg-indigo-700 hover:bg-indigo-600 px-2 py-1 rounded shadow text-white">❔ Help</button>
@@ -68,7 +102,7 @@ export default function BudgetSpreadsheet() {
               </thead>
               <tbody>
                 {groups.map(group => {
-                  const groupRows = dummyData.filter(row => row.group === group);
+                  const groupRows = rows.filter(row => row.group === group);
                   const groupPlanned = groupRows.reduce((sum, row) => sum + row.planned, 0);
                   const groupActual = groupRows.reduce((sum, row) => sum + row.actual, 0);
 
