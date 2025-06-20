@@ -14,7 +14,11 @@ export default function Overview() {
   return (
     <AnimatedPage>
       <div className="text-white">
-        <h1 className="text-3xl font-bold mb-6">🧭 SteerPulse Overview</h1>
+        <h1 className="text-3xl font-bold mb-6">📊 SteerPulse Overview</h1>
+
+        <div className="bg-gray-800 p-4 rounded-xl shadow text-sm text-gray-300 mb-6">
+          💡 You’ve saved <span className="text-green-400 font-semibold">$630</span> more than you’ve spent this month. Great job staying <span className="text-blue-400 font-semibold">12%</span> under budget. Consider reallocating savings to your investment goal.
+        </div>
 
         {/* Performance Scenario Row */}
         <div className="flex flex-wrap items-center gap-4 mb-6">
@@ -81,7 +85,7 @@ export default function Overview() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Row 3 – Debt & Investment Overview */}
           <div className="bg-gray-800 p-4 rounded-xl shadow">
             <BudgetRing percentage={72} label="Debt Payoff Progress" />
@@ -89,11 +93,6 @@ export default function Overview() {
           <div className="bg-gray-800 p-4 rounded-xl shadow">
             <InvestmentSnapshot />
           </div>
-        </div>
-
-        {/* Row 4 – Future Market Comparison & AI Investment Intelligence */}
-        <div className="bg-gray-800 p-4 rounded-xl shadow border border-dashed border-brand-500 text-gray-400 text-sm">
-          📊 Performance vs S&P / NASDAQ & AI Investment Insights — Coming Soon in Pro Tier
         </div>
       </div>
     </AnimatedPage>
