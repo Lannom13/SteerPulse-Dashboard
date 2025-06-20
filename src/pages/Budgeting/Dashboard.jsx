@@ -49,31 +49,35 @@ export default function Dashboard() {
         </div>
 
         {/* Charts from BudgetDashboardCharts */}
-        <div className="mb-6">
-          <BudgetDashboardCharts data={dummyData.filter(d => !d.category.includes('Income'))} />
-        </div>
+        <div className="mb-12">
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-12 xl:col-span-6">
+              <BudgetDashboardCharts data={dummyData.filter(d => !d.category.includes('Income'))} />
+            </div>
+            <div className="col-span-12 xl:col-span-6 flex flex-col gap-4 justify-center">
+              <div className="bg-gray-900 p-4 rounded-xl shadow">
+                <h2 className="text-xl font-semibold mb-2 text-white">🧠 Smart Suggestions</h2>
+                <ul className="text-sm text-gray-300 list-disc pl-5 space-y-1">
+                  <li>Consider reallocating $40 from Entertainment to Groceries based on your past 90-day trend.</li>
+                  <li>Your spending on Utilities is 8% lower than last month — nice job!</li>
+                  <li>You’re on track to exceed your savings goal if you maintain your current pace.</li>
+                </ul>
+              </div>
 
-        {/* AI Suggestions Placeholder */}
-        <div className="bg-gray-900 p-4 rounded-xl shadow mb-6">
-          <h2 className="text-xl font-semibold mb-2 text-white">🧠 Smart Suggestions</h2>
-          <ul className="text-sm text-gray-300 list-disc pl-5 space-y-1">
-            <li>Consider reallocating $40 from Entertainment to Groceries based on your past 90-day trend.</li>
-            <li>Your spending on Utilities is 8% lower than last month — nice job!</li>
-            <li>You’re on track to exceed your savings goal if you maintain your current pace.</li>
-          </ul>
-        </div>
-
-        {/* Category Highlights Placeholder */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-gray-800 p-4 rounded-xl shadow">
-            <h3 className="text-white font-semibold text-lg mb-2">📈 Top Spending Categories</h3>
-            <ul className="text-gray-300 text-sm list-disc pl-5 space-y-1">
-              <li>Housing: $1,430</li>
-              <li>Food: $600</li>
-              <li>Entertainment: $260</li>
-            </ul>
+              <div className="bg-gray-900 p-4 rounded-xl shadow">
+                <h3 className="text-white font-semibold text-lg mb-2">📈 Top Spending Categories</h3>
+                <ul className="text-gray-300 text-sm list-disc pl-5 space-y-1">
+                  <li>Housing: $1,430</li>
+                  <li>Food: $600</li>
+                  <li>Entertainment: $260</li>
+                </ul>
+              </div>
+            </div>
           </div>
+        </div>
 
+        {/* Category Breakdown */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-gray-800 p-4 rounded-xl shadow">
             <h3 className="text-white font-semibold text-lg mb-2">📊 Category Breakdown</h3>
             <p className="text-sm text-gray-300">Food: 75% Groceries / 25% Fast Food</p>
