@@ -17,9 +17,9 @@ export default function BudgetRow({ row, isVisible, showSummary }) {
     else setUsageColor('bg-green-500');
   }, [percent]);
 
-  if (!isVisible && !showSummary) return null;
+  const displayRow = isVisible || showSummary;
 
-  return (
+  return displayRow ? (
     <tr className="border-t border-gray-700">
       <td className="px-4 py-2">{row.category}</td>
       <td className="px-4 py-2">${planned}</td>
@@ -38,9 +38,7 @@ export default function BudgetRow({ row, isVisible, showSummary }) {
         </div>
       </td>
       <td className={`px-4 py-2 ${isOver ? 'text-red-400' : 'text-green-500'}`}>{isOver ? 'Overspent' : 'On Track'}</td>
-      {showSummary ? (
-        <td className="px-4 py-2 text-right text-sm text-gray-400">{percentOfTotal.toFixed(1)}%</td>
-      ) : (
+      {isVisible ? (
         <td className="px-4 py-2">
           <input
             type="text"
@@ -49,7 +47,9 @@ export default function BudgetRow({ row, isVisible, showSummary }) {
             onChange={(e) => setNotes(e.target.value)}
           />
         </td>
+      ) : (
+        <td className="px-4 py-2 text-right text-sm text-gray-400">{percentOfTotal.toFixed(1)}%</td>
       )}
     </tr>
-  );
+  ) : null;
 }
