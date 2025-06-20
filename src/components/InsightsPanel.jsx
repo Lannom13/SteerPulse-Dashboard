@@ -30,7 +30,7 @@ export default function InsightsPanel({ category, onClose }) {
           {merchants.map((m, idx) => (
             <li key={idx} className="bg-gray-800 rounded-lg px-4 py-3 flex justify-between items-center">
               <div>
-                <p className="text-white font-medium">{m.merchant}</p>
+                <p className="text-white font-medium cursor-pointer hover:underline">{m.merchant}</p>
                 <p className="text-sm text-gray-400">${m.amount} • {m.percent}%</p>
               </div>
               <div className="w-1/3 h-2 bg-gray-600 rounded-full overflow-hidden">
