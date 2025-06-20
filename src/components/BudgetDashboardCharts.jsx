@@ -1,10 +1,10 @@
 // BudgetDashboardCharts.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell,
   LineChart, Line, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const COLORS = ['#38bdf8', '#60a5fa', '#a78bfa', '#f472b6', '#facc15'];
 
@@ -23,6 +23,27 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
+const CountUp = ({ end }) => {
+  const [value, setValue] = useState(0);
+  useEffect(() => {
+    const duration = 600;
+    const step = Math.ceil(end / 30);
+    let current = 0;
+    const interval = setInterval(() => {
+      current += step;
+      if (current >= end) {
+        setValue(end);
+        clearInterval(interval);
+      } else {
+        setValue(current);
+      }
+    }, duration / 30);
+    return () => clearInterval(interval);
+  }, [end]);
+
+  return <>{value.toLocaleString()}</>;
+};
+
 export default function BudgetDashboardCharts({ data }) {
   const [viewMode, setViewMode] = useState('month');
   const [showPriorYear, setShowPriorYear] = useState(false);
@@ -36,7 +57,6 @@ export default function BudgetDashboardCharts({ data }) {
   const totalPlanned = summary.reduce((acc, row) => acc + row.Planned, 0);
   const totalActual = summary.reduce((acc, row) => acc + row.Actual, 0);
   const variance = totalPlanned - totalActual;
-  const usageRate = totalActual && totalPlanned ? Math.round((totalActual / totalPlanned) * 100) : 0;
   const highest = summary.reduce((max, row) => row.Actual > max.Actual ? row : max, summary[0]);
 
   const monthlyTrend = [
@@ -54,11 +74,15 @@ export default function BudgetDashboardCharts({ data }) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-gray-800 p-4 rounded-lg shadow text-center">
           <div className="text-gray-400 text-sm">Total Budgeted</div>
-          <div className="text-white text-lg font-bold">${totalPlanned.toLocaleString()}</div>
+          <div className="text-white text-lg font-bold">
+            $<CountUp end={totalPlanned} />
+          </div>
         </div>
         <div className="bg-gray-800 p-4 rounded-lg shadow text-center">
           <div className="text-gray-400 text-sm">Total Spent</div>
-          <div className="text-white text-lg font-bold">${totalActual.toLocaleString()}</div>
+          <div className="text-white text-lg font-bold">
+            $<CountUp end={totalActual} />
+          </div>
         </div>
         <div className="bg-gray-800 p-4 rounded-lg shadow text-center">
           <div className="text-gray-400 text-sm">{variance < 0 ? 'Overspent' : 'Remaining Budget'}</div>
