@@ -3,27 +3,30 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedPage from '../../components/AnimatedPage';
 import BudgetRow from '../../components/BudgetRow';
+import GroupToggle from '../../components/GroupToggle';
 
 export default function BudgetSpreadsheet() {
   const [selectedMonth, setSelectedMonth] = useState('June 2025');
-  const [showAll, setShowAll] = useState(false);
+  const [groupOpen, setGroupOpen] = useState({});
 
   const dummyData = [
-    { category: "Income - Austin", planned: 3000, actual: 3000, notes: "Salary", group: "Income" },
-    { category: "Income - Megan", planned: 2000, actual: 2000, notes: "Part-time", group: "Income" },
-    { category: "Income - Business", planned: 800, actual: 600, notes: "Side gig", group: "Income" },
-    { category: "Mortgage", planned: 1200, actual: 1200, notes: "Home loan", group: "Housing" },
-    { category: "Utilities", planned: 250, actual: 230, notes: "All utilities", group: "Housing" },
-    { category: "Electricity", planned: 75, actual: 65, notes: "TVA", group: "Utilities" },
-    { category: "Water", planned: 50, actual: 45, notes: "City of XYZ", group: "Utilities" },
-    { category: "Groceries", planned: 500, actual: 420, notes: "Meal prep", group: "Essentials" },
-    { category: "Entertainment", planned: 200, actual: 260, notes: "Concert", group: "Discretionary" },
-    { category: "Subscriptions", planned: 100, actual: 110, notes: "Annual renewals", group: "Discretionary" },
-    { category: "Transportation", planned: 300, actual: 280, notes: "Gas & maintenance", group: "Essentials" },
-    { category: "Health Care", planned: 150, actual: 170, notes: "Dental visit", group: "Essentials" },
-    { category: "Childcare", planned: 400, actual: 400, notes: "Daycare", group: "Essentials" },
-    { category: "Savings & Investing", planned: 500, actual: 450, notes: "Brokerage + HSA", group: "Savings" },
+    { category: 'Income - Austin', planned: 3000, actual: 3000, notes: 'Salary', group: 'Income' },
+    { category: 'Income - Megan', planned: 2000, actual: 2000, notes: 'Part-time', group: 'Income' },
+    { category: 'Income - Business', planned: 800, actual: 600, notes: 'Side gig', group: 'Income' },
+    { category: 'Mortgage', planned: 1200, actual: 1200, notes: 'Home loan', group: 'Housing' },
+    { category: 'Utilities', planned: 250, actual: 230, notes: 'All utilities', group: 'Housing' },
+    { category: 'Electricity', planned: 75, actual: 65, notes: 'TVA', group: 'Utilities' },
+    { category: 'Water', planned: 50, actual: 45, notes: 'City of XYZ', group: 'Utilities' },
+    { category: 'Groceries', planned: 500, actual: 420, notes: 'Meal prep', group: 'Essentials' },
+    { category: 'Entertainment', planned: 200, actual: 260, notes: 'Concert', group: 'Discretionary' },
+    { category: 'Subscriptions', planned: 100, actual: 110, notes: 'Annual renewals', group: 'Discretionary' },
+    { category: 'Transportation', planned: 300, actual: 280, notes: 'Gas & maintenance', group: 'Essentials' },
+    { category: 'Health Care', planned: 150, actual: 170, notes: 'Dental visit', group: 'Essentials' },
+    { category: 'Childcare', planned: 400, actual: 400, notes: 'Daycare', group: 'Essentials' },
+    { category: 'Savings & Investing', planned: 500, actual: 450, notes: 'Brokerage + HSA', group: 'Savings' },
   ];
+
+  const groups = [...new Set(dummyData.map(row => row.group))];
 
   const totals = dummyData.reduce(
     (acc, row) => {
@@ -51,32 +54,14 @@ export default function BudgetSpreadsheet() {
               <option>April 2025</option>
               <option>March 2025 (Archived)</option>
             </select>
-            <label className="text-sm text-gray-300 flex items-center gap-2">
-              <input type="checkbox" checked={showAll} onChange={() => setShowAll(!showAll)} />
-              Show All Categories
-            </label>
           </div>
         </div>
 
-        {/* Top Sub Nav */}
         <nav className="mb-8 flex justify-start gap-4 border-b border-gray-700 pb-3">
           <Link to="/budgeting" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 px-2 pb-1 transition-colors">Dashboard</Link>
           <Link to="/budgeting/spreadsheet" className="text-sm text-white border-b-2 border-sky-500 px-2 pb-1">Spreadsheet</Link>
         </nav>
 
-        {/* Toolbar */}
-        <div className="mb-8 flex flex-wrap items-center gap-3 text-sm">
-          <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-1 rounded-md shadow-sm transition">➕ Add</button>
-          <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-1 rounded-md shadow-sm transition">🗑 Remove</button>
-          <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-1 rounded-md shadow-sm transition">💾 Save</button>
-          <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-1 rounded-md shadow-sm transition">⬅️ Undo</button>
-          <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-1 rounded-md shadow-sm transition">➡️ Redo</button>
-          <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-1 rounded-md shadow-sm transition">🔄 Sync</button>
-          <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-1 rounded-md shadow-sm transition">⬇ Export</button>
-          <button className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-md shadow-sm transition">❓ Help</button>
-        </div>
-
-        {/* Budget Table */}
         <div className="bg-gray-800 p-4 rounded-xl shadow">
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm text-left text-gray-400">
@@ -93,8 +78,13 @@ export default function BudgetSpreadsheet() {
                 </tr>
               </thead>
               <tbody>
-                {dummyData.map((row, idx) => (
-                  <BudgetRow key={idx} row={row} isVisible={showAll || !['Electricity', 'Water'].includes(row.category)} />
+                {groups.map(group => (
+                  [
+                    <GroupToggle key={`toggle-${group}`} label={group} isOpen={!!groupOpen[group]} onToggle={() => setGroupOpen(prev => ({ ...prev, [group]: !prev[group] }))} />,
+                    ...dummyData.filter(row => row.group === group).map((row, idx) => (
+                      <BudgetRow key={`${group}-${idx}`} row={row} isVisible={!!groupOpen[group]} />
+                    ))
+                  ]
                 ))}
                 <tr className="border-t border-gray-600 bg-gray-900">
                   <td className="px-4 py-2 font-bold">Totals</td>
