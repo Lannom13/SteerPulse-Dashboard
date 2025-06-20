@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import AnimatedPage from '../../components/AnimatedPage';
 import BudgetRow from '../../components/BudgetRow';
 import InsightsPanel from '../../components/InsightsPanel';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function BudgetSpreadsheet() {
   const dummyData = [
@@ -63,6 +64,9 @@ export default function BudgetSpreadsheet() {
     return acc;
   }, { planned: 0, actual: 0, difference: 0 });
 
+  const COLORS = ['#0284c7', '#06b6d4', '#9333ea', '#facc15', '#f97316', '#ef4444', '#22c55e', '#3b82f6'];
+  const pieData = rows.map(row => ({ name: row.category, value: row.actual }));
+
   return (
     <AnimatedPage>
       <div className="text-white">
@@ -83,7 +87,7 @@ export default function BudgetSpreadsheet() {
           </div>
         </div>
 
-        <div className="bg-gray-800 p-4 rounded-xl shadow">
+        <div className="bg-gray-800 p-4 rounded-xl shadow mb-6">
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm text-left text-gray-400">
               <thead className="text-xs uppercase border-b border-gray-600">
@@ -124,6 +128,27 @@ export default function BudgetSpreadsheet() {
               </tbody>
             </table>
           </div>
+        </div>
+
+        <div className="bg-gray-800 p-4 rounded-xl shadow mb-6">
+          <h3 className="text-white text-lg font-semibold mb-2">Spending Distribution</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={pieData}
+                dataKey="value"
+                nameKey="name"
+                outerRadius={100}
+                fill="#8884d8"
+                label
+              >
+                {pieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
 
         {selectedCategoryForInsights && (
