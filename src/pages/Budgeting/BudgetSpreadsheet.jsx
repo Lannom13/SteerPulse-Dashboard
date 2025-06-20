@@ -1,28 +1,14 @@
-// src/pages/budgeting/BudgetSpreadsheet.jsx
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import AnimatedPage from '../../components/AnimatedPage';
-import BudgetRow from '../../components/BudgetRow';
-import InsightsPanel from '../../components/InsightsPanel';
+const dummyData = [
+  { category: 'Income - Austin', planned: 3000, actual: 3000, notes: 'Salary', group: 'Income' },
+  { category: 'Income - Megan', planned: 2000, actual: 2000, notes: 'Part-time', group: 'Income' },
+  { category: 'Groceries', planned: 500, actual: 420, notes: 'Meal prep', group: 'Food' },
+  { category: 'Fast Food', planned: 150, actual: 180, notes: 'Dining out', group: 'Food' },
+  { category: 'Mortgage', planned: 1200, actual: 1200, notes: 'Home loan', group: 'Housing' },
+  { category: 'Utilities', planned: 250, actual: 230, notes: 'All utilities', group: 'Housing' },
+  { category: 'Entertainment', planned: 200, actual: 260, notes: 'Concert', group: 'Lifestyle' },
+  { category: 'Subscriptions', planned: 100, actual: 110, notes: 'Annual renewals', group: 'Lifestyle' }
+];
 
-export default function BudgetSpreadsheet() {
-  const [selectedMonth, setSelectedMonth] = useState('June 2025');
-  const [expandedGroup, setExpandedGroup] = useState(null);
-  const [selectedCategoryForInsights, setSelectedCategoryForInsights] = useState(null);
-  const [rows, setRows] = useState([...dummyData]);
-  const [history, setHistory] = useState([]);
-  const [future, setFuture] = useState([]);
-
-  const dummyData = [
-    { category: 'Income - Austin', planned: 3000, actual: 3000, notes: 'Salary', group: 'Income' },
-    { category: 'Income - Megan', planned: 2000, actual: 2000, notes: 'Part-time', group: 'Income' },
-    { category: 'Groceries', planned: 500, actual: 420, notes: 'Meal prep', group: 'Food' },
-    { category: 'Fast Food', planned: 150, actual: 180, notes: 'Dining out', group: 'Food' },
-    { category: 'Mortgage', planned: 1200, actual: 1200, notes: 'Home loan', group: 'Housing' },
-    { category: 'Utilities', planned: 250, actual: 230, notes: 'All utilities', group: 'Housing' },
-    { category: 'Entertainment', planned: 200, actual: 260, notes: 'Concert', group: 'Lifestyle' },
-    { category: 'Subscriptions', planned: 100, actual: 110, notes: 'Annual renewals', group: 'Lifestyle' }
-  ];
 
   const handleAddRow = () => {
     const newRow = { category: 'New Category', planned: 0, actual: 0, notes: '', group: 'Custom' };
