@@ -92,8 +92,8 @@ export default function BudgetSpreadsheet() {
                   <th className="px-4 py-2">Planned</th>
                   <th className="px-4 py-2">Actual</th>
                   <th className="px-4 py-2">Difference</th>
-                  <th className="px-4 py-2">Usage</th>
-                  <th className="px-4 py-2">Status</th>
+                  <th className="px-6 py-2">Usage</th>
+                  <th className="px-6 py-2">Status</th>
                   <th className="px-4 py-2 text-center">% of Total Budget</th>
                   <th className="px-4 py-2">Notes</th>
                 </tr>
@@ -122,16 +122,6 @@ export default function BudgetSpreadsheet() {
                     )) : [])
                   ];
                 })}
-                <tr className="border-t border-gray-600 bg-gray-900">
-                  <td className="px-4 py-2 font-bold">Totals</td>
-                  <td className="px-4 py-2 font-bold">${totals.planned}</td>
-                  <td className="px-4 py-2 font-bold">${totals.actual}</td>
-                  <td className={`px-4 py-2 font-bold ${totals.difference >= 0 ? 'text-green-400' : 'text-red-400'}`}>${totals.difference}</td>
-                  <td></td>
-                  <td></td>
-                  <td className="px-4 py-2 font-bold text-sky-400 text-center">% of Total Budget: 100%</td>
-                  <td></td>
-                </tr>
               </tbody>
             </table>
           </div>
