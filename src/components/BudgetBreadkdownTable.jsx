@@ -1,3 +1,4 @@
+// src/components/BudgetBreakdownTable.jsx
 export default function BudgetBreakdownTable({ data }) {
   return (
     <div className="bg-gray-800 p-4 rounded-xl shadow mt-10">
