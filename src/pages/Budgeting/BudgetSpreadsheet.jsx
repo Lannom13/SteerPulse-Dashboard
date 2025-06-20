@@ -1,4 +1,5 @@
-import AnimatedPage from '../../components/AnimatedPage'
+import { Link } from 'react-router-dom';
+import AnimatedPage from '../../components/AnimatedPage';
 
 export default function BudgetSpreadsheet() {
   return (
@@ -9,13 +10,13 @@ export default function BudgetSpreadsheet() {
           Here you’ll eventually build out your full editable budget sheet.
         </p>
         <nav className="mb-6 flex flex-wrap gap-2 text-sm">
-          <a href="/budgeting" className="px-3 py-1 rounded-md bg-gray-800 text-gray-300 hover:bg-gray-700">Dashboard</a>
-          <a href="/budgeting/spreadsheet" className="px-3 py-1 rounded-md bg-sky-700 text-white">Spreadsheet</a>
+          <Link to="/budgeting" className="px-3 py-1 rounded-md bg-gray-800 text-gray-300 hover:bg-gray-700">Dashboard</Link>
+          <Link to="/budgeting/spreadsheet" className="px-3 py-1 rounded-md bg-sky-700 text-white">Spreadsheet</Link>
         </nav>
         <div className="bg-gray-800 p-6 rounded-xl shadow">
           <p className="text-gray-400 text-sm">🧪 Spreadsheet editing coming soon.</p>
         </div>
       </div>
     </AnimatedPage>
-  )
+  );
 }
