@@ -6,41 +6,24 @@ export default function BudgetSpreadsheet() {
   return (
     <AnimatedPage>
       <div className="text-white">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-3xl font-bold">📋 Budget Spreadsheet</h1>
-          <div className="text-sm text-gray-400">Notification Bar | AI Help</div>
-        </div>
-        <nav className="mb-6 flex flex-wrap gap-2 text-sm border-b border-gray-700 pb-2">
-          <Link to="/budgeting" className="px-3 py-1 rounded-md bg-gray-800 text-gray-300 hover:bg-gray-700">Dashboard</Link>
-          <Link to="/budgeting/spreadsheet" className="px-3 py-1 rounded-md bg-sky-700 text-white">Spreadsheet</Link>
+        <h1 className="text-3xl font-bold mb-6">📋 Budget Spreadsheet</h1>
+
+        {/* Top Sub Nav */}
+        <nav className="mb-8 flex justify-start gap-4 border-b border-gray-700 pb-3">
+          <Link to="/budgeting" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 px-2 pb-1 transition-colors">Dashboard</Link>
+          <Link to="/budgeting/spreadsheet" className="text-sm text-white border-b-2 border-sky-500 px-2 pb-1">Spreadsheet</Link>
         </nav>
 
-        {/* Toolbar Placeholder */}
-        <div className="mb-6 flex flex-wrap items-center gap-3 text-sm">
-          <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded-md flex items-center gap-1">
-            ➕ Add Category
-          </button>
-          <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded-md flex items-center gap-1">
-            🗑 Remove Category
-          </button>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md flex items-center gap-1">
-            💾 Save
-          </button>
-          <button className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-1 rounded-md flex items-center gap-1">
-            ⬅️ Undo
-          </button>
-          <button className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-1 rounded-md flex items-center gap-1">
-            ➡️ Redo
-          </button>
-          <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1 rounded-md flex items-center gap-1">
-            🔄 Update from Plaid
-          </button>
-          <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-1 rounded-md flex items-center gap-1">
-            🔽 Export
-          </button>
-          <button className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-md flex items-center gap-1">
-            ❓ Help
-          </button>
+        {/* Refined Toolbar */}
+        <div className="mb-8 flex flex-wrap items-center gap-3 text-sm">
+          <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-1 rounded-md shadow-sm transition">➕ Add</button>
+          <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-1 rounded-md shadow-sm transition">🗑 Remove</button>
+          <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-1 rounded-md shadow-sm transition">💾 Save</button>
+          <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-1 rounded-md shadow-sm transition">⬅️ Undo</button>
+          <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-1 rounded-md shadow-sm transition">➡️ Redo</button>
+          <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-1 rounded-md shadow-sm transition">🔄 Sync</button>
+          <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-1 rounded-md shadow-sm transition">⬇ Export</button>
+          <button className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-md shadow-sm transition">❓ Help</button>
         </div>
 
         <div className="bg-gray-800 p-6 rounded-xl shadow">
@@ -50,3 +33,4 @@ export default function BudgetSpreadsheet() {
     </AnimatedPage>
   );
 }
+
