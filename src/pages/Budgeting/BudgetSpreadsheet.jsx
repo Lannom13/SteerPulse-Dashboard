@@ -93,9 +93,9 @@ export default function BudgetSpreadsheet() {
                   <th className="px-4 py-2">Planned</th>
                   <th className="px-4 py-2">Actual</th>
                   <th className="px-4 py-2">Difference</th>
-                  <th className="px-4 py-2">Usage</th>
                   <th className="px-4 py-2">Status</th>
                   <th className="px-4 py-2 text-center">% of Total Budget</th>
+                  <th className="px-4 py-2">Usage</th>
                 </tr>
               </thead>
               <tbody>
