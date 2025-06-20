@@ -66,25 +66,23 @@ export default function BudgetSpreadsheet() {
   return (
     <AnimatedPage>
       <div className="text-white">
-        {/* Toolbar */}
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold">📋 Budget Spreadsheet</h1>
-          <div className="flex gap-2 text-sm">
-            <button onClick={handleAddRow} className="bg-sky-700 hover:bg-sky-600 px-3 py-1 rounded shadow text-white">+ Add Category</button>
-            <button onClick={handleRemoveRow} className="bg-red-700 hover:bg-red-600 px-3 py-1 rounded shadow text-white">🗑 Remove Category</button>
-            <button className="bg-green-700 hover:bg-green-600 px-3 py-1 rounded shadow text-white">💾 Save</button>
-            <button onClick={handleUndo} className="bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded shadow text-white">↩ Undo</button>
-            <button onClick={handleRedo} className="bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded shadow text-white">↪ Redo</button>
-            <button className="bg-blue-700 hover:bg-blue-600 px-3 py-1 rounded shadow text-white">🔄 Update from Plaid</button>
-            <button className="bg-yellow-700 hover:bg-yellow-600 px-3 py-1 rounded shadow text-white">⬇ Export</button>
-            <button className="bg-indigo-700 hover:bg-indigo-600 px-2 py-1 rounded shadow text-white">❔ Help</button>
+        {/* Minimalist Toolbar */}
+        <div className="flex justify-between mb-4 border-b border-gray-700 pb-2">
+          <nav className="flex gap-4">
+            <Link to="/budgeting" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 pb-1">Dashboard</Link>
+            <Link to="/budgeting/spreadsheet" className="text-sm text-white border-b-2 border-sky-500 pb-1">Spreadsheet</Link>
+          </nav>
+
+          <div className="flex gap-3 text-sm">
+            <button onClick={handleAddRow} className="text-white px-3 py-1 hover:bg-sky-700 rounded transition">Add</button>
+            <button onClick={handleRemoveRow} className="text-white px-3 py-1 hover:bg-sky-700 rounded transition">Remove</button>
+            <button onClick={handleUndo} className="text-white px-2 py-1 hover:bg-sky-700 rounded transition">Undo</button>
+            <button onClick={handleRedo} className="text-white px-2 py-1 hover:bg-sky-700 rounded transition">Redo</button>
+            <button className="text-white px-3 py-1 hover:bg-sky-700 rounded transition">Save</button>
+            <button className="text-white px-3 py-1 hover:bg-sky-700 rounded transition">Export</button>
+            <button className="text-white px-3 py-1 hover:bg-sky-700 rounded transition">Help</button>
           </div>
         </div>
-
-        <nav className="mb-6 flex justify-start gap-4 border-b border-gray-700 pb-3">
-          <Link to="/budgeting" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 px-2 pb-1 transition-colors">Dashboard</Link>
-          <Link to="/budgeting/spreadsheet" className="text-sm text-white border-b-2 border-sky-500 px-2 pb-1">Spreadsheet</Link>
-        </nav>
 
         <div className="bg-gray-800 p-4 rounded-xl shadow">
           <div className="overflow-x-auto">
