@@ -1,4 +1,4 @@
-// App.jsx
+// src/App.jsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import DashboardLayout from './layouts/DashboardLayout';
@@ -7,6 +7,8 @@ import DashboardLayout from './layouts/DashboardLayout';
 import Overview from './pages/Overview';
 import Dashboard from './pages/Budgeting/Dashboard';
 import BudgetSpreadsheet from './pages/Budgeting/BudgetSpreadsheet';
+import Investments from './pages/Investments';
+import Goals from './pages/Goals';
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
             <Route path="/overview" element={<Overview />} />
             <Route path="/budgeting" element={<Dashboard />} />
             <Route path="/budgeting/spreadsheet" element={<BudgetSpreadsheet />} />
+            <Route path="/investments" element={<Investments />} />
+            <Route path="/goals" element={<Goals />} />
           </Routes>
         </DashboardLayout>
       </div>
