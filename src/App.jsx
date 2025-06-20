@@ -6,6 +6,8 @@ import DashboardLayout from './layouts/DashboardLayout'
 import Overview from './pages/Overview'
 import Budgeting from './pages/Budgeting'
 import BudgetSpreadsheet from './pages/BudgetSpreadsheet'
+import BudgetInsights from './pages/BudgetInsights'
+import BudgetHistory from './pages/BudgetHistory'
 import Investments from './pages/Investments'
 import Debt from './pages/Debt'
 import Transactions from './pages/Transactions'
@@ -26,6 +28,8 @@ function App() {
             <Route path="/overview" element={<Overview />} />
             <Route path="/budgeting" element={<Budgeting />} />
             <Route path="/budgeting/spreadsheet" element={<BudgetSpreadsheet />} />
+            <Route path="/budgeting/insights" element={<BudgetInsights />} />
+            <Route path="/budgeting/history" element={<BudgetHistory />} />
             <Route path="/investments" element={<Investments />} />
             <Route path="/debt" element={<Debt />} />
             <Route path="/transactions" element={<Transactions />} />
