@@ -28,10 +28,7 @@ export default function BudgetRow({ row, isVisible, showSummary }) {
       <td className={`px-4 py-2 ${percent > 100 ? 'text-red-400' : 'text-green-400'}`}>{percent}%</td>
       <td className="px-4 py-2">
         <div className="w-full bg-gray-700 h-5 rounded relative">
-          <div
-            className={`${usageColor} h-5 rounded`} 
-            style={{ width: `${Math.min(percent, 100)}%` }}
-          ></div>
+          <div className={`${usageColor} h-5 rounded`} style={{ width: `${Math.min(percent, 100)}%` }}></div>
           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 text-xs text-white font-semibold">
             {percent}%
           </div>
@@ -39,9 +36,7 @@ export default function BudgetRow({ row, isVisible, showSummary }) {
       </td>
       <td className={`px-4 py-2 ${isOver ? 'text-red-400' : 'text-green-500'}`}>{isOver ? 'Overspent' : 'On Track'}</td>
       {showSummary ? (
-        <td className="px-4 py-2 text-right text-sm text-gray-400">
-          {percentOfTotal.toFixed(1)}%
-        </td>
+        <td className="px-4 py-2 text-right text-sm text-gray-400">{percentOfTotal.toFixed(1)}%</td>
       ) : (
         <td className="px-4 py-2">
           <input
