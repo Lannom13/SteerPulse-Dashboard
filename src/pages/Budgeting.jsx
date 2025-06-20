@@ -138,8 +138,7 @@ export default function Budgeting() {
     </div>
   </div>
 </div>
-</div>
-        <div id="add-category-modal-root"></div>
+<div id="add-category-modal-root"></div>
       </div>
     </AnimatedPage>
   )
