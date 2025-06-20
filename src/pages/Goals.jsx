@@ -59,7 +59,8 @@ export default function Goals() {
   return (
     <AnimatedPage>
       <div className="text-white">
-        <h1 className="text-3xl font-bold mb-6">🎯 Goals Tracker</h1>
+        <h1 className="text-3xl font-bold mb-2">🎯 Goals Tracker</h1>
+<p className="text-gray-400 mb-6 text-sm">Track progress toward your savings and debt-free milestones with clarity.</p>
 
         <button
           onClick={() => {
@@ -119,7 +120,7 @@ export default function Goals() {
                     placeholder="Goal Name"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full p-2 rounded-md bg-gray-800 text-white placeholder-gray-500"
+                    className="w-full p-2 rounded-md bg-gray-800 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
                     required
                   />
                   <input
