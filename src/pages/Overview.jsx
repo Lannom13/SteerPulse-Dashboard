@@ -7,6 +7,7 @@ import CashFlowChart from '../components/CashFlowChart'
 import InsightCard from '../components/InsightCard'
 import TransactionPreview from '../components/TransactionPreview'
 import InvestmentSnapshot from '../components/InvestmentSnapshot'
+import NetWorthChart from '../components/NetWorthChart'
 
 export default function Overview() {
   const [scenario, setScenario] = useState('MTD')
@@ -57,8 +58,8 @@ export default function Overview() {
         </div>
 
         <div className="mb-6">
-          {/* Cash Flow Line Chart */}
-          <CashFlowChart />
+          {/* Net Worth Line Chart */}
+          <NetWorthChart />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
