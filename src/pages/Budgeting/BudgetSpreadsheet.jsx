@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import AnimatedPage from '../../components/AnimatedPage';
 import BudgetRow from '../../components/BudgetRow';
 import InsightsPanel from '../../components/InsightsPanel';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function BudgetSpreadsheet() {
   const dummyData = [
@@ -81,9 +80,6 @@ export default function BudgetSpreadsheet() {
     return acc;
   }, { planned: 0, actual: 0, difference: 0 });
 
-  const COLORS = ['#0284c7', '#06b6d4', '#9333ea', '#facc15', '#f97316', '#ef4444', '#22c55e', '#3b82f6'];
-  const pieData = rows.map(row => ({ name: row.category, value: row.actual }));
-
   return (
     <AnimatedPage>
       <div className="text-white">
@@ -91,6 +87,7 @@ export default function BudgetSpreadsheet() {
           <nav className="flex gap-4">
             <Link to="/budgeting" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 pb-1">Dashboard</Link>
             <Link to="/budgeting/spreadsheet" className="text-sm text-white border-b-2 border-sky-500 pb-1">Spreadsheet</Link>
+            <Link to="/budgeting/charts" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 pb-1">Charts</Link>
           </nav>
 
           <div className="flex gap-3 text-sm">
@@ -114,9 +111,8 @@ export default function BudgetSpreadsheet() {
                   <th className="px-4 py-2">Actual</th>
                   <th className="px-4 py-2">Difference</th>
                   <th className="px-4 py-2">Usage %</th>
-                  <th className="px-4 py-2">Trend</th>
-                  <th className="px-4 py-2">Notes</th>
                   <th className="px-4 py-2">Status</th>
+                  <th className="px-4 py-2">Notes</th>
                 </tr>
               </thead>
               <tbody>
@@ -146,27 +142,6 @@ export default function BudgetSpreadsheet() {
               </tbody>
             </table>
           </div>
-        </div>
-
-        <div className="bg-gray-800 p-4 rounded-xl shadow mb-6">
-          <h3 className="text-white text-lg font-semibold mb-2">Spending Distribution</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={pieData}
-                dataKey="value"
-                nameKey="name"
-                outerRadius={100}
-                fill="#8884d8"
-                label
-              >
-                {pieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
         </div>
 
         {selectedCategoryForInsights && (
