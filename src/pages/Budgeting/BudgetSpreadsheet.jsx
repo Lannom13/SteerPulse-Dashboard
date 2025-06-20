@@ -1,4 +1,4 @@
-// src/pages/budgeting/budgetspreadsheet.jsx
+// src/pages/budgeting/BudgetSpreadsheet.jsx
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedPage from '../../components/AnimatedPage';
@@ -28,14 +28,11 @@ export default function BudgetSpreadsheet() {
 
   const groups = [...new Set(dummyData.map(row => row.group))];
 
-  const totals = dummyData.reduce(
-    (acc, row) => {
-      acc.planned += row.planned;
-      acc.actual += row.actual;
-      return acc;
-    },
-    { planned: 0, actual: 0 }
-  );
+  const totals = dummyData.reduce((acc, row) => {
+    acc.planned += row.planned;
+    acc.actual += row.actual;
+    return acc;
+  }, { planned: 0, actual: 0 });
 
   return (
     <AnimatedPage>
@@ -44,11 +41,7 @@ export default function BudgetSpreadsheet() {
           <h1 className="text-3xl font-bold">📋 Budget Spreadsheet</h1>
           <div className="text-sm flex gap-4 items-center">
             <label className="text-gray-400">View Month:</label>
-            <select
-              className="bg-gray-800 text-white px-3 py-1 rounded"
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
-            >
+            <select className="bg-gray-800 text-white px-3 py-1 rounded" value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}>
               <option>June 2025</option>
               <option>May 2025</option>
               <option>April 2025</option>
@@ -82,35 +75,12 @@ export default function BudgetSpreadsheet() {
                   const groupRows = dummyData.filter(row => row.group === group);
                   const groupPlanned = groupRows.reduce((sum, row) => sum + row.planned, 0);
                   const groupActual = groupRows.reduce((sum, row) => sum + row.actual, 0);
-                  const groupPercent = (groupActual / groupPlanned) * 100;
-
                   return [
-                    <GroupToggle key={`toggle-${group}`} label={group} isOpen={!!groupOpen[group]} onToggle={() => setGroupOpen(prev => ({ ...prev, [group]: !prev[group] }))} />,
-                    <BudgetRow
-                      key={`summary-${group}`}
-                      row={{
-                        category: group,
-                        planned: groupPlanned,
-                        actual: groupActual,
-                        notes: '',
-                        percentOfTotal: (groupActual / totals.actual) * 100
-                      }}
-                      showSummary={true}
-                      isVisible={false}
-                    />,
-                    ...(groupOpen[group] ?
-                      groupRows.map((row, idx) => (
-                        <BudgetRow
-                          key={`${group}-detail-${idx}`}
-                          row={{
-                            ...row,
-                            percentOfTotal: (row.actual / totals.actual) * 100
-                          }}
-                          showSummary={false}
-                          isVisible={true}
-                        />
-                      ))
-                      : [])
+                    <GroupToggle key={`toggle-${group}`} label={group} isOpen={!!groupOpen[group]} onToggle={() => setGroupOpen(prev => ({ ...prev, [group]: !prev[group] }))} />, 
+                    <BudgetRow key={`summary-${group}`} row={{ category: group, planned: groupPlanned, actual: groupActual, percentOfTotal: (groupActual / totals.actual) * 100 }} showSummary={true} isVisible={false} />,
+                    ...(groupOpen[group] ? groupRows.map((row, idx) => (
+                      <BudgetRow key={`${group}-detail-${idx}`} row={{ ...row, percentOfTotal: (row.actual / totals.actual) * 100 }} showSummary={false} isVisible={true} />
+                    )) : [])
                   ];
                 })}
                 <tr className="border-t border-gray-600 bg-gray-900">
@@ -125,8 +95,5 @@ export default function BudgetSpreadsheet() {
         </div>
       </div>
     </AnimatedPage>
-  );
-}
-age>
   );
 }
