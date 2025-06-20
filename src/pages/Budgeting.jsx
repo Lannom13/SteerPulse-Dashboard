@@ -22,34 +22,8 @@ export default function Budgeting() {
   <BudgetCategoryCard title="Dining Out" spent={290} budget={300} color="red" />
   <BudgetCategoryCard title="Utilities" spent={120} budget={200} color="green" />
 </div>
-    </div>
-  </div>
 
-  
-    </div>
-  </div>
-</div>
-            </div>
-          </div>
-
-          <div className="bg-gray-800 p-4 rounded-xl shadow">
-            <h2 className="text-white text-md font-semibold mb-1">Dining Out</h2>
-            <p className="text-sm text-gray-300 mb-1">$290 of $300</p>
-            <div className="w-full h-3 bg-gray-700 rounded-full overflow-hidden">
-              <div className="h-full bg-red-500 rounded-full" style={{ width: '97%' }}></div>
-            </div>
-          </div>
-
-          <div className="bg-gray-800 p-4 rounded-xl shadow">
-            <h2 className="text-white text-md font-semibold mb-1">Utilities</h2>
-            <p className="text-sm text-gray-300 mb-1">$120 of $200</p>
-            <div className="w-full h-3 bg-gray-700 rounded-full overflow-hidden">
-              <div className="h-full bg-green-500 rounded-full" style={{ width: '60%' }}></div>
-            </div>
-          </div>
-        </div>
-
-        <p className="text-xs text-gray-500 mt-6">
+<p className="text-xs text-gray-500 mt-6">
           More categories, AI-driven adjustments, and automated syncing with your bank are coming soon.
         </p>
       </div>
