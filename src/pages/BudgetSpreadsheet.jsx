@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 export default function BudgetSpreadsheet() {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ category: '', budget: '' });
+  const [rows, setRows] = useState([]);
 
   return (
     <AnimatedPage>
@@ -53,7 +54,7 @@ export default function BudgetSpreadsheet() {
                   className="space-y-4"
                   onSubmit={(e) => {
                     e.preventDefault()
-                    console.log('Saving new row:', formData)
+                    setRows([...rows, { ...formData, id: Date.now() }])
                     setFormData({ category: '', budget: '' })
                     setShowModal(false)
                   }}
@@ -96,10 +97,33 @@ export default function BudgetSpreadsheet() {
         </AnimatePresence>
 
         <div className="bg-gray-800 p-4 rounded-xl shadow">
-          <p className="text-sm text-gray-400">
-            Table and inputs coming soon. This layout will house your full category manager with editable fields and real-time syncing.
-          </p>
-        </div>
+  <h2 className="text-white text-md font-semibold mb-2">Budget Rows</h2>
+  <table className="w-full text-sm text-left text-gray-300">
+    <thead>
+      <tr className="border-b border-gray-700 text-gray-400">
+        <th className="py-1">Category</th>
+        <th className="py-1">Budget</th>
+        <th className="py-1 text-right">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((row) => (
+        <tr key={row.id} className="border-b border-gray-700">
+          <td>{row.category}</td>
+          <td>${parseFloat(row.budget).toLocaleString()}</td>
+          <td className="text-right">
+            <button
+              onClick={() => setRows(rows.filter((r) => r.id !== row.id))}
+              className="text-red-400 hover:text-red-300 text-xs"
+            >
+              🗑️ Delete
+            </button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
       </div>
     </AnimatedPage>
   )
