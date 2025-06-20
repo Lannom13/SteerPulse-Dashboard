@@ -82,7 +82,6 @@ export default function Budgeting() {
               </motion.div>
             )}
           </AnimatePresence>
-          </button>
         </div>
         <h1 className="text-3xl font-bold mb-2">🧾 Budgeting Dashboard</h1>
 <p className="text-gray-400 mb-6 text-sm">Get a real-time pulse on your spending across categories.</p>
