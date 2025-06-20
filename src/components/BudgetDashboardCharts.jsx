@@ -32,6 +32,12 @@ export default function BudgetDashboardCharts({ data }) {
     Actual: viewMode === 'month' ? row.actual : row.actual * 6,
   }));
 
+  const totalPlanned = summary.reduce((acc, row) => acc + row.Planned, 0);
+  const totalActual = summary.reduce((acc, row) => acc + row.Actual, 0);
+  const variance = totalPlanned - totalActual;
+  const usageRate = totalActual && totalPlanned ? Math.round((totalActual / totalPlanned) * 100) : 0;
+  const highest = summary.reduce((max, row) => row.Actual > max.Actual ? row : max, summary[0]);
+
   const monthlyTrend = [
     { month: 'Jan', planned: 1800, actual: 1750, prior: 1600 },
     { month: 'Feb', planned: 1900, actual: 1850, prior: 1700 },
@@ -43,6 +49,26 @@ export default function BudgetDashboardCharts({ data }) {
 
   return (
     <div>
+      {/* Insight Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="bg-gray-800 p-4 rounded-lg shadow text-center">
+          <div className="text-gray-400 text-sm">Total Budgeted</div>
+          <div className="text-white text-lg font-bold">${totalPlanned.toLocaleString()}</div>
+        </div>
+        <div className="bg-gray-800 p-4 rounded-lg shadow text-center">
+          <div className="text-gray-400 text-sm">Total Spent</div>
+          <div className="text-white text-lg font-bold">${totalActual.toLocaleString()}</div>
+        </div>
+        <div className="bg-gray-800 p-4 rounded-lg shadow text-center">
+          <div className="text-gray-400 text-sm">{variance < 0 ? 'Overspent' : 'Remaining Budget'}</div>
+          <div className={`text-lg font-bold ${variance < 0 ? 'text-red-400' : 'text-green-400'}`}>${Math.abs(variance).toLocaleString()}</div>
+        </div>
+        <div className="bg-gray-800 p-4 rounded-lg shadow text-center">
+          <div className="text-gray-400 text-sm">Top Spending Category</div>
+          <div className="text-white text-lg font-bold">{highest.name}</div>
+        </div>
+      </div>
+
       {/* Toggle View Buttons */}
       <div className="flex flex-wrap items-center gap-4 mb-6">
         <div className="flex gap-2">
