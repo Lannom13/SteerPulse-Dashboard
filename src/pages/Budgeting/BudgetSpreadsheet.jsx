@@ -3,12 +3,11 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedPage from '../../components/AnimatedPage';
 import BudgetRow from '../../components/BudgetRow';
-import GroupToggle from '../../components/GroupToggle';
 import InsightsPanel from '../../components/InsightsPanel';
 
 export default function BudgetSpreadsheet() {
   const [selectedMonth, setSelectedMonth] = useState('June 2025');
-  const [groupOpen, setGroupOpen] = useState({});
+  const [expandedGroup, setExpandedGroup] = useState(null);
   const [selectedCategoryForInsights, setSelectedCategoryForInsights] = useState(null);
 
   const dummyData = [
@@ -18,24 +17,17 @@ export default function BudgetSpreadsheet() {
     { category: 'Fast Food', planned: 150, actual: 180, notes: 'Dining out', group: 'Food' },
     { category: 'Mortgage', planned: 1200, actual: 1200, notes: 'Home loan', group: 'Housing' },
     { category: 'Utilities', planned: 250, actual: 230, notes: 'All utilities', group: 'Housing' },
-    { category: 'Electricity', planned: 75, actual: 65, notes: 'TVA', group: 'Utilities' },
-    { category: 'Water', planned: 50, actual: 45, notes: 'City of XYZ', group: 'Utilities' },
     { category: 'Entertainment', planned: 200, actual: 260, notes: 'Concert', group: 'Lifestyle' },
-    { category: 'Subscriptions', planned: 100, actual: 110, notes: 'Annual renewals', group: 'Lifestyle' },
-    { category: 'Transportation', planned: 300, actual: 280, notes: 'Gas & maintenance', group: 'Transportation' },
-    { category: 'Health Care', planned: 150, actual: 170, notes: 'Dental visit', group: 'Health' },
-    { category: 'Childcare', planned: 400, actual: 400, notes: 'Daycare', group: 'Family' },
-    { category: 'Savings & Investing', planned: 500, actual: 450, notes: 'Brokerage + HSA', group: 'Savings' },
-    { category: 'Student Loans', planned: 300, actual: 300, notes: 'Loan payment', group: 'Debt' },
-    { category: 'Credit Card', planned: 200, actual: 250, notes: 'Balance Transfer', group: 'Debt' },
+    { category: 'Subscriptions', planned: 100, actual: 110, notes: 'Annual renewals', group: 'Lifestyle' }
   ];
 
   const groups = [...new Set(dummyData.map(row => row.group))];
   const totals = dummyData.reduce((acc, row) => {
     acc.planned += row.planned;
     acc.actual += row.actual;
+    acc.difference += row.planned - row.actual;
     return acc;
-  }, { planned: 0, actual: 0 });
+  }, { planned: 0, actual: 0, difference: 0 });
 
   return (
     <AnimatedPage>
@@ -44,15 +36,10 @@ export default function BudgetSpreadsheet() {
           <h1 className="text-3xl font-bold">📋 Budget Spreadsheet</h1>
           <div className="text-sm flex gap-4 items-center">
             <label className="text-gray-400">View Month:</label>
-            <select
-              className="bg-gray-800 text-white px-3 py-1 rounded"
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
-            >
+            <select className="bg-gray-800 text-white px-3 py-1 rounded" value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}>
               <option>June 2025</option>
               <option>May 2025</option>
               <option>April 2025</option>
-              <option>March 2025 (Archived)</option>
             </select>
           </div>
         </div>
@@ -73,7 +60,7 @@ export default function BudgetSpreadsheet() {
                   <th className="px-4 py-2">Difference</th>
                   <th className="px-4 py-2" colSpan="2">Usage</th>
                   <th className="px-4 py-2">Status</th>
-                  <th className="px-4 py-2">% of Total</th>
+                  <th className="px-4 py-2">% of Total Budget</th>
                 </tr>
               </thead>
               <tbody>
@@ -81,19 +68,23 @@ export default function BudgetSpreadsheet() {
                   const groupRows = dummyData.filter(row => row.group === group);
                   const groupPlanned = groupRows.reduce((sum, row) => sum + row.planned, 0);
                   const groupActual = groupRows.reduce((sum, row) => sum + row.actual, 0);
+                  const groupDiff = groupPlanned - groupActual;
+
                   return [
-                    <GroupToggle key={`toggle-${group}`} label={group} isOpen={!!groupOpen[group]} onToggle={() => setGroupOpen(prev => ({ ...prev, [group]: !prev[group] }))} />,
-                    <BudgetRow key={`summary-${group}`} row={{
-                      category: group,
-                      planned: groupPlanned,
-                      actual: groupActual,
-                      percentOfTotal: (groupActual / totals.actual) * 100
-                    }} showSummary={true} isVisible={false} onClick={() => setSelectedCategoryForInsights(group)} />,
-                    ...(groupOpen[group] ? groupRows.map((row, idx) => (
-                      <BudgetRow key={`${group}-detail-${idx}`} row={{
-                        ...row,
-                        percentOfTotal: (row.actual / totals.actual) * 100
-                      }} showSummary={false} isVisible={true} />
+                    <BudgetRow
+                      key={`summary-${group}`}
+                      row={{ category: group, planned: groupPlanned, actual: groupActual, percentOfTotal: (groupActual / totals.actual) * 100 }}
+                      showSummary={true}
+                      isVisible={false}
+                      onClick={() => setExpandedGroup(group === expandedGroup ? null : group)}
+                    />,
+                    ...(expandedGroup === group ? groupRows.map((row, idx) => (
+                      <BudgetRow
+                        key={`${group}-detail-${idx}`}
+                        row={{ ...row, percentOfTotal: (row.actual / totals.actual) * 100 }}
+                        showSummary={false}
+                        isVisible={true}
+                      />
                     )) : [])
                   ];
                 })}
@@ -101,7 +92,8 @@ export default function BudgetSpreadsheet() {
                   <td className="px-4 py-2 font-bold">Totals</td>
                   <td className="px-4 py-2 font-bold">${totals.planned}</td>
                   <td className="px-4 py-2 font-bold">${totals.actual}</td>
-                  <td className="px-4 py-2 font-bold text-sky-400" colSpan={5}>Review status & notes above</td>
+                  <td className={`px-4 py-2 font-bold ${totals.difference >= 0 ? 'text-green-400' : 'text-red-400'}`}>${totals.difference}</td>
+                  <td className="px-4 py-2 font-bold text-sky-400" colSpan={4}>% of Total Budget: 100%</td>
                 </tr>
               </tbody>
             </table>
