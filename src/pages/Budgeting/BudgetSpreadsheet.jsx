@@ -1,20 +1,28 @@
 // BudgetSpreadsheet.jsx
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedPage from '../../components/AnimatedPage';
 import BudgetRow from '../../components/BudgetRow';
 
 export default function BudgetSpreadsheet() {
+  const [selectedMonth, setSelectedMonth] = useState('June 2025');
+  const [showAll, setShowAll] = useState(false);
+
   const dummyData = [
-    { category: "Income - Austin", planned: 3000, actual: 3000, notes: "Salary" },
-    { category: "Income - Megan", planned: 2000, actual: 2000, notes: "Part-time" },
-    { category: "Income - Business", planned: 800, actual: 600, notes: "Side gig" },
-    { category: "Mortgage", planned: 1200, actual: 1200, notes: "Home loan" },
-    { category: "Utilities", planned: 250, actual: 230, notes: "All utilities" },
-    { category: "Groceries", planned: 500, actual: 420, notes: "Meal prep" },
-    { category: "Entertainment", planned: 200, actual: 260, notes: "Concert" },
-    { category: "Subscriptions", planned: 100, actual: 110, notes: "Annual renewals" },
-    { category: "Transportation", planned: 300, actual: 280, notes: "Gas & maintenance" },
-    { category: "Health Care", planned: 150, actual: 170, notes: "Dental visit" },
+    { category: "Income - Austin", planned: 3000, actual: 3000, notes: "Salary", group: "Income" },
+    { category: "Income - Megan", planned: 2000, actual: 2000, notes: "Part-time", group: "Income" },
+    { category: "Income - Business", planned: 800, actual: 600, notes: "Side gig", group: "Income" },
+    { category: "Mortgage", planned: 1200, actual: 1200, notes: "Home loan", group: "Housing" },
+    { category: "Utilities", planned: 250, actual: 230, notes: "All utilities", group: "Housing" },
+    { category: "Electricity", planned: 75, actual: 65, notes: "TVA", group: "Utilities" },
+    { category: "Water", planned: 50, actual: 45, notes: "City of XYZ", group: "Utilities" },
+    { category: "Groceries", planned: 500, actual: 420, notes: "Meal prep", group: "Essentials" },
+    { category: "Entertainment", planned: 200, actual: 260, notes: "Concert", group: "Discretionary" },
+    { category: "Subscriptions", planned: 100, actual: 110, notes: "Annual renewals", group: "Discretionary" },
+    { category: "Transportation", planned: 300, actual: 280, notes: "Gas & maintenance", group: "Essentials" },
+    { category: "Health Care", planned: 150, actual: 170, notes: "Dental visit", group: "Essentials" },
+    { category: "Childcare", planned: 400, actual: 400, notes: "Daycare", group: "Essentials" },
+    { category: "Savings & Investing", planned: 500, actual: 450, notes: "Brokerage + HSA", group: "Savings" },
   ];
 
   const totals = dummyData.reduce(
@@ -29,7 +37,26 @@ export default function BudgetSpreadsheet() {
   return (
     <AnimatedPage>
       <div className="text-white">
-        <h1 className="text-3xl font-bold mb-6">📋 Budget Spreadsheet</h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold">📋 Budget Spreadsheet</h1>
+          <div className="text-sm flex gap-4 items-center">
+            <label className="text-gray-400">View Month:</label>
+            <select
+              className="bg-gray-800 text-white px-3 py-1 rounded"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+            >
+              <option>June 2025</option>
+              <option>May 2025</option>
+              <option>April 2025</option>
+              <option>March 2025 (Archived)</option>
+            </select>
+            <label className="text-sm text-gray-300 flex items-center gap-2">
+              <input type="checkbox" checked={showAll} onChange={() => setShowAll(!showAll)} />
+              Show All Categories
+            </label>
+          </div>
+        </div>
 
         {/* Top Sub Nav */}
         <nav className="mb-8 flex justify-start gap-4 border-b border-gray-700 pb-3">
@@ -49,7 +76,7 @@ export default function BudgetSpreadsheet() {
           <button className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-md shadow-sm transition">❓ Help</button>
         </div>
 
-        {/* Budget Table with Dummy Data */}
+        {/* Budget Table */}
         <div className="bg-gray-800 p-4 rounded-xl shadow">
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm text-left text-gray-400">
@@ -67,7 +94,7 @@ export default function BudgetSpreadsheet() {
               </thead>
               <tbody>
                 {dummyData.map((row, idx) => (
-                  <BudgetRow key={idx} row={row} />
+                  <BudgetRow key={idx} row={row} isVisible={showAll || !['Electricity', 'Water'].includes(row.category)} />
                 ))}
                 <tr className="border-t border-gray-600 bg-gray-900">
                   <td className="px-4 py-2 font-bold">Totals</td>
