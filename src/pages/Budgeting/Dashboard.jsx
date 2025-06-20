@@ -5,12 +5,18 @@ import BudgetDashboardCharts from '../../components/BudgetDashboardCharts';
 
 export default function Dashboard() {
   const dummyData = [
-    { category: "Groceries", planned: 500, actual: 420 },
-    { category: "Mortgage", planned: 1200, actual: 1200 },
-    { category: "Entertainment", planned: 200, actual: 260 },
-    { category: "Subscriptions", planned: 100, actual: 110 },
-    { category: "Utilities", planned: 250, actual: 230 },
+    { category: 'Income', planned: 5000, actual: 5000 },
+    { category: 'Groceries', planned: 500, actual: 420 },
+    { category: 'Fast Food', planned: 150, actual: 180 },
+    { category: 'Mortgage', planned: 1200, actual: 1200 },
+    { category: 'Utilities', planned: 250, actual: 230 },
+    { category: 'Entertainment', planned: 200, actual: 260 },
+    { category: 'Subscriptions', planned: 100, actual: 110 }
   ];
+
+  const incomeTotal = dummyData.filter(d => d.category.includes('Income')).reduce((sum, item) => sum + item.actual, 0);
+  const expensesTotal = dummyData.filter(d => !d.category.includes('Income')).reduce((sum, item) => sum + item.actual, 0);
+  const savings = incomeTotal - expensesTotal;
 
   return (
     <AnimatedPage>
@@ -26,25 +32,25 @@ export default function Dashboard() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-gray-800 p-4 rounded-xl shadow">
             <p className="text-sm text-gray-400">Income</p>
-            <p className="text-2xl font-bold text-green-400">$5,000</p>
+            <p className="text-2xl font-bold text-green-400">${incomeTotal.toLocaleString()}</p>
           </div>
           <div className="bg-gray-800 p-4 rounded-xl shadow">
             <p className="text-sm text-gray-400">Expenses</p>
-            <p className="text-2xl font-bold text-red-400">$4,200</p>
+            <p className="text-2xl font-bold text-red-400">${expensesTotal.toLocaleString()}</p>
           </div>
           <div className="bg-gray-800 p-4 rounded-xl shadow">
             <p className="text-sm text-gray-400">Savings</p>
-            <p className="text-2xl font-bold text-sky-400">$800</p>
+            <p className="text-2xl font-bold text-sky-400">${savings.toLocaleString()}</p>
           </div>
           <div className="bg-gray-800 p-4 rounded-xl shadow">
             <p className="text-sm text-gray-400">Net Difference</p>
-            <p className="text-2xl font-bold text-green-500">+$800</p>
+            <p className={`text-2xl font-bold ${savings >= 0 ? 'text-green-500' : 'text-red-500'}`}>{savings >= 0 ? '+' : ''}${savings.toLocaleString()}</p>
           </div>
         </div>
 
         {/* Charts from BudgetDashboardCharts */}
         <div className="mb-6">
-          <BudgetDashboardCharts data={dummyData} />
+          <BudgetDashboardCharts data={dummyData.filter(d => !d.category.includes('Income'))} />
         </div>
 
         {/* AI Suggestions Placeholder */}
