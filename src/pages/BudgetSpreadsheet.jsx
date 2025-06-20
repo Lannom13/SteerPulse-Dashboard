@@ -13,7 +13,20 @@ export default function BudgetSpreadsheet() {
     <AnimatedPage>
       <div className="text-white">
         <h1 className="text-3xl font-bold mb-4">📑 Budget Spreadsheet Editor</h1>
-<p className="text-sm text-gray-400 mb-2">Click the Budgeting tab in the sidebar or use the toolbar below to navigate.</p>
+<div className="mt-6 bg-gray-800 p-4 rounded-xl shadow flex justify-between items-center">
+  <div>
+    <h2 className="text-white text-lg font-semibold mb-1">💻 Open Your Budget Spreadsheet</h2>
+    <p className="text-sm text-gray-400">
+      Manage your categories, track actuals, and stay in control of your finances.
+    </p>
+  </div>
+  <a
+    href="/budgeting/spreadsheet"
+    className="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-transform transform hover:scale-105"
+  >
+    Open Spreadsheet →
+  </a>
+</div>
         <p className="text-gray-400 mb-6 text-sm">
           Manage your categories with full editing control. Add, remove, or update budget lines here.
         </p>
