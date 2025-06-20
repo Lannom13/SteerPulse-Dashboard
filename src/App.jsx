@@ -1,11 +1,11 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import Sidebar from './components/Sidebar'
-import DashboardLayout from './layouts/DashboardLayout'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Sidebar from './components/Sidebar';
+import DashboardLayout from './layouts/DashboardLayout';
 
 // Pages
-import Overview from './pages/Overview'
-import Dashboard from './pages/Budgeting/Dashboard'
-import BudgetSpreadsheet from './pages/Budgeting/BudgetSpreadsheet'
+import Overview from './pages/Overview';
+import Dashboard from './pages/Budgeting/Dashboard';
+import BudgetSpreadsheet from './pages/Budgeting/BudgetSpreadsheet';
 
 function App() {
   return (
@@ -22,7 +22,7 @@ function App() {
         </DashboardLayout>
       </div>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;
