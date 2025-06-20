@@ -30,7 +30,7 @@ export default function BudgetRow({ row, isVisible, showSummary, onClick }) {
       <td className="px-4 py-2">${row.actual}</td>
       <td className={`px-4 py-2 ${isOver ? 'text-red-400' : 'text-green-400'}`}>{isOver ? '-' : '+'}${Math.abs(difference)}</td>
       <td className={`px-4 py-2 ${isOver ? 'text-red-400' : 'text-green-400'}`}>{percent}%</td>
-      <td className="px-4 py-2">📈 {/* Placeholder for trend indicator */}</td>
+      <td className={`px-4 py-2 ${getStatusColor()}`}>{getStatus()}</td>
       <td className="px-4 py-2">
         <textarea
           className="bg-transparent text-white border border-gray-600 rounded w-full px-2 py-1 text-sm"
@@ -38,7 +38,6 @@ export default function BudgetRow({ row, isVisible, showSummary, onClick }) {
           placeholder="Add notes..."
         />
       </td>
-      <td className={`px-4 py-2 ${getStatusColor()}`}>{getStatus()}</td>
     </tr>
   ) : null;
 }
