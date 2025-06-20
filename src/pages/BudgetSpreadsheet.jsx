@@ -109,8 +109,22 @@ export default function BudgetSpreadsheet() {
     <tbody>
       {rows.map((row) => (
         <tr key={row.id} className="border-b border-gray-700">
-          <td>{row.category}</td>
-          <td>${parseFloat(row.budget).toLocaleString()}</td>
+          <td>
+  <input
+    type="text"
+    value={row.category}
+    onChange={(e) => setRows(rows.map(r => r.id === row.id ? { ...r, category: e.target.value } : r))}
+    className="bg-transparent text-white border-none focus:outline-none w-full text-sm"
+  />
+</td>
+          <td>
+  <input
+    type="number"
+    value={row.budget}
+    onChange={(e) => setRows(rows.map(r => r.id === row.id ? { ...r, budget: e.target.value } : r))}
+    className="bg-transparent text-white border-none focus:outline-none w-full text-sm"
+  />
+</td>
           <td className="text-right">
             <button
               onClick={() => setRows(rows.filter((r) => r.id !== row.id))}
