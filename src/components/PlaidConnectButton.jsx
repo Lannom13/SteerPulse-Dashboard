@@ -7,7 +7,7 @@ function PlaidConnectButton({ userId }) {
   useEffect(() => {
     const createLinkToken = async () => {
       const res = await fetch(
-        "https://<your-project-id>.functions.supabase.co/create_link_token", // 👈 REPLACE THIS
+        "https://lpczocldblkfrhnlpqgf.functions.supabase.co/create_link_token",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -22,15 +22,17 @@ function PlaidConnectButton({ userId }) {
   }, [userId]);
 
   const handleSuccess = async (public_token, metadata) => {
-    await fetch(
-      "https://<your-project-id>.functions.supabase.co/exchange_public_token", // 👈 REPLACE THIS TOO
+    const res = await fetch(
+      "https://lpczocldblkfrhnlpqgf.functions.supabase.co/exchange_public_token",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ public_token }),
       }
     );
-    alert("Bank linked successfully!");
+    const data = await res.json();
+    console.log("Exchange result:", data);
+    alert("✅ Bank linked successfully!");
   };
 
   if (!linkToken) return <p>Loading Plaid link...</p>;
