@@ -8,7 +8,10 @@ import Overview from './pages/Overview';
 import Dashboard from './pages/Budgeting/Dashboard';
 import BudgetSpreadsheet from './pages/Budgeting/BudgetSpreadsheet';
 import Charts from './pages/Budgeting/Charts';
-import Investments from './pages/Investments';
+import InvestmentsOverview from './pages/Investments/Overview';
+import Brokerage from './pages/Investments/Brokerage';
+import Retirement from './pages/Investments/Retirement';
+import Education from './pages/Investments/Education';
 import Goals from './pages/Goals';
 
 function App() {
@@ -20,10 +23,20 @@ function App() {
           <Routes>
             <Route path="/" element={<Navigate to="/overview" />} />
             <Route path="/overview" element={<Overview />} />
+
+            {/* Budgeting */}
             <Route path="/budgeting" element={<Dashboard />} />
             <Route path="/budgeting/spreadsheet" element={<BudgetSpreadsheet />} />
             <Route path="/budgeting/charts" element={<Charts />} />
-            <Route path="/investments" element={<Investments />} />
+
+            {/* Investments */}
+            <Route path="/investments" element={<Navigate to="/investments/overview" />} />
+            <Route path="/investments/overview" element={<InvestmentsOverview />} />
+            <Route path="/investments/brokerage" element={<Brokerage />} />
+            <Route path="/investments/retirement" element={<Retirement />} />
+            <Route path="/investments/education" element={<Education />} />
+
+            {/* Other */}
             <Route path="/goals" element={<Goals />} />
           </Routes>
         </DashboardLayout>
