@@ -6,33 +6,57 @@ function PlaidConnectButton({ userId }) {
 
   useEffect(() => {
     const createLinkToken = async () => {
-      const res = await fetch(
-        "https://lpczocldblkfrhnlpqgf.functions.supabase.co/create_link_token",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId }),
+      try {
+        const res = await fetch(
+          "https://lpczocldblkfrhnlpqgf.functions.supabase.co/create_link_token",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId }),
+          }
+        );
+
+        if (!res.ok) {
+          const errText = await res.text();
+          console.error("❌ Failed to create link token:", errText);
+          return;
         }
-      );
-      const data = await res.json();
-      setLinkToken(data.link_token);
+
+        const data = await res.json();
+        console.log("✅ Link token response:", data);
+        setLinkToken(data.link_token);
+      } catch (err) {
+        console.error("🚨 Error creating link token:", err);
+      }
     };
 
     createLinkToken();
   }, [userId]);
 
   const handleSuccess = async (public_token, metadata) => {
-    const res = await fetch(
-      "https://lpczocldblkfrhnlpqgf.functions.supabase.co/exchange_public_token",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ public_token }),
+    try {
+      const res = await fetch(
+        "https://lpczocldblkfrhnlpqgf.functions.supabase.co/exchange_public_token",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ public_token }),
+        }
+      );
+
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error("❌ Failed to exchange public token:", errText);
+        alert("Something went wrong exchanging tokens.");
+        return;
       }
-    );
-    const data = await res.json();
-    console.log("Exchange result:", data);
-    alert("✅ Bank linked successfully!");
+
+      const data = await res.json();
+      console.log("✅ Exchange token response:", data);
+      alert("✅ Bank linked successfully!");
+    } catch (err) {
+      console.error("🚨 Error exchanging public token:", err);
+    }
   };
 
   if (!linkToken) return <p>Loading Plaid link...</p>;
