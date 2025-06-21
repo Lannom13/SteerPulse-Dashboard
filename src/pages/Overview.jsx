@@ -8,6 +8,7 @@ import InsightCard from '../components/InsightCard'
 import TransactionPreview from '../components/TransactionPreview'
 import InvestmentSnapshot from '../components/InvestmentSnapshot'
 import NetWorthChart from '../components/NetWorthChart'
+import PlaidConnectButton from '../components/PlaidConnectButton' // ✅ NEW
 
 export default function Overview() {
   const [scenario, setScenario] = useState('MTD')
@@ -15,7 +16,12 @@ export default function Overview() {
   return (
     <AnimatedPage>
       <div className="text-white">
-        <h1 className="text-3xl font-bold mb-6">📊 SteerPulse Overview</h1>
+        <h1 className="text-3xl font-bold mb-4">📊 SteerPulse Overview</h1>
+
+        {/* ✅ Plaid Connect Button */}
+        <div className="mb-6">
+          <PlaidConnectButton userId="demo-user-001" />
+        </div>
 
         <div className="bg-gray-800 p-4 rounded-xl shadow text-sm text-gray-300 mb-6">
           💡 You’ve saved <span className="text-green-400 font-semibold">$630</span> more than you’ve spent this month. Great job staying <span className="text-blue-400 font-semibold">12%</span> under budget. Consider reallocating savings to your investment goal.
