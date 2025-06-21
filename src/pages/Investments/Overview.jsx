@@ -1,11 +1,20 @@
-// src/pages/Investments.jsx
-import AnimatedPage from '../components/AnimatedPage'
+// src/pages/Investments/Overview.jsx
+import AnimatedPage from '../../components/AnimatedPage';
+import { Link } from 'react-router-dom';
 
-export default function Investments() {
+export default function InvestmentsOverview() {
   return (
     <AnimatedPage>
       <div className="text-white">
-        <h1 className="text-3xl font-bold mb-6">📈 Investment Dashboard</h1>
+        <h1 className="text-3xl font-bold mb-6">📈 Investments Overview</h1>
+
+        {/* Tab Navigation */}
+        <nav className="mb-6 flex justify-start gap-4 border-b border-gray-700 pb-3">
+          <Link to="/investments/overview" className="text-sm text-white border-b-2 border-sky-500 px-2 pb-1">Overview</Link>
+          <Link to="/investments/brokerage" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 px-2 pb-1 transition-colors">Brokerage</Link>
+          <Link to="/investments/retirement" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 px-2 pb-1 transition-colors">Retirement</Link>
+          <Link to="/investments/education" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 px-2 pb-1 transition-colors">Education</Link>
+        </nav>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-gray-800 p-4 rounded-xl shadow">
@@ -50,5 +59,5 @@ export default function Investments() {
         </div>
       </div>
     </AnimatedPage>
-  )
+  );
 }
