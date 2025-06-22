@@ -1,29 +1,19 @@
 import { useState, useEffect } from 'react';
 
 const GROUPS = [
-  'Housing', 'Transportation', 'Insurance', 'Childcare', 'Gas', 'Internet',
-  'Donations', 'Food', 'Entertainment', 'Utilities', 'Miscellaneous',
-  'Debt', 'Savings', 'Investments'
+  'Income', 'Food', 'Housing', 'Lifestyle', 'Transportation',
+  'Insurance', 'Childcare', 'Donations', 'Utilities',
+  'Miscellaneous', 'Debt', 'Savings', 'Investments'
 ];
 
-const SUBCATEGORY_MAP = {
-  Food: ['Groceries', 'Fast Food', 'Restaurants'],
-  Transportation: ['Gas', 'Car Payment', 'Bus Fare'],
-  Entertainment: ['Movies', 'Streaming', 'Concerts'],
-  Housing: ['Rent', 'Utilities', 'Internet'],
-  Debt: ['Credit Card', 'Student Loan', 'Car Loan']
-};
-
-export default function AddRowModal({ onClose, onAdd }) {
-  const [group, setGroup] = useState('');
+export default function AddRowModal({ onClose, onAdd, defaultGroup = '' }) {
+  const [group, setGroup] = useState(defaultGroup);
   const [category, setCategory] = useState('');
   const [planned, setPlanned] = useState('');
 
-  const suggestions = SUBCATEGORY_MAP[group] || [];
-
   const handleAdd = () => {
     if (!group || !category || planned === '') {
-      alert("Please complete all fields.");
+      alert("Please fill out all fields.");
       return;
     }
 
@@ -33,25 +23,17 @@ export default function AddRowModal({ onClose, onAdd }) {
       return;
     }
 
-    const newRow = {
-      group,
-      category,
-      planned: numericPlanned
-    };
-
-    console.log("📦 Submitting row from modal:", newRow);
-    onAdd(newRow);
+    onAdd({ group, category, planned: numericPlanned });
     onClose();
   };
 
-  // Press Escape to close modal
   useEffect(() => {
-    const handleKeyDown = (e) => {
+    const listener = (e) => {
       if (e.key === 'Escape') onClose();
       if (e.key === 'Enter') handleAdd();
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', listener);
+    return () => window.removeEventListener('keydown', listener);
   }, [group, category, planned]);
 
   return (
@@ -63,10 +45,7 @@ export default function AddRowModal({ onClose, onAdd }) {
         <select
           className="w-full mb-3 px-3 py-2 rounded bg-gray-800 text-white"
           value={group}
-          onChange={(e) => {
-            setGroup(e.target.value);
-            setCategory(''); // Reset category if group changes
-          }}
+          onChange={(e) => setGroup(e.target.value)}
         >
           <option value="">Select Group</option>
           {GROUPS.map((g) => (
@@ -75,17 +54,13 @@ export default function AddRowModal({ onClose, onAdd }) {
         </select>
 
         <label className="block text-sm text-gray-300 mb-1">Category</label>
-        <select
+        <input
+          type="text"
           className="w-full mb-3 px-3 py-2 rounded bg-gray-800 text-white"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          disabled={!group}
-        >
-          <option value="">Select Category</option>
-          {suggestions.map((sub, idx) => (
-            <option key={idx} value={sub}>{sub}</option>
-          ))}
-        </select>
+          placeholder="e.g. Freelance"
+        />
 
         <label className="block text-sm text-gray-300 mb-1">Planned Amount</label>
         <input
