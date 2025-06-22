@@ -1,4 +1,3 @@
-// src/components/AddRowModal.jsx
 import { useState } from 'react';
 
 const GROUPS = [
@@ -23,8 +22,11 @@ export default function AddRowModal({ onClose, onAdd }) {
   const suggestions = SUBCATEGORY_MAP[group] || [];
 
   const handleAdd = () => {
-    if (!group || !category) return;
-    onAdd({ group, category, planned: Number(planned) || 0 });
+    if (!group || !category || !planned) {
+      alert("Please fill in all fields.");
+      return;
+    }
+    onAdd({ group, category, planned: Number(planned) });
     onClose();
   };
 
@@ -39,7 +41,7 @@ export default function AddRowModal({ onClose, onAdd }) {
           value={group}
           onChange={(e) => {
             setGroup(e.target.value);
-            setCategory(''); // reset category on group change
+            setCategory('');
           }}
         >
           <option value="">Select Group</option>
