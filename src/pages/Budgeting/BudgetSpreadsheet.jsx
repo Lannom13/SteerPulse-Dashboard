@@ -1,4 +1,3 @@
-// src/pages/Budgeting/BudgetSpreadsheet.jsx
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedPage from '../../components/AnimatedPage';
@@ -14,10 +13,9 @@ export default function BudgetSpreadsheet() {
     { category: 'Mortgage', planned: 1200, actual: 1200, group: 'Housing' },
     { category: 'Utilities', planned: 250, actual: 230, group: 'Housing' },
     { category: 'Entertainment', planned: 200, actual: 260, group: 'Lifestyle' },
-    { category: 'Subscriptions', planned: 100, actual: 110, group: 'Lifestyle' },
+    { category: 'Subscriptions', planned: 100, actual: 110, group: 'Lifestyle' }
   ];
 
-  const [selectedMonth, setSelectedMonth] = useState('June 2025');
   const [expandedGroup, setExpandedGroup] = useState(null);
   const [selectedCategoryForInsights, setSelectedCategoryForInsights] = useState(null);
   const [rows, setRows] = useState([...dummyData]);
@@ -55,22 +53,11 @@ export default function BudgetSpreadsheet() {
     }
   };
 
-  const handleSummaryClick = (group) => {
-    setExpandedGroup(group === expandedGroup ? null : group);
-  };
-
-  const handleRowClick = (row) => {
-    if (!row.category.startsWith('Income')) {
-      setSelectedCategoryForInsights(row.category);
-    }
-  };
-
   const groups = [...new Set(rows.map(row => row.group))];
 
   return (
     <AnimatedPage>
       <div className="text-white">
-        {/* Navigation Tabs */}
         <div className="flex justify-between mb-4 border-b border-gray-700 pb-2">
           <nav className="flex gap-4">
             <Link to="/budgeting" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 pb-1">Dashboard</Link>
@@ -78,19 +65,14 @@ export default function BudgetSpreadsheet() {
             <Link to="/budgeting/charts" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 pb-1">Charts</Link>
           </nav>
 
-          {/* Toolbar */}
           <div className="flex gap-3 text-sm">
             <button onClick={handleAddRow} className="text-white px-3 py-1 hover:bg-sky-700 rounded transition">Add</button>
             <button onClick={handleRemoveRow} className="text-white px-3 py-1 hover:bg-sky-700 rounded transition">Remove</button>
             <button onClick={handleUndo} className="text-white px-2 py-1 hover:bg-sky-700 rounded transition">Undo</button>
             <button onClick={handleRedo} className="text-white px-2 py-1 hover:bg-sky-700 rounded transition">Redo</button>
-            <button className="text-white px-3 py-1 hover:bg-sky-700 rounded transition">Save</button>
-            <button className="text-white px-3 py-1 hover:bg-sky-700 rounded transition">Export</button>
-            <button className="text-white px-3 py-1 hover:bg-sky-700 rounded transition">Help</button>
           </div>
         </div>
 
-        {/* Table View */}
         <div className="bg-gray-800 p-4 rounded-xl shadow mb-6">
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm text-left text-gray-400">
@@ -117,17 +99,19 @@ export default function BudgetSpreadsheet() {
                       row={{ category: group, planned: groupPlanned, actual: groupActual }}
                       showSummary={true}
                       isVisible={false}
-                      onClick={() => handleSummaryClick(group)}
+                      onClick={() => setExpandedGroup(group === expandedGroup ? null : group)}
                     />,
-                    ...(expandedGroup === group ? groupRows.map((row, idx) => (
-                      <BudgetRow
-                        key={`${group}-detail-${idx}`}
-                        row={row}
-                        showSummary={false}
-                        isVisible={true}
-                        onClick={() => handleRowClick(row)}
-                      />
-                    )) : [])
+                    ...(expandedGroup === group
+                      ? groupRows.map((row, idx) => (
+                          <BudgetRow
+                            key={`${group}-detail-${idx}`}
+                            row={row}
+                            showSummary={false}
+                            isVisible={true}
+                            onClickCategory={(category) => setSelectedCategoryForInsights(category)}
+                          />
+                        ))
+                      : [])
                   ];
                 })}
               </tbody>
