@@ -4,6 +4,7 @@ import AnimatedPage from '../../components/AnimatedPage';
 import BudgetRow from '../../components/BudgetRow';
 import InsightsPanel from '../../components/InsightsPanel';
 import { supabase } from '../../utils/supabaseClient';
+import { v4 as uuidv4 } from 'uuid';
 
 const monthOptions = [
   '2025-01', '2025-02', '2025-03', '2025-04', '2025-05', '2025-06',
@@ -18,12 +19,15 @@ export default function BudgetSpreadsheet() {
   const [history, setHistory] = useState([]);
   const [future, setFuture] = useState([]);
 
+  const userId = 'demo-user'; // Replace with auth context once added
+
   useEffect(() => {
     const fetchBudget = async () => {
       const { data, error } = await supabase
         .from('budgets')
         .select('*')
-        .eq('month', selectedMonth);
+        .eq('month', selectedMonth)
+        .eq('user_id', userId);
       if (!error) {
         setRows(data);
       } else {
@@ -36,6 +40,8 @@ export default function BudgetSpreadsheet() {
 
   const handleAddRow = async () => {
     const newRow = {
+      id: uuidv4(),
+      user_id: userId,
       category: 'New Category',
       planned: 0,
       actual: 0,
@@ -58,10 +64,22 @@ export default function BudgetSpreadsheet() {
     }
   };
 
-  const handleRemoveRow = () => {
-    setHistory([...history, rows]);
-    setRows(rows.slice(0, -1));
-    setFuture([]);
+  const handleRemoveRow = async () => {
+    if (rows.length === 0) return;
+    const latestRow = rows[rows.length - 1];
+
+    const { error } = await supabase
+      .from('budgets')
+      .delete()
+      .eq('id', latestRow.id);
+
+    if (error) {
+      console.error('Failed to delete row:', error);
+    } else {
+      setHistory([...history, rows]);
+      setRows(rows.slice(0, -1));
+      setFuture([]);
+    }
   };
 
   const handleUndo = () => {
