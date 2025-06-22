@@ -165,7 +165,13 @@ export default function BudgetSpreadsheet() {
                   <Draggable key={row.id} draggableId={row.id} index={index}>
                     {(provided) => (
                       <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                        <BudgetRow row={row} isVisible showSummary={false} onClick={() => setSelectedCategoryForInsights(row)} onChange={handleChange} />
+                        <BudgetRow
+                          row={row}
+                          isVisible
+                          showSummary={false}
+                          onClick={() => setSelectedCategoryForInsights(row)}
+                          onFieldChange={handleChange} // ✅ FIXED HERE
+                        />
                       </div>
                     )}
                   </Draggable>
@@ -177,14 +183,24 @@ export default function BudgetSpreadsheet() {
         </DragDropContext>
 
         {selectedCategoryForInsights && (
-          <InsightsPanel category={selectedCategoryForInsights} onClose={() => setSelectedCategoryForInsights(null)} />
+          <InsightsPanel
+            category={selectedCategoryForInsights}
+            onClose={() => setSelectedCategoryForInsights(null)}
+          />
         )}
 
         {showModal && (
           <AddRowModal
             onClose={() => setShowModal(false)}
             onAdd={(row) => {
-              setRows((prev) => [...prev, { id: uuidv4(), ...row, user_id: user.id, month: selectedMonth, actual: 0, notes: '' }]);
+              setRows((prev) => [...prev, {
+                id: uuidv4(),
+                ...row,
+                user_id: user.id,
+                month: selectedMonth,
+                actual: 0,
+                notes: ''
+              }]);
               setHasChanges(true);
             }}
           />
