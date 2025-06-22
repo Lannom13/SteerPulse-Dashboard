@@ -162,19 +162,21 @@ export default function BudgetSpreadsheet() {
             {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>
                 {sortedRows.map((row, index) => (
-                  <Draggable key={row.id} draggableId={row.id} index={index}>
-                    {(provided) => (
-                      <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                        <BudgetRow
-                          row={row}
-                          isVisible
-                          showSummary={false}
-                          onClick={() => setSelectedCategoryForInsights(row)}
-                          onFieldChange={handleChange} // ✅ FIXED HERE
-                        />
-                      </div>
-                    )}
-                  </Draggable>
+                  row && row.id ? (
+                    <Draggable key={row.id} draggableId={row.id} index={index}>
+                      {(provided) => (
+                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                          <BudgetRow
+                            row={row}
+                            isVisible
+                            showSummary={false}
+                            onClick={() => setSelectedCategoryForInsights(row)}
+                            onFieldChange={handleChange}
+                          />
+                        </div>
+                      )}
+                    </Draggable>
+                  ) : null
                 ))}
                 {provided.placeholder}
               </div>
@@ -193,14 +195,24 @@ export default function BudgetSpreadsheet() {
           <AddRowModal
             onClose={() => setShowModal(false)}
             onAdd={(row) => {
-              setRows((prev) => [...prev, {
+              if (!row || !row.category || !row.group || typeof row.planned !== 'number') {
+                console.error("❌ Invalid row submitted:", row);
+                alert("Invalid data. Please fill out all fields.");
+                return;
+              }
+
+              const newRow = {
                 id: uuidv4(),
                 ...row,
-                user_id: user.id,
+                user_id: user?.id,
                 month: selectedMonth,
                 actual: 0,
                 notes: ''
-              }]);
+              };
+
+              console.log("✅ Adding new row:", newRow);
+
+              setRows((prev) => [...prev, newRow]);
               setHasChanges(true);
             }}
           />
