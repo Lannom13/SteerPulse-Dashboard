@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Trash2 } from 'lucide-react';
 import AnimatedPage from '../../components/AnimatedPage';
 import BudgetRow from '../../components/BudgetRow';
 import InsightsPanel from '../../components/InsightsPanel';
@@ -174,6 +175,11 @@ export default function BudgetSpreadsheet() {
                                 onFieldChange={handleChange}
                                 onDelete={() => handleDelete(row.id)}
                               />
+                              <td className="px-4 py-2 text-right">
+                                <button onClick={() => handleDelete(row.id)} className="text-red-400 hover:text-red-600">
+                                  <Trash2 size={16} />
+                                </button>
+                              </td>
                             </tr>
                           )}
                         </Draggable>
