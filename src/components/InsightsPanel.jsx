@@ -1,8 +1,9 @@
 // src/components/InsightsPanel.jsx
-import { useState } from 'react';
+import { generateCategoryInsights } from '../utils/generateCategoryInsights';
 
 export default function InsightsPanel({ category, onClose }) {
-  // Mock merchant breakdowns by category
+  const insights = generateCategoryInsights(category);
+
   const mockData = {
     "Fast Food": [
       {
@@ -64,15 +65,26 @@ export default function InsightsPanel({ category, onClose }) {
     ]
   };
 
-  const merchants = mockData[category] || [];
+  const merchants = mockData[category.category] || [];
 
   return (
     <div className="fixed top-0 right-0 w-96 h-full bg-gray-900 shadow-lg border-l border-gray-700 z-50 p-6 overflow-y-auto">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-white">🔍 Insights: {category}</h2>
+        <h2 className="text-xl font-semibold text-white">🔍 Insights: {category.category}</h2>
         <button className="text-gray-400 hover:text-white" onClick={onClose}>✕</button>
       </div>
 
+      {/* 🔎 Dynamic Insight Tips */}
+      <div className="mb-6">
+        <h3 className="text-sm font-semibold text-white mb-2">Smart Tips</h3>
+        <ul className="list-disc text-sm pl-5 space-y-1 text-gray-300">
+          {insights.map((tip, idx) => (
+            <li key={idx}>{tip}</li>
+          ))}
+        </ul>
+      </div>
+
+      {/* 📊 Merchant Breakdown (Mock) */}
       {merchants.length > 0 ? (
         <ul className="space-y-6">
           {merchants.map((m, idx) => (
@@ -98,7 +110,7 @@ export default function InsightsPanel({ category, onClose }) {
           ))}
         </ul>
       ) : (
-        <p className="text-gray-400">No insights available for this category yet.</p>
+        <p className="text-gray-400">No merchant insights available for this category yet.</p>
       )}
     </div>
   );
