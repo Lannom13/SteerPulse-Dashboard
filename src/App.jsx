@@ -13,6 +13,7 @@ import Brokerage from './pages/Investments/Brokerage';
 import Retirement from './pages/Investments/Retirement';
 import Education from './pages/Investments/Education';
 import Goals from './pages/Goals';
+import Recurring from './pages/Recurring'; // ✅ new import
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
 
             {/* Other */}
             <Route path="/goals" element={<Goals />} />
+            <Route path="/recurrings" element={<Recurring />} /> {/* ✅ NEW ROUTE */}
           </Routes>
         </DashboardLayout>
       </div>
