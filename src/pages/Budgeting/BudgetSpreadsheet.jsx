@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedPage from '../../components/AnimatedPage';
 import BudgetRow from '../../components/BudgetRow';
 import InsightsPanel from '../../components/InsightsPanel';
+import { supabase } from '../../utils/supabaseClient';
 
 const monthOptions = [
   '2025-01', '2025-02', '2025-03', '2025-04', '2025-05', '2025-06',
@@ -10,29 +11,51 @@ const monthOptions = [
 ];
 
 export default function BudgetSpreadsheet() {
-  const dummyData = [
-    { category: 'Income - Austin', planned: 3000, actual: 3000, group: 'Income' },
-    { category: 'Income - Megan', planned: 2000, actual: 2000, group: 'Income' },
-    { category: 'Groceries', planned: 500, actual: 420, group: 'Food' },
-    { category: 'Fast Food', planned: 150, actual: 180, group: 'Food' },
-    { category: 'Mortgage', planned: 1200, actual: 1200, group: 'Housing' },
-    { category: 'Utilities', planned: 250, actual: 230, group: 'Housing' },
-    { category: 'Entertainment', planned: 200, actual: 260, group: 'Lifestyle' },
-    { category: 'Subscriptions', planned: 100, actual: 110, group: 'Lifestyle' }
-  ];
-
   const [selectedMonth, setSelectedMonth] = useState('2025-06');
   const [expandedGroup, setExpandedGroup] = useState(null);
   const [selectedCategoryForInsights, setSelectedCategoryForInsights] = useState(null);
-  const [rows, setRows] = useState([...dummyData]);
+  const [rows, setRows] = useState([]);
   const [history, setHistory] = useState([]);
   const [future, setFuture] = useState([]);
 
-  const handleAddRow = () => {
-    const newRow = { category: 'New Category', planned: 0, actual: 0, group: 'Custom' };
-    setHistory([...history, rows]);
-    setRows([...rows, newRow]);
-    setFuture([]);
+  useEffect(() => {
+    const fetchBudget = async () => {
+      const { data, error } = await supabase
+        .from('budgets')
+        .select('*')
+        .eq('month', selectedMonth);
+      if (!error) {
+        setRows(data);
+      } else {
+        console.error('Error fetching budget:', error);
+        setRows([]);
+      }
+    };
+    fetchBudget();
+  }, [selectedMonth]);
+
+  const handleAddRow = async () => {
+    const newRow = {
+      category: 'New Category',
+      planned: 0,
+      actual: 0,
+      group: 'Custom',
+      month: selectedMonth,
+      notes: ''
+    };
+
+    const { data, error } = await supabase
+      .from('budgets')
+      .insert([newRow])
+      .select();
+
+    if (error) {
+      console.error('Failed to insert row:', error);
+    } else {
+      setHistory([...history, rows]);
+      setRows([...rows, ...data]);
+      setFuture([]);
+    }
   };
 
   const handleRemoveRow = () => {
