@@ -1,4 +1,6 @@
-// src/components/BudgetRow.jsx
+const formatCurrency = (val) =>
+  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+
 export default function BudgetRow({
   row,
   isVisible,
@@ -58,7 +60,7 @@ export default function BudgetRow({
             className="bg-transparent text-white w-full border border-gray-600 rounded px-2 py-1 text-sm"
           />
         ) : (
-          `$${row.planned}`
+          formatCurrency(row.planned)
         )}
       </td>
       <td className="px-4 py-2">
@@ -70,11 +72,11 @@ export default function BudgetRow({
             className="bg-transparent text-white w-full border border-gray-600 rounded px-2 py-1 text-sm"
           />
         ) : (
-          `$${row.actual}`
+          formatCurrency(row.actual)
         )}
       </td>
       <td className={`px-4 py-2 ${isOver ? 'text-red-400' : 'text-green-400'}`}>
-        {isOver ? '-' : '+'}${Math.abs(difference)}
+        {isOver ? '-' : '+'}{formatCurrency(Math.abs(difference))}
       </td>
       <td className={`px-4 py-2 ${isOver ? 'text-red-400' : 'text-green-400'}`}>{percent}%</td>
       <td className={`px-4 py-2 ${getStatusColor()}`}>{getStatus()}</td>
