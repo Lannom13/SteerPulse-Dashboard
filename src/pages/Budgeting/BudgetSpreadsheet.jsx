@@ -4,6 +4,11 @@ import AnimatedPage from '../../components/AnimatedPage';
 import BudgetRow from '../../components/BudgetRow';
 import InsightsPanel from '../../components/InsightsPanel';
 
+const monthOptions = [
+  '2025-01', '2025-02', '2025-03', '2025-04', '2025-05', '2025-06',
+  '2025-07', '2025-08', '2025-09', '2025-10', '2025-11', '2025-12'
+];
+
 export default function BudgetSpreadsheet() {
   const dummyData = [
     { category: 'Income - Austin', planned: 3000, actual: 3000, group: 'Income' },
@@ -16,6 +21,7 @@ export default function BudgetSpreadsheet() {
     { category: 'Subscriptions', planned: 100, actual: 110, group: 'Lifestyle' }
   ];
 
+  const [selectedMonth, setSelectedMonth] = useState('2025-06');
   const [expandedGroup, setExpandedGroup] = useState(null);
   const [selectedCategoryForInsights, setSelectedCategoryForInsights] = useState(null);
   const [rows, setRows] = useState([...dummyData]);
@@ -65,7 +71,16 @@ export default function BudgetSpreadsheet() {
             <Link to="/budgeting/charts" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 pb-1">Charts</Link>
           </nav>
 
-          <div className="flex gap-3 text-sm">
+          <div className="flex gap-3 text-sm items-center">
+            <select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              className="bg-gray-700 text-white px-2 py-1 rounded"
+            >
+              {monthOptions.map(month => (
+                <option key={month} value={month}>{month}</option>
+              ))}
+            </select>
             <button onClick={handleAddRow} className="text-white px-3 py-1 hover:bg-sky-700 rounded transition">Add</button>
             <button onClick={handleRemoveRow} className="text-white px-3 py-1 hover:bg-sky-700 rounded transition">Remove</button>
             <button onClick={handleUndo} className="text-white px-2 py-1 hover:bg-sky-700 rounded transition">Undo</button>
