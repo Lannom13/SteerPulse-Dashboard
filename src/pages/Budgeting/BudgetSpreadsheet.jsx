@@ -1,4 +1,4 @@
-// ✅ Complete grouped Budget Spreadsheet with structured presets, group rows, add modal injection, and delete icons.
+// ✅ Complete grouped Budget Spreadsheet with structured presets, group rows, add modal injection, delete icons, drag locks, and style polish.
 
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -30,6 +30,7 @@ export default function BudgetSpreadsheet() {
   const [showModal, setShowModal] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [selectedCategoryForInsights, setSelectedCategoryForInsights] = useState(null);
+  const [lastUsedGroup, setLastUsedGroup] = useState('');
 
   useEffect(() => {
     if (!user) return;
@@ -105,6 +106,7 @@ export default function BudgetSpreadsheet() {
       updated.splice(insertAt, 0, row);
       return updated;
     });
+    setLastUsedGroup(newRow.group);
     setHasChanges(true);
   };
 
@@ -113,6 +115,15 @@ export default function BudgetSpreadsheet() {
     acc[row.group].push(row);
     return acc;
   }, {});
+
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
+    const updated = [...rows];
+    const [moved] = updated.splice(result.source.index, 1);
+    updated.splice(result.destination.index, 0, moved);
+    setRows(updated);
+    setHasChanges(true);
+  };
 
   return (
     <AnimatedPage>
@@ -129,38 +140,52 @@ export default function BudgetSpreadsheet() {
           </div>
         </div>
 
-        {Object.entries(groupedRows).map(([groupName, entries]) => (
-          <table key={groupName} className="w-full mb-6">
-            <thead>
-              <tr className="bg-gray-800 text-left text-white text-sm uppercase">
-                <th colSpan="7" className="px-4 py-2 font-bold">{groupName}</th>
-              </tr>
-              <tr className="bg-gray-700 text-gray-300 text-xs">
-                <th className="px-4 py-2">Category</th>
-                <th className="px-4 py-2">Planned</th>
-                <th className="px-4 py-2">Actual</th>
-                <th className="px-4 py-2">Difference</th>
-                <th className="px-4 py-2">Usage %</th>
-                <th className="px-4 py-2">Status</th>
-                <th className="px-4 py-2">Notes</th>
-                <th className="px-4 py-2"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {entries.map((row, index) => (
-                <BudgetRow
-                  key={row.id}
-                  row={row}
-                  isVisible
-                  showSummary={false}
-                  onClick={() => setSelectedCategoryForInsights(row)}
-                  onFieldChange={handleChange}
-                  onDelete={() => handleDelete(row.id)}
-                />
-              ))}
-            </tbody>
-          </table>
-        ))}
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="budget-table">
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps}>
+                {Object.entries(groupedRows).map(([groupName, entries]) => (
+                  <table key={groupName} className="w-full mb-6">
+                    <thead>
+                      <tr className="bg-gray-800 text-left text-white text-sm uppercase">
+                        <th colSpan="8" className="px-4 py-2 font-bold">{groupName}</th>
+                      </tr>
+                      <tr className="bg-gray-700 text-gray-300 text-xs">
+                        <th className="px-4 py-2">Category</th>
+                        <th className="px-4 py-2">Planned</th>
+                        <th className="px-4 py-2">Actual</th>
+                        <th className="px-4 py-2">Difference</th>
+                        <th className="px-4 py-2">Usage %</th>
+                        <th className="px-4 py-2">Status</th>
+                        <th className="px-4 py-2">Notes</th>
+                        <th className="px-4 py-2">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {entries.map((row, index) => (
+                        <Draggable draggableId={row.id} index={rows.findIndex(r => r.id === row.id)} key={row.id}>
+                          {(provided) => (
+                            <tr ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                              <BudgetRow
+                                row={row}
+                                isVisible
+                                showSummary={false}
+                                onClick={() => setSelectedCategoryForInsights(row)}
+                                onFieldChange={handleChange}
+                                onDelete={() => handleDelete(row.id)}
+                              />
+                            </tr>
+                          )}
+                        </Draggable>
+                      ))}
+                    </tbody>
+                  </table>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
 
         {selectedCategoryForInsights && (
           <InsightsPanel
@@ -173,6 +198,7 @@ export default function BudgetSpreadsheet() {
           <AddRowModal
             onClose={() => setShowModal(false)}
             onAdd={handleAddRow}
+            defaultGroup={lastUsedGroup}
           />
         )}
       </div>
