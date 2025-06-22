@@ -1,7 +1,7 @@
 // BudgetRow.jsx
 import React from 'react';
 
-export default function BudgetRow({ row, isVisible, showSummary, onClick }) {
+export default function BudgetRow({ row, isVisible, showSummary, onClick, onClickCategory }) {
   const difference = row.planned - row.actual;
   const percent = ((row.actual / row.planned) * 100).toFixed(0);
   const isOver = row.actual > row.planned;
@@ -20,10 +20,15 @@ export default function BudgetRow({ row, isVisible, showSummary, onClick }) {
     return 'text-green-400';
   };
 
+  const handleRowClick = () => {
+    if (showSummary && onClick) return onClick();
+    if (!showSummary && onClickCategory) return onClickCategory(row.category);
+  };
+
   return displayRow ? (
     <tr
-      className={`border-t border-gray-700 ${showSummary ? 'bg-gray-900 text-white cursor-pointer hover:bg-gray-800' : ''}`}
-      onClick={showSummary ? onClick : undefined}
+      className={`border-t border-gray-700 cursor-pointer hover:bg-gray-800 ${showSummary ? 'bg-gray-900 text-white' : ''}`}
+      onClick={handleRowClick}
     >
       <td className={`px-4 py-2 ${indentStyle}`}>{row.category}</td>
       <td className="px-4 py-2">${row.planned}</td>
