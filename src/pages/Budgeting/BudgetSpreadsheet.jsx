@@ -5,6 +5,7 @@ import BudgetRow from '../../components/BudgetRow';
 import InsightsPanel from '../../components/InsightsPanel';
 import { supabase } from '../../utils/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
+import { useUser } from '@supabase/auth-helpers-react';
 
 const monthOptions = [
   '2025-01', '2025-02', '2025-03', '2025-04', '2025-05', '2025-06',
@@ -12,22 +13,23 @@ const monthOptions = [
 ];
 
 export default function BudgetSpreadsheet() {
+  const user = useUser();
   const [selectedMonth, setSelectedMonth] = useState('2025-06');
   const [expandedGroup, setExpandedGroup] = useState(null);
   const [selectedCategoryForInsights, setSelectedCategoryForInsights] = useState(null);
   const [rows, setRows] = useState([]);
   const [history, setHistory] = useState([]);
   const [future, setFuture] = useState([]);
-
-  const userId = 'demo-user'; // Replace with auth context once added
+  const [hasChanges, setHasChanges] = useState(false);
 
   useEffect(() => {
+    if (!user) return;
     const fetchBudget = async () => {
       const { data, error } = await supabase
         .from('budgets')
         .select('*')
         .eq('month', selectedMonth)
-        .eq('user_id', userId);
+        .eq('user_id', user.id);
       if (!error) {
         setRows(data);
       } else {
@@ -36,12 +38,13 @@ export default function BudgetSpreadsheet() {
       }
     };
     fetchBudget();
-  }, [selectedMonth]);
+  }, [selectedMonth, user]);
 
   const handleAddRow = async () => {
+    if (!user) return;
     const newRow = {
       id: uuidv4(),
-      user_id: userId,
+      user_id: user.id,
       category: 'New Category',
       planned: 0,
       actual: 0,
@@ -61,6 +64,7 @@ export default function BudgetSpreadsheet() {
       setHistory([...history, rows]);
       setRows([...rows, ...data]);
       setFuture([]);
+      setHasChanges(true);
     }
   };
 
@@ -79,6 +83,7 @@ export default function BudgetSpreadsheet() {
       setHistory([...history, rows]);
       setRows(rows.slice(0, -1));
       setFuture([]);
+      setHasChanges(true);
     }
   };
 
@@ -88,6 +93,7 @@ export default function BudgetSpreadsheet() {
       setFuture([rows, ...future]);
       setRows(prev);
       setHistory(history.slice(0, -1));
+      setHasChanges(true);
     }
   };
 
@@ -97,7 +103,35 @@ export default function BudgetSpreadsheet() {
       setHistory([...history, rows]);
       setRows(next);
       setFuture(future.slice(1));
+      setHasChanges(true);
     }
+  };
+
+  const handleFieldChange = (id, field, value) => {
+    setRows(prevRows => prevRows.map(row =>
+      row.id === id ? { ...row, [field]: value } : row
+    ));
+    setHasChanges(true);
+  };
+
+  const handleSaveChanges = async () => {
+    for (const row of rows) {
+      const { error } = await supabase
+        .from('budgets')
+        .update({
+          category: row.category,
+          planned: row.planned,
+          actual: row.actual,
+          notes: row.notes,
+          group: row.group
+        })
+        .eq('id', row.id);
+
+      if (error) {
+        console.error(`Failed to update row with id ${row.id}:`, error);
+      }
+    }
+    setHasChanges(false);
   };
 
   const groups = [...new Set(rows.map(row => row.group))];
@@ -126,6 +160,9 @@ export default function BudgetSpreadsheet() {
             <button onClick={handleRemoveRow} className="text-white px-3 py-1 hover:bg-sky-700 rounded transition">Remove</button>
             <button onClick={handleUndo} className="text-white px-2 py-1 hover:bg-sky-700 rounded transition">Undo</button>
             <button onClick={handleRedo} className="text-white px-2 py-1 hover:bg-sky-700 rounded transition">Redo</button>
+            {hasChanges && (
+              <button onClick={handleSaveChanges} className="text-white px-3 py-1 bg-green-600 hover:bg-green-700 rounded transition">Save</button>
+            )}
           </div>
         </div>
 
@@ -165,6 +202,7 @@ export default function BudgetSpreadsheet() {
                             showSummary={false}
                             isVisible={true}
                             onClickCategory={(category) => setSelectedCategoryForInsights(category)}
+                            onFieldChange={handleFieldChange}
                           />
                         ))
                       : [])
