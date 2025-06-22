@@ -1,5 +1,5 @@
 const formatCurrency = (val) =>
-  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val ?? 0);
 
 export default function BudgetRow({
   row,
@@ -12,9 +12,17 @@ export default function BudgetRow({
   onFieldChange,
   onRowClick,
 }) {
-  const difference = row.planned - row.actual;
-  const percent = ((row.actual / (row.planned || 1)) * 100).toFixed(0);
-  const isOver = row.actual > row.planned;
+  // ✅ Guard against null or malformed row data
+  if (!row || !row.id) {
+    console.warn("🚫 Skipping render of null/invalid row:", row);
+    return null;
+  }
+
+  const planned = Number(row.planned || 0);
+  const actual = Number(row.actual || 0);
+  const difference = planned - actual;
+  const percent = ((actual / (planned || 1)) * 100).toFixed(0);
+  const isOver = actual > planned;
   const displayRow = isVisible || showSummary;
   const indentStyle = isVisible ? 'pl-6' : showSummary ? 'font-bold' : '';
 
@@ -51,35 +59,41 @@ export default function BudgetRow({
           <span onClick={() => onClickCategory?.(row.category)}>{row.category}</span>
         )}
       </td>
+
       <td className="px-4 py-2">
         {isEditable && !showSummary ? (
           <input
             type="number"
-            value={row.planned}
+            value={planned}
             onChange={(e) => onFieldChange(row.id, 'planned', parseFloat(e.target.value))}
             className="bg-transparent text-white w-full border border-gray-600 rounded px-2 py-1 text-sm"
           />
         ) : (
-          formatCurrency(row.planned)
+          formatCurrency(planned)
         )}
       </td>
+
       <td className="px-4 py-2">
         {isEditable && !showSummary ? (
           <input
             type="number"
-            value={row.actual}
+            value={actual}
             onChange={(e) => onFieldChange(row.id, 'actual', parseFloat(e.target.value))}
             className="bg-transparent text-white w-full border border-gray-600 rounded px-2 py-1 text-sm"
           />
         ) : (
-          formatCurrency(row.actual)
+          formatCurrency(actual)
         )}
       </td>
+
       <td className={`px-4 py-2 ${isOver ? 'text-red-400' : 'text-green-400'}`}>
         {isOver ? '-' : '+'}{formatCurrency(Math.abs(difference))}
       </td>
+
       <td className={`px-4 py-2 ${isOver ? 'text-red-400' : 'text-green-400'}`}>{percent}%</td>
+
       <td className={`px-4 py-2 ${getStatusColor()}`}>{getStatus()}</td>
+
       <td className="px-4 py-2">
         {isEditable && !showSummary ? (
           <textarea
