@@ -21,6 +21,7 @@ export default function BudgetSpreadsheet() {
   const [history, setHistory] = useState([]);
   const [future, setFuture] = useState([]);
   const [hasChanges, setHasChanges] = useState(false);
+  const [selectedRowId, setSelectedRowId] = useState(null);
 
   useEffect(() => {
     if (!user) return;
@@ -69,20 +70,21 @@ export default function BudgetSpreadsheet() {
   };
 
   const handleRemoveRow = async () => {
-    if (rows.length === 0) return;
-    const latestRow = rows[rows.length - 1];
+    if (!selectedRowId) return;
 
     const { error } = await supabase
       .from('budgets')
       .delete()
-      .eq('id', latestRow.id);
+      .eq('id', selectedRowId);
 
     if (error) {
       console.error('Failed to delete row:', error);
     } else {
+      const updatedRows = rows.filter(row => row.id !== selectedRowId);
       setHistory([...history, rows]);
-      setRows(rows.slice(0, -1));
+      setRows(updatedRows);
       setFuture([]);
+      setSelectedRowId(null);
       setHasChanges(true);
     }
   };
@@ -157,7 +159,7 @@ export default function BudgetSpreadsheet() {
               ))}
             </select>
             <button onClick={handleAddRow} className="text-white px-3 py-1 hover:bg-sky-700 rounded transition">Add</button>
-            <button onClick={handleRemoveRow} className="text-white px-3 py-1 hover:bg-sky-700 rounded transition">Remove</button>
+            <button onClick={handleRemoveRow} disabled={!selectedRowId} className="text-white px-3 py-1 hover:bg-sky-700 rounded transition disabled:opacity-50">Remove</button>
             <button onClick={handleUndo} className="text-white px-2 py-1 hover:bg-sky-700 rounded transition">Undo</button>
             <button onClick={handleRedo} className="text-white px-2 py-1 hover:bg-sky-700 rounded transition">Redo</button>
             {hasChanges && (
@@ -201,8 +203,11 @@ export default function BudgetSpreadsheet() {
                             row={row}
                             showSummary={false}
                             isVisible={true}
+                            isEditable={true}
+                            isSelected={row.id === selectedRowId}
                             onClickCategory={(category) => setSelectedCategoryForInsights(category)}
                             onFieldChange={handleFieldChange}
+                            onRowClick={() => setSelectedRowId(row.id)}
                           />
                         ))
                       : [])
