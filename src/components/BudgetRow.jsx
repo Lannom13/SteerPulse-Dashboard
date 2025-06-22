@@ -1,3 +1,5 @@
+import { Trash2 } from 'lucide-react';
+
 const formatCurrency = (val) =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val ?? 0);
 
@@ -11,10 +13,10 @@ export default function BudgetRow({
   onClickCategory,
   onFieldChange,
   onRowClick,
+  onDelete, // ✅ receives delete handler
 }) {
-  // ✅ Guard against null or malformed row data
   if (!row || !row.id) {
-    console.warn("🚫 Skipping render of null/invalid row:", row);
+    console.warn("Skipping invalid row:", row);
     return null;
   }
 
@@ -23,7 +25,6 @@ export default function BudgetRow({
   const difference = planned - actual;
   const percent = ((actual / (planned || 1)) * 100).toFixed(0);
   const isOver = actual > planned;
-  const displayRow = isVisible || showSummary;
   const indentStyle = isVisible ? 'pl-6' : showSummary ? 'font-bold' : '';
 
   const getStatus = () => {
@@ -38,16 +39,8 @@ export default function BudgetRow({
     return 'text-green-400';
   };
 
-  return displayRow ? (
-    <tr
-      className={`border-t border-gray-700 transition cursor-pointer ${
-        isSelected ? 'bg-gray-700' : showSummary ? 'hover:bg-gray-800' : ''
-      }`}
-      onClick={() => {
-        if (showSummary && onClick) onClick();
-        if (!showSummary && onRowClick) onRowClick();
-      }}
-    >
+  return (
+    <>
       <td className={`px-4 py-2 ${indentStyle}`}>
         {isEditable && !showSummary ? (
           <input
@@ -105,6 +98,14 @@ export default function BudgetRow({
           <span className="text-gray-400">{row.notes}</span>
         )}
       </td>
-    </tr>
-  ) : null;
+
+      <td className="px-4 py-2 text-right">
+        {onDelete && (
+          <button onClick={onDelete} className="text-red-400 hover:text-red-600">
+            <Trash2 size={16} />
+          </button>
+        )}
+      </td>
+    </>
+  );
 }
