@@ -1,21 +1,25 @@
-export function generateBudgetInsights(data) {
+export function generateCategoryInsights(categoryData) {
+  const { category, planned, actual } = categoryData;
+  const percent = (actual / planned) * 100;
+  const difference = actual - planned;
+
   const insights = [];
 
-  data.forEach(item => {
-    const { category, planned, actual } = item;
-    const diff = actual - planned;
-    const percentUsed = (actual / planned) * 100;
+  if (percent > 110) {
+    insights.push(`🚨 You're 10%+ over budget on "${category}". Consider cutting back.`);
+  } else if (percent > 100) {
+    insights.push(`⚠️ Slightly over budget on "${category}". A few small changes could help.`);
+  } else if (percent < 60) {
+    insights.push(`👍 You're spending way under budget on "${category}". Could you shift some to other priorities?`);
+  } else {
+    insights.push(`✅ "${category}" is on track — great job managing this area.`);
+  }
 
-    if (percentUsed > 110) {
-      insights.push(`⚠️ You spent ${percentUsed.toFixed(0)}% of your "${category}" budget. Consider cutting back next month.`);
-    } else if (percentUsed < 60) {
-      insights.push(`🧠 You’ve used only ${percentUsed.toFixed(0)}% of your "${category}" budget. Could you reallocate some of it?`);
-    } else if (diff > 0 && percentUsed <= 110) {
-      insights.push(`✅ "${category}" came in slightly over but still within reasonable range.`);
-    }
-  });
+  if (difference > 0) {
+    insights.push(`You've overspent by $${difference.toFixed(2)} this month.`);
+  } else if (difference < 0) {
+    insights.push(`You’ve saved $${Math.abs(difference).toFixed(2)} in "${category}".`);
+  }
 
-  return insights.length > 0
-    ? insights
-    : ['🎯 Your budget execution is excellent! No major concerns this month.'];
+  return insights;
 }
