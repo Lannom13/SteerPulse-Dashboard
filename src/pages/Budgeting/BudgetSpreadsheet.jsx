@@ -6,10 +6,30 @@ import InsightsPanel from '../../components/InsightsPanel';
 import { supabase } from '../../utils/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 import { useUser } from '@supabase/auth-helpers-react';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const monthOptions = [
   '2025-01', '2025-02', '2025-03', '2025-04', '2025-05', '2025-06',
   '2025-07', '2025-08', '2025-09', '2025-10', '2025-11', '2025-12'
+];
+
+const defaultTemplate = [
+  { category: 'Rent', group: 'Housing', planned: 1200 },
+  { category: 'Utilities', group: 'Housing', planned: 250 },
+  { category: 'Internet', group: 'Housing', planned: 100 },
+  { category: 'Car Payment', group: 'Transportation', planned: 400 },
+  { category: 'Gas', group: 'Transportation', planned: 150 },
+  { category: 'Health Insurance', group: 'Insurance', planned: 300 },
+  { category: 'Daycare', group: 'Childcare', planned: 400 },
+  { category: 'Charity', group: 'Donations', planned: 100 },
+  { category: 'Groceries', group: 'Food', planned: 500 },
+  { category: 'Fast Food', group: 'Food', planned: 200 },
+  { category: 'Entertainment', group: 'Entertainment', planned: 200 },
+  { category: 'Utilities', group: 'Utilities', planned: 100 },
+  { category: 'Miscellaneous', group: 'Miscellaneous', planned: 150 },
+  { category: 'Credit Card', group: 'Debt', planned: 300 },
+  { category: 'Emergency Fund', group: 'Savings', planned: 300 },
+  { category: 'Investments', group: 'Investments', planned: 250 }
 ];
 
 export default function BudgetSpreadsheet() {
@@ -22,121 +42,92 @@ export default function BudgetSpreadsheet() {
   const [future, setFuture] = useState([]);
   const [hasChanges, setHasChanges] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState(null);
+  const [sortOption, setSortOption] = useState('category');
 
   useEffect(() => {
     if (!user) return;
+
     const fetchBudget = async () => {
       const { data, error } = await supabase
         .from('budgets')
         .select('*')
         .eq('month', selectedMonth)
         .eq('user_id', user.id);
-      if (!error) {
-        setRows(data);
-      } else {
+
+      if (error) {
         console.error('Error fetching budget:', error);
-        setRows([]);
+        return;
+      }
+
+      if (data.length === 0) {
+        const seeded = defaultTemplate.map((item) => ({
+          id: uuidv4(),
+          user_id: user.id,
+          category: item.category,
+          planned: item.planned,
+          actual: 0,
+          group: item.group,
+          month: selectedMonth,
+          notes: ''
+        }));
+
+        const { data: insertedData, error: insertError } = await supabase
+          .from('budgets')
+          .insert(seeded)
+          .select();
+
+        if (insertError) {
+          console.error('Error seeding default data:', insertError);
+        } else {
+          setRows(insertedData);
+        }
+      } else {
+        setRows(data);
       }
     };
+
     fetchBudget();
   }, [selectedMonth, user]);
 
-  const handleAddRow = async () => {
-    if (!user) return;
-    const newRow = {
-      id: uuidv4(),
-      user_id: user.id,
-      category: 'New Category',
-      planned: 0,
-      actual: 0,
-      group: 'Custom',
-      month: selectedMonth,
-      notes: ''
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (hasChanges) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
     };
 
-    const { data, error } = await supabase
-      .from('budgets')
-      .insert([newRow])
-      .select();
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasChanges]);
 
-    if (error) {
-      console.error('Failed to insert row:', error);
-    } else {
-      setHistory([...history, rows]);
-      setRows([...rows, ...data]);
-      setFuture([]);
-      setHasChanges(true);
-    }
-  };
-
-  const handleRemoveRow = async () => {
-    if (!selectedRowId) return;
-
-    const { error } = await supabase
-      .from('budgets')
-      .delete()
-      .eq('id', selectedRowId);
-
-    if (error) {
-      console.error('Failed to delete row:', error);
-    } else {
-      const updatedRows = rows.filter(row => row.id !== selectedRowId);
-      setHistory([...history, rows]);
-      setRows(updatedRows);
-      setFuture([]);
-      setSelectedRowId(null);
-      setHasChanges(true);
-    }
-  };
-
-  const handleUndo = () => {
-    if (history.length > 0) {
-      const prev = history[history.length - 1];
-      setFuture([rows, ...future]);
-      setRows(prev);
-      setHistory(history.slice(0, -1));
-      setHasChanges(true);
-    }
-  };
-
-  const handleRedo = () => {
-    if (future.length > 0) {
-      const next = future[0];
-      setHistory([...history, rows]);
-      setRows(next);
-      setFuture(future.slice(1));
-      setHasChanges(true);
-    }
-  };
-
-  const handleFieldChange = (id, field, value) => {
-    setRows(prevRows => prevRows.map(row =>
-      row.id === id ? { ...row, [field]: value } : row
-    ));
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
+    const newRows = Array.from(rows);
+    const [movedRow] = newRows.splice(result.source.index, 1);
+    newRows.splice(result.destination.index, 0, movedRow);
+    setRows(newRows);
     setHasChanges(true);
   };
 
-  const handleSaveChanges = async () => {
-    for (const row of rows) {
-      const { error } = await supabase
-        .from('budgets')
-        .update({
-          category: row.category,
-          planned: row.planned,
-          actual: row.actual,
-          notes: row.notes,
-          group: row.group
-        })
-        .eq('id', row.id);
-
-      if (error) {
-        console.error(`Failed to update row with id ${row.id}:`, error);
-      }
-    }
-    setHasChanges(false);
+  const handleSave = async () => {
+    const updates = rows.map(row => ({ id: row.id, ...row }));
+    const { error } = await supabase.from('budgets').upsert(updates);
+    if (error) console.error('Save error:', error);
+    else setHasChanges(false);
   };
 
-  const groups = [...new Set(rows.map(row => row.group))];
+  const handleChange = (id, key, value) => {
+    setRows(prev => prev.map(row => row.id === id ? { ...row, [key]: value } : row));
+    setHasChanges(true);
+  };
+
+  const sortedRows = [...rows].sort((a, b) => {
+    if (sortOption === 'category') return a.category.localeCompare(b.category);
+    if (sortOption === 'group') return a.group.localeCompare(b.group);
+    if (sortOption === 'amount') return b.actual - a.actual;
+    return 0;
+  });
 
   return (
     <AnimatedPage>
@@ -147,76 +138,40 @@ export default function BudgetSpreadsheet() {
             <Link to="/budgeting/spreadsheet" className="text-sm text-white border-b-2 border-sky-500 pb-1">Spreadsheet</Link>
             <Link to="/budgeting/charts" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 pb-1">Charts</Link>
           </nav>
-
           <div className="flex gap-3 text-sm items-center">
+            <label htmlFor="sortOption" className="text-gray-300 text-sm mr-2">Sort:</label>
             <select
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
-              className="bg-gray-700 text-white px-2 py-1 rounded"
+              id="sortOption"
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              className="bg-gray-800 text-white px-3 py-1 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-sky-500"
             >
-              {monthOptions.map(month => (
-                <option key={month} value={month}>{month}</option>
-              ))}
+              <option value="category">Category (A-Z)</option>
+              <option value="group">Group (A-Z)</option>
+              <option value="amount">Actual Amount (High → Low)</option>
             </select>
-            <button onClick={handleAddRow} className="text-white px-3 py-1 hover:bg-sky-700 rounded transition">Add</button>
-            <button onClick={handleRemoveRow} disabled={!selectedRowId} className="text-white px-3 py-1 hover:bg-sky-700 rounded transition disabled:opacity-50">Remove</button>
-            <button onClick={handleUndo} className="text-white px-2 py-1 hover:bg-sky-700 rounded transition">Undo</button>
-            <button onClick={handleRedo} className="text-white px-2 py-1 hover:bg-sky-700 rounded transition">Redo</button>
-            {hasChanges && (
-              <button onClick={handleSaveChanges} className="text-white px-3 py-1 bg-green-600 hover:bg-green-700 rounded transition">Save</button>
+            <button onClick={handleSave} disabled={!hasChanges} className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded disabled:opacity-40">Save</button>
+          </div>
+        </div>
+
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="budget-rows">
+            {(provided) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                {sortedRows.map((row, index) => (
+                  <Draggable key={row.id} draggableId={row.id} index={index}>
+                    {(provided) => (
+                      <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                        <BudgetRow row={row} isVisible showSummary={false} onClick={() => setSelectedCategoryForInsights(row)} onChange={handleChange} />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
             )}
-          </div>
-        </div>
-
-        <div className="bg-gray-800 p-4 rounded-xl shadow mb-6">
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm text-left text-gray-400">
-              <thead className="text-xs uppercase border-b border-gray-600">
-                <tr>
-                  <th className="px-4 py-2">Category</th>
-                  <th className="px-4 py-2">Planned</th>
-                  <th className="px-4 py-2">Actual</th>
-                  <th className="px-4 py-2">Difference</th>
-                  <th className="px-4 py-2">Usage %</th>
-                  <th className="px-4 py-2">Status</th>
-                  <th className="px-4 py-2">Notes</th>
-                </tr>
-              </thead>
-              <tbody>
-                {groups.map(group => {
-                  const groupRows = rows.filter(row => row.group === group);
-                  const groupPlanned = groupRows.reduce((sum, row) => sum + row.planned, 0);
-                  const groupActual = groupRows.reduce((sum, row) => sum + row.actual, 0);
-
-                  return [
-                    <BudgetRow
-                      key={`summary-${group}`}
-                      row={{ category: group, planned: groupPlanned, actual: groupActual }}
-                      showSummary={true}
-                      isVisible={false}
-                      onClick={() => setExpandedGroup(group === expandedGroup ? null : group)}
-                    />,
-                    ...(expandedGroup === group
-                      ? groupRows.map((row, idx) => (
-                          <BudgetRow
-                            key={`${group}-detail-${idx}`}
-                            row={row}
-                            showSummary={false}
-                            isVisible={true}
-                            isEditable={true}
-                            isSelected={row.id === selectedRowId}
-                            onClickCategory={(category) => setSelectedCategoryForInsights(category)}
-                            onFieldChange={handleFieldChange}
-                            onRowClick={() => setSelectedRowId(row.id)}
-                          />
-                        ))
-                      : [])
-                  ];
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
+          </Droppable>
+        </DragDropContext>
 
         {selectedCategoryForInsights && (
           <InsightsPanel category={selectedCategoryForInsights} onClose={() => setSelectedCategoryForInsights(null)} />
