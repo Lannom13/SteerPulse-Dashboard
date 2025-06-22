@@ -1,46 +1,52 @@
 // src/pages/Overview.jsx
-import AnimatedPage from '../components/AnimatedPage'
-import { useState } from 'react'
-import KpiCard from '../components/KpiCard'
-import BudgetRing from '../components/BudgetRing'
-import CashFlowChart from '../components/CashFlowChart'
-import InsightCard from '../components/InsightCard'
-import TransactionPreview from '../components/TransactionPreview'
-import InvestmentSnapshot from '../components/InvestmentSnapshot'
-import NetWorthChart from '../components/NetWorthChart'
-import PlaidConnectButton from '../components/PlaidConnectButton' // ✅ NEW
+import AnimatedPage from "../components/AnimatedPage";
+import { useState } from "react";
+import KpiCard from "../components/KpiCard";
+import BudgetRing from "../components/BudgetRing";
+import CashFlowChart from "../components/CashFlowChart";
+import InsightCard from "../components/InsightCard";
+import TransactionPreview from "../components/TransactionPreview";
+import InvestmentSnapshot from "../components/InvestmentSnapshot";
+import NetWorthChart from "../components/NetWorthChart";
+import useNetWorth from "../hooks/useNetWorth"; // ✅ import the new hook
 
 export default function Overview() {
-  const [scenario, setScenario] = useState('MTD')
+  const [scenario, setScenario] = useState("MTD");
+  const { netWorth, loading: loadingNetWorth } = useNetWorth(); // ✅ use hook
 
   return (
     <AnimatedPage>
       <div className="text-white">
         <h1 className="text-3xl font-bold mb-4">📊 SteerPulse Overview</h1>
 
-        {/* ✅ Plaid Connect Button */}
         <div className="mb-6">
-          <PlaidConnectButton userId="demo-user-001" />
-        </div>
-
-        <div className="bg-gray-800 p-4 rounded-xl shadow text-sm text-gray-300 mb-6">
-          💡 You’ve saved <span className="text-green-400 font-semibold">$630</span> more than you’ve spent this month. Great job staying <span className="text-blue-400 font-semibold">12%</span> under budget. Consider reallocating savings to your investment goal.
+          <div className="text-sm bg-gray-800 p-4 rounded-xl shadow text-gray-300">
+            💡 You’ve saved{" "}
+            <span className="text-green-400 font-semibold">$630</span> more than
+            you’ve spent this month. Great job staying{" "}
+            <span className="text-blue-400 font-semibold">12%</span> under budget.
+            Consider reallocating savings to your investment goal.
+          </div>
         </div>
 
         {/* Performance Scenario Row */}
         <div className="flex flex-wrap items-center gap-4 mb-6">
           <button
-            onClick={() => setScenario('MTD')}
+            onClick={() => setScenario("MTD")}
             className={`${
-              scenario === 'MTD' ? 'bg-brand-500 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+              scenario === "MTD"
+                ? "bg-brand-500 text-white"
+                : "bg-gray-800 text-gray-300 hover:bg-gray-700"
             } text-sm font-medium px-4 py-2 rounded-full`}
           >
             MTD
           </button>
           <button
-            onClick={() => setScenario('YTD')}
+            onClick={() => setScenario("YTD")}
             className={`${
-              scenario === 'YTD' ? 'bg-brand-500 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+              scenario === "YTD"
+                ? "bg-brand-500 text-white"
+                : "bg-gray-800 text-gray-300 hover:bg-gray-700"
             } text-sm font-medium px-4 py-2 rounded-full`}
           >
             YTD
@@ -58,7 +64,18 @@ export default function Overview() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {/* Row 1 – KPI Cards */}
-          <KpiCard title="Net Worth" value="$128,450" scenario={scenario} />
+          <KpiCard
+            title="Net Worth"
+            value={
+              loadingNetWorth
+                ? "Loading..."
+                : `$${netWorth?.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}`
+            }
+            scenario={scenario}
+          />
           <KpiCard title="Budget Used" value="$1,920 / $2,500" scenario={scenario} />
           <KpiCard title="Cash Flow" value="+$630" scenario={scenario} />
         </div>
@@ -103,5 +120,5 @@ export default function Overview() {
         </div>
       </div>
     </AnimatedPage>
-  )
+  );
 }
