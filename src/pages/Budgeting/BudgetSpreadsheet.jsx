@@ -7,6 +7,7 @@ import { supabase } from '../../utils/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 import { useUser } from '@supabase/auth-helpers-react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import AddRowModal from '../../components/AddRowModal';
 
 const monthOptions = [
   '2025-01', '2025-02', '2025-03', '2025-04', '2025-05', '2025-06',
@@ -43,6 +44,7 @@ export default function BudgetSpreadsheet() {
   const [hasChanges, setHasChanges] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState(null);
   const [sortOption, setSortOption] = useState('category');
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -150,6 +152,7 @@ export default function BudgetSpreadsheet() {
               <option value="group">Group (A-Z)</option>
               <option value="amount">Actual Amount (High → Low)</option>
             </select>
+            <button onClick={() => setShowModal(true)} className="bg-sky-600 hover:bg-sky-700 px-3 py-1 rounded">Add New Row</button>
             <button onClick={handleSave} disabled={!hasChanges} className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded disabled:opacity-40">Save</button>
           </div>
         </div>
@@ -175,6 +178,16 @@ export default function BudgetSpreadsheet() {
 
         {selectedCategoryForInsights && (
           <InsightsPanel category={selectedCategoryForInsights} onClose={() => setSelectedCategoryForInsights(null)} />
+        )}
+
+        {showModal && (
+          <AddRowModal
+            onClose={() => setShowModal(false)}
+            onAdd={(row) => {
+              setRows((prev) => [...prev, { id: uuidv4(), ...row, user_id: user.id, month: selectedMonth, actual: 0, notes: '' }]);
+              setHasChanges(true);
+            }}
+          />
         )}
       </div>
     </AnimatedPage>
