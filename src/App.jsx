@@ -1,4 +1,3 @@
-// src/App.jsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import DashboardLayout from './layouts/DashboardLayout';
@@ -13,7 +12,7 @@ import Brokerage from './pages/Investments/Brokerage';
 import Retirement from './pages/Investments/Retirement';
 import Education from './pages/Investments/Education';
 import Goals from './pages/Goals';
-import Recurring from './pages/Recurring'; // ✅ new import
+import Recurring from './pages/Recurring'; // ✅ updated to match route
 
 function App() {
   return (
@@ -39,7 +38,7 @@ function App() {
 
             {/* Other */}
             <Route path="/goals" element={<Goals />} />
-            <Route path="/recurrings" element={<Recurring />} /> {/* ✅ NEW ROUTE */}
+            <Route path="/recurring" element={<Recurring />} /> {/* ✅ fixed */}
           </Routes>
         </DashboardLayout>
       </div>
