@@ -1,4 +1,5 @@
 // File: /pages/budgeting/spreadsheet.tsx
+// ✅ Final version with BudgetRow integration
 import { useEffect, useState } from 'react';
 import { Trash2 } from 'lucide-react';
 import AnimatedPage from '../../components/AnimatedPage';
@@ -243,17 +244,16 @@ export default function BudgetSpreadsheet() {
                                 <tr ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                                   <BudgetRow
                                     row={row}
-                                    isVisible
+                                    isVisible={true}
                                     showSummary={false}
+                                    isEditable={true}
+                                    isSelected={false}
                                     onClick={() => setSelectedCategoryForInsights(row)}
+                                    onClickCategory={() => {}}
+                                    onRowClick={() => {}}
                                     onFieldChange={handleChange}
                                     onDelete={() => handleDelete(row.id)}
                                   />
-                                  <td className="px-4 py-2 text-right">
-                                    <button onClick={() => handleDelete(row.id)} className="text-red-400 hover:text-red-600">
-                                      <Trash2 size={16} />
-                                    </button>
-                                  </td>
                                 </tr>
                               )}
                             </Draggable>
