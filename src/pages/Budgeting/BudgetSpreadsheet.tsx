@@ -219,7 +219,7 @@ export default function BudgetSpreadsheet() {
               <Droppable droppableId="budget-table">
                 {(provided) => (
                   <div ref={provided.innerRef} {...provided.droppableProps}>
-                    {Object.entries(groupedRows).map(([groupName, entries]) => (
+                    {Object.entries(groupedRows).map(([groupName, entries]: [string, any[]]) => (
                       <table key={groupName} className="w-full mb-6">
                         <thead>
                           <tr className="bg-gray-800 text-left text-white text-sm uppercase">
