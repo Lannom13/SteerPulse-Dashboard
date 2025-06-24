@@ -1,15 +1,16 @@
-import AnimatedPage from '../components/AnimatedPage';
+// File: /pages/overview.tsx (Next.js version of Overview page)
+import AnimatedPage from '../src/components/AnimatedPage';
 import { useState } from 'react';
-import KpiCard from '../components/KpiCard';
-import BudgetRing from '../components/BudgetRing';
-import CashFlowChart from '../components/CashFlowChart';
-import InsightCard from '../components/InsightCard';
-import TransactionPreview from '../components/TransactionPreview';
-import InvestmentSnapshot from '../components/InvestmentSnapshot';
-import NetWorthChart from '../components/NetWorthChart';
-import PlaidConnectButton from '../components/PlaidConnectButton';
-import useNetWorth from '../hooks/useNetWorth';
-import ProtectedRoute from '../utils/ProtectedRoute'; // ✅ added
+import KpiCard from '../src/components/KpiCard';
+import BudgetRing from '../src/components/BudgetRing';
+import CashFlowChart from '../src/components/CashFlowChart';
+import InsightCard from '../src/components/InsightCard';
+import TransactionPreview from '../src/components/TransactionPreview';
+import InvestmentSnapshot from '../src/components/InvestmentSnapshot';
+import NetWorthChart from '../src/components/NetWorthChart';
+import PlaidConnectButton from '../src/components/PlaidConnectButton';
+import useNetWorth from '../src/hooks/useNetWorth';
+import ProtectedRoute from '../src/utils/ProtectedRoute';
 
 export default function Overview() {
   const [scenario, setScenario] = useState('MTD');
@@ -19,7 +20,7 @@ export default function Overview() {
     <ProtectedRoute>
       <AnimatedPage>
         <div className="text-white">
-          <h1 className="text-3xl font-bold mb-4">📊 SteerPulse Overview</h1>
+          <h1 className="text-3xl font-bold mb-4">SteerPulse Overview</h1>
 
           <div className="mb-4">
             <PlaidConnectButton userId="demo-user" />
@@ -31,7 +32,6 @@ export default function Overview() {
             savings to your investment goal.
           </div>
 
-          {/* Performance Toggle */}
           <div className="flex flex-wrap items-center gap-4 mb-6">
             <button
               onClick={() => setScenario('MTD')}
@@ -64,7 +64,6 @@ export default function Overview() {
             </div>
           </div>
 
-          {/* KPI Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <KpiCard
               title="Net Worth"
@@ -82,12 +81,10 @@ export default function Overview() {
             <KpiCard title="Cash Flow" value="+$630" scenario={scenario} />
           </div>
 
-          {/* Net Worth Chart */}
           <div className="mb-6">
             <NetWorthChart />
           </div>
 
-          {/* Transactions + Insights */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div className="md:col-span-2 bg-gray-800 p-4 rounded-xl shadow">
               <TransactionPreview />
@@ -111,7 +108,6 @@ export default function Overview() {
             </div>
           </div>
 
-          {/* Debt & Investment Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-gray-800 p-4 rounded-xl shadow">
               <BudgetRing percentage={72} label="Debt Payoff Progress" />
