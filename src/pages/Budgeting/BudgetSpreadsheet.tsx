@@ -1,17 +1,17 @@
-// pages/budgetspreadsheet.tsx
+// File: /pages/budgeting/spreadsheet.tsx
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Trash2 } from 'lucide-react';
-import AnimatedPage from '../../components/AnimatedPage';
-import BudgetRow from '../../components/BudgetRow';
-import InsightsPanel from '../../components/InsightsPanel';
-import { supabase } from '../../utils/supabaseClient';
+import AnimatedPage from '../../src/components/AnimatedPage';
+import BudgetRow from '../../src/components/BudgetRow';
+import InsightsPanel from '../../src/components/InsightsPanel';
+import { supabase } from '../../src/utils/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 import { useUser } from '@supabase/auth-helpers-react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import AddRowModal from '../../components/AddRowModal';
-import BudgetMonthHeader from '../../components/BudgetMonthHeader';
-import StartMonthPrompt from '../../components/StartMonthPrompt';
+import AddRowModal from '../../src/components/AddRowModal';
+import BudgetMonthHeader from '../../src/components/BudgetMonthHeader';
+import StartMonthPrompt from '../../src/components/StartMonthPrompt';
+import ProtectedRoute from '../../src/utils/ProtectedRoute';
 
 const PRESET_STRUCTURE = [
   { group: 'Income', category: 'Salary', planned: 5000 },
@@ -27,7 +27,7 @@ const PRESET_STRUCTURE = [
 
 export default function BudgetSpreadsheet() {
   const user = useUser();
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState<any[]>([]);
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
   const [showModal, setShowModal] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
@@ -67,7 +67,7 @@ export default function BudgetSpreadsheet() {
     checkMonth();
   }, [user, selectedMonth]);
 
-  const handlePromptChoice = async (choice) => {
+  const handlePromptChoice = async (choice: string) => {
     setShowPrompt(false);
     const prevMonth = getPreviousMonth(selectedMonth);
 
@@ -134,12 +134,12 @@ export default function BudgetSpreadsheet() {
     }
   };
 
-  const handleChange = (id, key, value) => {
+  const handleChange = (id: string, key: string, value: any) => {
     setRows(prev => prev.map(row => row.id === id ? { ...row, [key]: value } : row));
     setHasChanges(true);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = (id: string) => {
     setRows(prev => prev.filter(row => row.id !== id));
     setHasChanges(true);
   };
@@ -151,7 +151,7 @@ export default function BudgetSpreadsheet() {
     else setHasChanges(false);
   };
 
-  const handleAddRow = (newRow) => {
+  const handleAddRow = (newRow: any) => {
     const row = {
       id: uuidv4(),
       user_id: user.id,
@@ -179,7 +179,7 @@ export default function BudgetSpreadsheet() {
     return acc;
   }, {});
 
-  const handleDragEnd = (result) => {
+  const handleDragEnd = (result: any) => {
     if (!result.destination) return;
     const updated = [...rows];
     const [moved] = updated.splice(result.source.index, 1);
@@ -189,105 +189,102 @@ export default function BudgetSpreadsheet() {
   };
 
   return (
-    <AnimatedPage>
-      <div className="text-white">
-        <BudgetMonthHeader
-          month={selectedMonth}
-          onPrev={() => setSelectedMonth(getPreviousMonth(selectedMonth))}
-          onNext={() => setSelectedMonth(getNextMonth(selectedMonth))}
-          onOpenPicker={() => alert('Month picker coming soon...')}
-        />
+    <ProtectedRoute>
+      <AnimatedPage>
+        <div className="text-white">
+          <BudgetMonthHeader
+            month={selectedMonth}
+            onPrev={() => setSelectedMonth(getPreviousMonth(selectedMonth))}
+            onNext={() => setSelectedMonth(getNextMonth(selectedMonth))}
+            onOpenPicker={() => alert('Month picker coming soon...')}
+          />
 
-        <StartMonthPrompt
-          isOpen={showPrompt}
-          month={selectedMonth}
-          hasPreviousMonth={hasPreviousMonth}
-          onChoice={handlePromptChoice}
-          onCancel={() => setShowPrompt(false)}
-        />
+          <StartMonthPrompt
+            isOpen={showPrompt}
+            month={selectedMonth}
+            hasPreviousMonth={hasPreviousMonth}
+            onChoice={handlePromptChoice}
+            onCancel={() => setShowPrompt(false)}
+          />
 
-        <div className={showPrompt ? 'blur-sm pointer-events-none' : ''}>
-          <div className="flex justify-between mb-4 border-b border-gray-700 pb-2">
-            <nav className="flex gap-4">
-              <Link to="/budgeting" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 pb-1">Dashboard</Link>
-              <Link to="/budgeting/spreadsheet" className="text-sm text-white border-b-2 border-sky-500 pb-1">Spreadsheet</Link>
-              <Link to="/budgeting/charts" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 pb-1">Charts</Link>
-            </nav>
-            <div className="flex gap-3 text-sm items-center">
-              <button onClick={() => setShowModal(true)} className="bg-sky-600 hover:bg-sky-700 px-3 py-1 rounded">Add Row</button>
-              <button onClick={handleSave} disabled={!hasChanges} className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded disabled:opacity-40">Save</button>
+          <div className={showPrompt ? 'blur-sm pointer-events-none' : ''}>
+            <div className="flex justify-between mb-4 border-b border-gray-700 pb-2">
+              <div className="flex gap-3 text-sm items-center">
+                <button onClick={() => setShowModal(true)} className="bg-sky-600 hover:bg-sky-700 px-3 py-1 rounded">Add Row</button>
+                <button onClick={handleSave} disabled={!hasChanges} className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded disabled:opacity-40">Save</button>
+              </div>
             </div>
+
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="budget-table">
+                {(provided) => (
+                  <div ref={provided.innerRef} {...provided.droppableProps}>
+                    {Object.entries(groupedRows).map(([groupName, entries]) => (
+                      <table key={groupName} className="w-full mb-6">
+                        <thead>
+                          <tr className="bg-gray-800 text-left text-white text-sm uppercase">
+                            <th colSpan={8} className="px-4 py-2 font-bold">{groupName}</th>
+                          </tr>
+                          <tr className="bg-gray-700 text-gray-300 text-xs">
+                            <th className="px-4 py-2">Category</th>
+                            <th className="px-4 py-2">Planned</th>
+                            <th className="px-4 py-2">Actual</th>
+                            <th className="px-4 py-2">Difference</th>
+                            <th className="px-4 py-2">Usage %</th>
+                            <th className="px-4 py-2">Status</th>
+                            <th className="px-4 py-2">Notes</th>
+                            <th className="px-4 py-2">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {entries.map((row: any) => (
+                            <Draggable draggableId={row.id} index={rows.findIndex(r => r.id === row.id)} key={row.id}>
+                              {(provided) => (
+                                <tr ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                  <BudgetRow
+                                    row={row}
+                                    isVisible
+                                    showSummary={false}
+                                    onClick={() => setSelectedCategoryForInsights(row)}
+                                    onFieldChange={handleChange}
+                                    onDelete={() => handleDelete(row.id)}
+                                  />
+                                  <td className="px-4 py-2 text-right">
+                                    <button onClick={() => handleDelete(row.id)} className="text-red-400 hover:text-red-600">
+                                      <Trash2 size={16} />
+                                    </button>
+                                  </td>
+                                </tr>
+                              )}
+                            </Draggable>
+                          ))}
+                        </tbody>
+                      </table>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+
+            {selectedCategoryForInsights && (
+              <InsightsPanel
+                category={selectedCategoryForInsights}
+                onClose={() => setSelectedCategoryForInsights(null)}
+              />
+            )}
+
+            {showModal && (
+              <AddRowModal
+                onClose={() => setShowModal(false)}
+                onAdd={handleAddRow}
+                defaultGroup={lastUsedGroup}
+              />
+            )}
           </div>
-
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="budget-table">
-              {(provided) => (
-                <div ref={provided.innerRef} {...provided.droppableProps}>
-                  {Object.entries(groupedRows).map(([groupName, entries]) => (
-                    <table key={groupName} className="w-full mb-6">
-                      <thead>
-                        <tr className="bg-gray-800 text-left text-white text-sm uppercase">
-                          <th colSpan="8" className="px-4 py-2 font-bold">{groupName}</th>
-                        </tr>
-                        <tr className="bg-gray-700 text-gray-300 text-xs">
-                          <th className="px-4 py-2">Category</th>
-                          <th className="px-4 py-2">Planned</th>
-                          <th className="px-4 py-2">Actual</th>
-                          <th className="px-4 py-2">Difference</th>
-                          <th className="px-4 py-2">Usage %</th>
-                          <th className="px-4 py-2">Status</th>
-                          <th className="px-4 py-2">Notes</th>
-                          <th className="px-4 py-2">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {entries.map((row, index) => (
-                          <Draggable draggableId={row.id} index={rows.findIndex(r => r.id === row.id)} key={row.id}>
-                            {(provided) => (
-                              <tr ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                <BudgetRow
-                                  row={row}
-                                  isVisible
-                                  showSummary={false}
-                                  onClick={() => setSelectedCategoryForInsights(row)}
-                                  onFieldChange={handleChange}
-                                  onDelete={() => handleDelete(row.id)}
-                                />
-                                <td className="px-4 py-2 text-right">
-                                  <button onClick={() => handleDelete(row.id)} className="text-red-400 hover:text-red-600">
-                                    <Trash2 size={16} />
-                                  </button>
-                                </td>
-                              </tr>
-                            )}
-                          </Draggable>
-                        ))}
-                      </tbody>
-                    </table>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-
-          {selectedCategoryForInsights && (
-            <InsightsPanel
-              category={selectedCategoryForInsights}
-              onClose={() => setSelectedCategoryForInsights(null)}
-            />
-          )}
-
-          {showModal && (
-            <AddRowModal
-              onClose={() => setShowModal(false)}
-              onAdd={handleAddRow}
-              defaultGroup={lastUsedGroup}
-            />
-          )}
         </div>
-      </div>
-    </AnimatedPage>
+      </AnimatedPage>
+    </ProtectedRoute>
   );
 }
 
@@ -296,15 +293,14 @@ function getCurrentMonth() {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 }
 
-function getPreviousMonth(month) {
+function getPreviousMonth(month: string) {
   const [year, m] = month.split('-').map(Number);
   const date = new Date(year, m - 2);
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 }
 
-function getNextMonth(month) {
+function getNextMonth(month: string) {
   const [year, m] = month.split('-').map(Number);
   const date = new Date(year, m);
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 }
-
