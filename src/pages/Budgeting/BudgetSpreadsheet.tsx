@@ -1,17 +1,17 @@
 // File: /pages/budgeting/spreadsheet.tsx
 import { useEffect, useState } from 'react';
 import { Trash2 } from 'lucide-react';
-import AnimatedPage from '../../src/components/AnimatedPage';
-import BudgetRow from '../../src/components/BudgetRow';
-import InsightsPanel from '../../src/components/InsightsPanel';
-import { supabase } from '../../src/utils/supabaseClient';
+import AnimatedPage from '../../components/AnimatedPage';
+import BudgetRow from '../../components/BudgetRow';
+import InsightsPanel from '../../components/InsightsPanel';
+import { supabase } from '../../utils/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 import { useUser } from '@supabase/auth-helpers-react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import AddRowModal from '../../src/components/AddRowModal';
-import BudgetMonthHeader from '../../src/components/BudgetMonthHeader';
-import StartMonthPrompt from '../../src/components/StartMonthPrompt';
-import ProtectedRoute from '../../src/utils/ProtectedRoute';
+import AddRowModal from '../../components/AddRowModal';
+import BudgetMonthHeader from '../../components/BudgetMonthHeader';
+import StartMonthPrompt from '../../components/StartMonthPrompt';
+import ProtectedRoute from '../../utils/ProtectedRoute';
 
 const PRESET_STRUCTURE = [
   { group: 'Income', category: 'Salary', planned: 5000 },
