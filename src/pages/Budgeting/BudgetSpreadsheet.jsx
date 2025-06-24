@@ -1,5 +1,4 @@
-// ✅ Complete grouped Budget Spreadsheet with structured presets, group rows, add modal injection, delete icons, drag locks, and style polish.
-
+// pages/budgetspreadsheet.tsx
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Trash2 } from 'lucide-react';
@@ -11,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useUser } from '@supabase/auth-helpers-react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import AddRowModal from '../../components/AddRowModal';
+import BudgetMonthHeader from '../../components/BudgetMonthHeader';
 
 const PRESET_STRUCTURE = [
   { group: 'Income', category: 'Salary', planned: 5000 },
@@ -27,11 +27,12 @@ const PRESET_STRUCTURE = [
 export default function BudgetSpreadsheet() {
   const user = useUser();
   const [rows, setRows] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState('2025-06');
+  const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
   const [showModal, setShowModal] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [selectedCategoryForInsights, setSelectedCategoryForInsights] = useState(null);
   const [lastUsedGroup, setLastUsedGroup] = useState('');
+  const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -49,6 +50,7 @@ export default function BudgetSpreadsheet() {
       }
 
       if (data.length === 0) {
+        setShowPrompt(true);
         const seeded = PRESET_STRUCTURE.map((item, index) => ({
           id: uuidv4(),
           user_id: user.id,
@@ -65,6 +67,7 @@ export default function BudgetSpreadsheet() {
         if (insertError) console.error('Error inserting preset:', insertError);
         setRows(inserted || []);
       } else {
+        setShowPrompt(false);
         setRows(data.sort((a, b) => a.sort_order - b.sort_order));
       }
     };
@@ -129,85 +132,117 @@ export default function BudgetSpreadsheet() {
   return (
     <AnimatedPage>
       <div className="text-white">
-        <div className="flex justify-between mb-4 border-b border-gray-700 pb-2">
-          <nav className="flex gap-4">
-            <Link to="/budgeting" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 pb-1">Dashboard</Link>
-            <Link to="/budgeting/spreadsheet" className="text-sm text-white border-b-2 border-sky-500 pb-1">Spreadsheet</Link>
-            <Link to="/budgeting/charts" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 pb-1">Charts</Link>
-          </nav>
-          <div className="flex gap-3 text-sm items-center">
-            <button onClick={() => setShowModal(true)} className="bg-sky-600 hover:bg-sky-700 px-3 py-1 rounded">Add Row</button>
-            <button onClick={handleSave} disabled={!hasChanges} className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded disabled:opacity-40">Save</button>
+        <BudgetMonthHeader
+          month={selectedMonth}
+          onPrev={() => setSelectedMonth(getPreviousMonth(selectedMonth))}
+          onNext={() => setSelectedMonth(getNextMonth(selectedMonth))}
+          onOpenPicker={() => alert('Month picker coming soon...')}
+        />
+
+        {showPrompt && (
+          <div className="bg-gray-800 text-white p-4 rounded shadow text-center mb-6">
+            No data for this month. Prompt coming soon.
           </div>
+        )}
+
+        <div className={showPrompt ? 'blur-sm pointer-events-none' : ''}>
+          <div className="flex justify-between mb-4 border-b border-gray-700 pb-2">
+            <nav className="flex gap-4">
+              <Link to="/budgeting" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 pb-1">Dashboard</Link>
+              <Link to="/budgeting/spreadsheet" className="text-sm text-white border-b-2 border-sky-500 pb-1">Spreadsheet</Link>
+              <Link to="/budgeting/charts" className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 pb-1">Charts</Link>
+            </nav>
+            <div className="flex gap-3 text-sm items-center">
+              <button onClick={() => setShowModal(true)} className="bg-sky-600 hover:bg-sky-700 px-3 py-1 rounded">Add Row</button>
+              <button onClick={handleSave} disabled={!hasChanges} className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded disabled:opacity-40">Save</button>
+            </div>
+          </div>
+
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId="budget-table">
+              {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  {Object.entries(groupedRows).map(([groupName, entries]) => (
+                    <table key={groupName} className="w-full mb-6">
+                      <thead>
+                        <tr className="bg-gray-800 text-left text-white text-sm uppercase">
+                          <th colSpan="8" className="px-4 py-2 font-bold">{groupName}</th>
+                        </tr>
+                        <tr className="bg-gray-700 text-gray-300 text-xs">
+                          <th className="px-4 py-2">Category</th>
+                          <th className="px-4 py-2">Planned</th>
+                          <th className="px-4 py-2">Actual</th>
+                          <th className="px-4 py-2">Difference</th>
+                          <th className="px-4 py-2">Usage %</th>
+                          <th className="px-4 py-2">Status</th>
+                          <th className="px-4 py-2">Notes</th>
+                          <th className="px-4 py-2">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {entries.map((row, index) => (
+                          <Draggable draggableId={row.id} index={rows.findIndex(r => r.id === row.id)} key={row.id}>
+                            {(provided) => (
+                              <tr ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                <BudgetRow
+                                  row={row}
+                                  isVisible
+                                  showSummary={false}
+                                  onClick={() => setSelectedCategoryForInsights(row)}
+                                  onFieldChange={handleChange}
+                                  onDelete={() => handleDelete(row.id)}
+                                />
+                                <td className="px-4 py-2 text-right">
+                                  <button onClick={() => handleDelete(row.id)} className="text-red-400 hover:text-red-600">
+                                    <Trash2 size={16} />
+                                  </button>
+                                </td>
+                              </tr>
+                            )}
+                          </Draggable>
+                        ))}
+                      </tbody>
+                    </table>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+
+          {selectedCategoryForInsights && (
+            <InsightsPanel
+              category={selectedCategoryForInsights}
+              onClose={() => setSelectedCategoryForInsights(null)}
+            />
+          )}
+
+          {showModal && (
+            <AddRowModal
+              onClose={() => setShowModal(false)}
+              onAdd={handleAddRow}
+              defaultGroup={lastUsedGroup}
+            />
+          )}
         </div>
-
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId="budget-table">
-            {(provided) => (
-              <div ref={provided.innerRef} {...provided.droppableProps}>
-                {Object.entries(groupedRows).map(([groupName, entries]) => (
-                  <table key={groupName} className="w-full mb-6">
-                    <thead>
-                      <tr className="bg-gray-800 text-left text-white text-sm uppercase">
-                        <th colSpan="8" className="px-4 py-2 font-bold">{groupName}</th>
-                      </tr>
-                      <tr className="bg-gray-700 text-gray-300 text-xs">
-                        <th className="px-4 py-2">Category</th>
-                        <th className="px-4 py-2">Planned</th>
-                        <th className="px-4 py-2">Actual</th>
-                        <th className="px-4 py-2">Difference</th>
-                        <th className="px-4 py-2">Usage %</th>
-                        <th className="px-4 py-2">Status</th>
-                        <th className="px-4 py-2">Notes</th>
-                        <th className="px-4 py-2">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {entries.map((row, index) => (
-                        <Draggable draggableId={row.id} index={rows.findIndex(r => r.id === row.id)} key={row.id}>
-                          {(provided) => (
-                            <tr ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                              <BudgetRow
-                                row={row}
-                                isVisible
-                                showSummary={false}
-                                onClick={() => setSelectedCategoryForInsights(row)}
-                                onFieldChange={handleChange}
-                                onDelete={() => handleDelete(row.id)}
-                              />
-                              <td className="px-4 py-2 text-right">
-                                <button onClick={() => handleDelete(row.id)} className="text-red-400 hover:text-red-600">
-                                  <Trash2 size={16} />
-                                </button>
-                              </td>
-                            </tr>
-                          )}
-                        </Draggable>
-                      ))}
-                    </tbody>
-                  </table>
-                ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
-
-        {selectedCategoryForInsights && (
-          <InsightsPanel
-            category={selectedCategoryForInsights}
-            onClose={() => setSelectedCategoryForInsights(null)}
-          />
-        )}
-
-        {showModal && (
-          <AddRowModal
-            onClose={() => setShowModal(false)}
-            onAdd={handleAddRow}
-            defaultGroup={lastUsedGroup}
-          />
-        )}
       </div>
     </AnimatedPage>
   );
+}
+
+function getCurrentMonth(): string {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+}
+
+function getPreviousMonth(month: string): string {
+  const [year, m] = month.split('-').map(Number);
+  const date = new Date(year, m - 2);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+}
+
+function getNextMonth(month: string): string {
+  const [year, m] = month.split('-').map(Number);
+  const date = new Date(year, m);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 }
