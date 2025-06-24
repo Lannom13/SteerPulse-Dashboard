@@ -296,14 +296,15 @@ function getCurrentMonth() {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 }
 
-function getPreviousMonth(month: string): string {
+function getPreviousMonth(month) {
   const [year, m] = month.split('-').map(Number);
   const date = new Date(year, m - 2);
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 }
 
-function getNextMonth(month: string): string {
+function getNextMonth(month) {
   const [year, m] = month.split('-').map(Number);
   const date = new Date(year, m);
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 }
+
