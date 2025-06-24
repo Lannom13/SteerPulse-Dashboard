@@ -67,7 +67,7 @@ export default function BudgetSpreadsheet() {
     checkMonth();
   }, [user, selectedMonth]);
 
-  const handlePromptChoice = async (choice: 'copy' | 'coach' | 'fresh') => {
+  const handlePromptChoice = async (choice) => {
     setShowPrompt(false);
     const prevMonth = getPreviousMonth(selectedMonth);
 
