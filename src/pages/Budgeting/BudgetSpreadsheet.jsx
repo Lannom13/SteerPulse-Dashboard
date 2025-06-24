@@ -11,6 +11,7 @@ import { useUser } from '@supabase/auth-helpers-react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import AddRowModal from '../../components/AddRowModal';
 import BudgetMonthHeader from '../../components/BudgetMonthHeader';
+import StartMonthPrompt from '../../components/StartMonthPrompt';
 
 const PRESET_STRUCTURE = [
   { group: 'Income', category: 'Salary', planned: 5000 },
@@ -33,47 +34,105 @@ export default function BudgetSpreadsheet() {
   const [selectedCategoryForInsights, setSelectedCategoryForInsights] = useState(null);
   const [lastUsedGroup, setLastUsedGroup] = useState('');
   const [showPrompt, setShowPrompt] = useState(false);
+  const [hasPreviousMonth, setHasPreviousMonth] = useState(false);
 
   useEffect(() => {
     if (!user) return;
 
-    const fetchBudget = async () => {
-      const { data, error } = await supabase
+    const checkMonth = async () => {
+      const { data: current } = await supabase
         .from('budgets')
         .select('*')
-        .eq('month', selectedMonth)
-        .eq('user_id', user.id);
+        .eq('user_id', user.id)
+        .eq('month', selectedMonth);
 
-      if (error) {
-        console.error('Error fetching budget:', error);
-        return;
-      }
+      const prevMonth = getPreviousMonth(selectedMonth);
+      const { data: previous } = await supabase
+        .from('budgets')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('month', prevMonth)
+        .limit(1);
 
-      if (data.length === 0) {
+      setHasPreviousMonth(previous.length > 0);
+
+      if (current.length === 0) {
         setShowPrompt(true);
-        const seeded = PRESET_STRUCTURE.map((item, index) => ({
-          id: uuidv4(),
-          user_id: user.id,
-          group: item.group,
-          category: item.category,
-          planned: item.planned,
-          actual: 0,
-          notes: '',
-          month: selectedMonth,
-          sort_order: index,
-        }));
-
-        const { data: inserted, error: insertError } = await supabase.from('budgets').insert(seeded).select();
-        if (insertError) console.error('Error inserting preset:', insertError);
-        setRows(inserted || []);
       } else {
+        setRows(current.sort((a, b) => a.sort_order - b.sort_order));
         setShowPrompt(false);
-        setRows(data.sort((a, b) => a.sort_order - b.sort_order));
       }
     };
 
-    fetchBudget();
+    checkMonth();
   }, [user, selectedMonth]);
+
+  const handlePromptChoice = async (choice: 'copy' | 'coach' | 'fresh') => {
+    setShowPrompt(false);
+    const prevMonth = getPreviousMonth(selectedMonth);
+
+    if (choice === 'copy') {
+      const { data: prevRows } = await supabase
+        .from('budgets')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('month', prevMonth);
+
+      const cloned = prevRows.map((r, i) => ({
+        ...r,
+        id: uuidv4(),
+        month: selectedMonth,
+        actual: 0,
+        notes: '',
+        sort_order: i,
+      }));
+      await supabase.from('budgets').insert(cloned);
+      setRows(cloned);
+    }
+
+    if (choice === 'coach') {
+      const { data: prevRows } = await supabase
+        .from('budgets')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('month', prevMonth);
+
+      const adjusted = prevRows.map((r, i) => {
+        let newBudget = r.budgeted;
+        const usage = r.actual / (r.budgeted || 1);
+        if (usage > 1.1) newBudget += 50;
+        if (usage < 0.5) newBudget -= 25;
+
+        return {
+          ...r,
+          id: uuidv4(),
+          month: selectedMonth,
+          budgeted: Math.max(0, Math.round(newBudget)),
+          actual: 0,
+          notes: 'Coach-adjusted based on prior usage',
+          sort_order: i,
+        };
+      });
+      await supabase.from('budgets').insert(adjusted);
+      setRows(adjusted);
+    }
+
+    if (choice === 'fresh') {
+      const seeded = PRESET_STRUCTURE.map((item, index) => ({
+        id: uuidv4(),
+        user_id: user.id,
+        group: item.group,
+        category: item.category,
+        planned: item.planned,
+        actual: 0,
+        notes: '',
+        month: selectedMonth,
+        sort_order: index,
+      }));
+      await supabase.from('budgets').insert(seeded);
+      setRows(seeded);
+    }
+  };
 
   const handleChange = (id, key, value) => {
     setRows(prev => prev.map(row => row.id === id ? { ...row, [key]: value } : row));
@@ -139,11 +198,13 @@ export default function BudgetSpreadsheet() {
           onOpenPicker={() => alert('Month picker coming soon...')}
         />
 
-        {showPrompt && (
-          <div className="bg-gray-800 text-white p-4 rounded shadow text-center mb-6">
-            No data for this month. Prompt coming soon.
-          </div>
-        )}
+        <StartMonthPrompt
+          isOpen={showPrompt}
+          month={selectedMonth}
+          hasPreviousMonth={hasPreviousMonth}
+          onChoice={handlePromptChoice}
+          onCancel={() => setShowPrompt(false)}
+        />
 
         <div className={showPrompt ? 'blur-sm pointer-events-none' : ''}>
           <div className="flex justify-between mb-4 border-b border-gray-700 pb-2">
