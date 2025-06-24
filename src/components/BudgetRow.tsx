@@ -1,9 +1,24 @@
+// File: /components/BudgetRow.tsx
 import { Trash2 } from 'lucide-react';
+import { FC } from 'react';
 
-const formatCurrency = (val) =>
+const formatCurrency = (val: number | undefined) =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val ?? 0);
 
-export default function BudgetRow({
+export interface BudgetRowProps {
+  row: any;
+  isVisible: boolean;
+  showSummary: boolean;
+  isEditable: boolean;
+  isSelected: boolean;
+  onClick: () => void;
+  onClickCategory: (category: string) => void;
+  onFieldChange: (id: string, key: string, value: any) => void;
+  onRowClick: () => void;
+  onDelete: () => void;
+}
+
+const BudgetRow: FC<BudgetRowProps> = ({
   row,
   isVisible,
   showSummary,
@@ -13,12 +28,9 @@ export default function BudgetRow({
   onClickCategory,
   onFieldChange,
   onRowClick,
-  onDelete, // ✅ receives delete handler
-}) {
-  if (!row || !row.id) {
-    console.warn("Skipping invalid row:", row);
-    return null;
-  }
+  onDelete
+}) => {
+  if (!row || !row.id) return null;
 
   const planned = Number(row.planned || 0);
   const actual = Number(row.actual || 0);
@@ -28,14 +40,14 @@ export default function BudgetRow({
   const indentStyle = isVisible ? 'pl-6' : showSummary ? 'font-bold' : '';
 
   const getStatus = () => {
-    if (percent > 110) return 'Needs Review';
-    if (percent > 100) return 'Overspent';
+    if (parseFloat(percent) > 110) return 'Needs Review';
+    if (parseFloat(percent) > 100) return 'Overspent';
     return 'On Track';
   };
 
   const getStatusColor = () => {
-    if (percent > 110) return 'text-yellow-400';
-    if (percent > 100) return 'text-red-400';
+    if (parseFloat(percent) > 110) return 'text-yellow-400';
+    if (parseFloat(percent) > 100) return 'text-red-400';
     return 'text-green-400';
   };
 
@@ -100,12 +112,12 @@ export default function BudgetRow({
       </td>
 
       <td className="px-4 py-2 text-right">
-        {onDelete && (
-          <button onClick={onDelete} className="text-red-400 hover:text-red-600">
-            <Trash2 size={16} />
-          </button>
-        )}
+        <button onClick={onDelete} className="text-red-400 hover:text-red-600">
+          <Trash2 size={16} />
+        </button>
       </td>
     </>
   );
-}
+};
+
+export default BudgetRow;
