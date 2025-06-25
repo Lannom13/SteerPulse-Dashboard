@@ -1,4 +1,4 @@
-/ File: /src/components/NetWorthChart.tsx
+// File: src/components/NetWorthChart.tsx
 import {
   ResponsiveContainer,
   LineChart,
@@ -25,10 +25,8 @@ export default function NetWorthChart() {
           'https://lpczocldblkfrhnlpqgf.supabase.co/rest/v1/net_worth_snapshots?select=value,recorded_at&order=recorded_at.asc',
           {
             headers: {
-              apikey:
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwY3pvY2xkYmxrZnJobmxwcWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAzNjQ2MTYsImV4cCI6MjA2NTk0MDYxNn0.OEtG4Kbk7r_X2M7OKgOsGbkd8WDi-IhhyusuWqUgsoY',
-              Authorization:
-                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwY3pvY2xkYmxrZnJobmxwcWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAzNjQ2MTYsImV4cCI6MjA2NTk0MDYxNn0.OEtG4Kbk7r_X2M7OKgOsGbkd8WDi-IhhyusuWqUgsoY'
+              apikey: 'your-anon-key-here',
+              Authorization: 'Bearer your-anon-key-here'
             }
           }
         );
@@ -61,7 +59,7 @@ export default function NetWorthChart() {
           <XAxis dataKey="date" stroke="#ccc" />
           <YAxis
             stroke="#ccc"
-            tickFormatter={(val) => `$${(val / 1000).toFixed(0)}k`}
+            tickFormatter={(val: number) => `$${(val / 1000).toFixed(0)}k`}
           />
           <Tooltip
             formatter={(val: number) => `$${val.toLocaleString()}`}
