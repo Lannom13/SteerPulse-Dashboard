@@ -1,6 +1,15 @@
-export default function BudgetCategoryCard({ title, spent, budget, color = 'sky', onDelete }) {
-  const percent = Math.min((spent / budget) * 100, 100)
-  const barColor = `bg-${color}-500`
+// File: /src/components/BudgetCategoryCard.tsx
+interface BudgetCategoryCardProps {
+  title: string;
+  spent: number;
+  budget: number;
+  color?: string;
+  onDelete?: () => void;
+}
+
+export default function BudgetCategoryCard({ title, spent, budget, color = 'sky', onDelete }: BudgetCategoryCardProps) {
+  const percent = Math.min((spent / budget) * 100, 100);
+  const barColor = `bg-${color}-500`;
 
   return (
     <div className="bg-gray-800 p-4 rounded-xl shadow transition-transform duration-300 hover:scale-[1.02] relative group">
@@ -26,5 +35,5 @@ export default function BudgetCategoryCard({ title, spent, budget, color = 'sky'
         </button>
       )}
     </div>
-  )
+  );
 }
