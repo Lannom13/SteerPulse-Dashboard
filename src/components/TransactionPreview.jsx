@@ -1,10 +1,16 @@
+// File: /src/components/TransactionPreview.tsx
 import { useEffect, useState } from "react";
 
+interface Transaction {
+  transaction_id: string;
+  name: string;
+  amount: number;
+}
+
 export default function TransactionPreview() {
-  const [transactions, setTransactions] = useState([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // 👇 Hardcoded token just for now
   const accessToken = "access-sandbox-faa089fa-42f2-4391-bda3-371a90ba4987";
 
   useEffect(() => {
