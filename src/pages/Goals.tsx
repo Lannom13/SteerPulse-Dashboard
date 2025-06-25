@@ -1,72 +1,62 @@
-// src/pages/Goals.jsx
-import AnimatedPage from '../components/AnimatedPage'
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import GoalCard from '../components/GoalCard'
+// File: /pages/goals.tsx
+import AnimatedPage from '@/components/AnimatedPage';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import GoalCard from '@/components/GoalCard';
+import { NextPage } from 'next';
 
-export default function Goals() {
-  const [showModal, setShowModal] = useState(false)
+const Goals: NextPage = () => {
+  const [showModal, setShowModal] = useState(false);
   const [goals, setGoals] = useState([
-    {
-      id: 1,
-      name: 'Family Vacation',
-      target: 3000,
-      saved: 1350,
-      date: '2025-12-31',
-    },
-    {
-      id: 2,
-      name: 'Pay Off Credit Card',
-      target: 1200,
-      saved: 800,
-      date: '2025-09-30',
-    },
-  ])
+    { id: 1, name: 'Family Vacation', target: 3000, saved: 1350, date: '2025-12-31' },
+    { id: 2, name: 'Pay Off Credit Card', target: 1200, saved: 800, date: '2025-09-30' }
+  ]);
+  const [formData, setFormData] = useState({ name: '', target: '', saved: '', date: '' });
+  const [editId, setEditId] = useState<number | null>(null);
 
-  const [formData, setFormData] = useState({ name: '', target: '', saved: '', date: '' })
-  const [editId, setEditId] = useState(null)
-
-  const handleSaveGoal = (e) => {
-    e.preventDefault()
+  const handleSaveGoal = (e: React.FormEvent) => {
+    e.preventDefault();
     const updatedGoal = {
       id: editId ?? Date.now(),
       name: formData.name,
       target: parseFloat(formData.target),
       saved: parseFloat(formData.saved),
-      date: formData.date,
-    }
+      date: formData.date
+    };
     if (editId) {
-      setGoals(goals.map(g => (g.id === editId ? updatedGoal : g)))
+      setGoals(goals.map((g) => (g.id === editId ? updatedGoal : g)));
     } else {
-      setGoals([...goals, updatedGoal])
+      setGoals([...goals, updatedGoal]);
     }
-    setFormData({ name: '', target: '', saved: '', date: '' })
-    setEditId(null)
-    setShowModal(false)
-  }
+    setFormData({ name: '', target: '', saved: '', date: '' });
+    setEditId(null);
+    setShowModal(false);
+  };
 
-  const handleEdit = (goal) => {
+  const handleEdit = (goal: any) => {
     setFormData({
       name: goal.name,
       target: goal.target.toString(),
       saved: goal.saved.toString(),
-      date: goal.date,
-    })
-    setEditId(goal.id)
-    setShowModal(true)
-  }
+      date: goal.date
+    });
+    setEditId(goal.id);
+    setShowModal(true);
+  };
 
   return (
     <AnimatedPage>
       <div className="text-white">
         <h1 className="text-3xl font-bold mb-2">🎯 Goals Tracker</h1>
-<p className="text-gray-400 mb-6 text-sm">Track progress toward your savings and debt-free milestones with clarity.</p>
+        <p className="text-gray-400 mb-6 text-sm">
+          Track progress toward your savings and debt-free milestones with clarity.
+        </p>
 
         <button
           onClick={() => {
-            setFormData({ name: '', target: '', saved: '', date: '' })
-            setEditId(null)
-            setShowModal(true)
+            setFormData({ name: '', target: '', saved: '', date: '' });
+            setEditId(null);
+            setShowModal(true);
           }}
           className="mb-6 flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-transform transform hover:scale-105"
         >
@@ -74,31 +64,29 @@ export default function Goals() {
           Add Goal
         </button>
 
-        <motion.div
-  layout
-  className="grid grid-cols-1 md:grid-cols-2 gap-6"
->
-  {goals.map((goal) => (
-    <motion.div
-      key={goal.id}
-      layout
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.3 }}
-    >
-      <GoalCard
-        goal={goal}
-        onEdit={() => handleEdit(goal)}
-        onDelete={() => setGoals(goals.filter(g => g.id !== goal.id))}
-      />
-    </motion.div>
-  ))}
-</motion.div>
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {goals.map((goal) => (
+            <motion.div
+              key={goal.id}
+              layout
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+            >
+              <GoalCard
+                goal={goal}
+                onEdit={() => handleEdit(goal)}
+                onDelete={() => setGoals(goals.filter((g) => g.id !== goal.id))}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
 
-        <p className="text-sm text-gray-500 mt-6">More goal types, charts, and AI milestone alerts coming soon.</p>
+        <p className="text-sm text-gray-500 mt-6">
+          More goal types, charts, and AI milestone alerts coming soon.
+        </p>
 
-        {/* Modal Overlay */}
         <AnimatePresence>
           {showModal && (
             <motion.div
@@ -113,7 +101,9 @@ export default function Goals() {
                 exit={{ scale: 0.9, opacity: 0 }}
                 className="bg-gray-900 p-6 rounded-xl w-full max-w-md shadow-xl border border-sky-700/30"
               >
-                <h2 className="text-xl font-semibold text-white mb-4">{editId ? 'Edit Goal' : 'Add New Goal'}</h2>
+                <h2 className="text-xl font-semibold text-white mb-4">
+                  {editId ? 'Edit Goal' : 'Add New Goal'}
+                </h2>
                 <form className="space-y-4" onSubmit={handleSaveGoal}>
                   <input
                     type="text"
@@ -132,12 +122,12 @@ export default function Goals() {
                     required
                   />
                   <input
-  type="date"
-  placeholder="End Date"
-  value={formData.date}
-  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-  className="w-full p-2 rounded-md bg-gray-800 text-white placeholder-gray-500"
-  required
+                    type="date"
+                    placeholder="End Date"
+                    value={formData.date}
+                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                    className="w-full p-2 rounded-md bg-gray-800 text-white placeholder-gray-500"
+                    required
                   />
                   <input
                     type="number"
@@ -151,9 +141,9 @@ export default function Goals() {
                     <button
                       type="button"
                       onClick={() => {
-                        setShowModal(false)
-                        setFormData({ name: '', target: '', saved: '', date: '' })
-                        setEditId(null)
+                        setShowModal(false);
+                        setFormData({ name: '', target: '', saved: '', date: '' });
+                        setEditId(null);
                       }}
                       className="px-4 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white text-sm"
                     >
@@ -171,9 +161,9 @@ export default function Goals() {
             </motion.div>
           )}
         </AnimatePresence>
-      
+      </div>
+    </AnimatedPage>
+  );
+};
 
-</div>
-</AnimatedPage>
-  )
-}
+export default Goals;
