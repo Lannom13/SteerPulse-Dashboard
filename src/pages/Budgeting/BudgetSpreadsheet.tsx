@@ -53,9 +53,9 @@ export default function BudgetSpreadsheet() {
 
       setHasPreviousMonth(Array.isArray(previous) && previous.length > 0);
 
-      if (current.length === 0) {
+      if (Array.isArray(current) && current.length === 0) {
         setShowPrompt(true);
-      } else {
+      } else if (Array.isArray(current)) {
         setRows(current.sort((a, b) => a.sort_order - b.sort_order));
         setShowPrompt(false);
       }
