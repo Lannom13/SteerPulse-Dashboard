@@ -91,7 +91,7 @@ export default function BudgetSpreadsheet() {
         .eq('user_id', user.id)
         .eq('month', prevMonth);
 
-      const cloned = prevRows.map((r, i) => ({
+      const cloned = (prevRows ?? []).map((r, i) => ({
         ...r,
         id: uuidv4(),
         month: selectedMonth,
