@@ -1,8 +1,10 @@
-import { Link } from 'react-router-dom';
-import AnimatedPage from '../../components/AnimatedPage'; // ✅ fixed path
-import BudgetDashboardCharts from '../../components/BudgetDashboardCharts';
+// File: /pages/budgeting/index.tsx
+import Link from 'next/link';
+import AnimatedPage from '@/components/AnimatedPage';
+import BudgetDashboardCharts from '@/components/BudgetDashboardCharts';
+import { NextPage } from 'next';
 
-export default function Dashboard() {
+const Dashboard: NextPage = () => {
   const dummyData = [
     { category: 'Income', planned: 5000, actual: 5000 },
     { category: 'Groceries', planned: 500, actual: 420 },
@@ -28,19 +30,19 @@ export default function Dashboard() {
         <h1 className="text-3xl font-bold mb-6">📊 Budget Dashboard</h1>
         <nav className="mb-6 flex justify-start gap-4 border-b border-gray-700 pb-3">
           <Link
-            to="/budgeting"
+            href="/budgeting"
             className="text-sm text-white border-b-2 border-sky-500 px-2 pb-1"
           >
             Dashboard
           </Link>
           <Link
-            to="/budgeting/spreadsheet"
+            href="/budgeting/spreadsheet"
             className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 px-2 pb-1 transition-colors"
           >
             Spreadsheet
           </Link>
           <Link
-            to="/budgeting/charts"
+            href="/budgeting/charts"
             className="text-sm text-gray-300 hover:text-white border-b-2 border-transparent hover:border-sky-500 px-2 pb-1 transition-colors"
           >
             Charts
@@ -88,4 +90,6 @@ export default function Dashboard() {
       </div>
     </AnimatedPage>
   );
-}
+};
+
+export default Dashboard;
