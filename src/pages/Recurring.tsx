@@ -1,9 +1,18 @@
-// src/pages/Recurring.jsx
+// File: /pages/recurring.tsx
 import { useEffect, useState } from 'react';
-import AnimatedPage from '../components/AnimatedPage';
+import AnimatedPage from '@/components/AnimatedPage';
+import { NextPage } from 'next';
 
-export default function Recurring() {
-  const [recurrings, setRecurrings] = useState([]);
+interface RecurringItem {
+  merchant: string;
+  category: string;
+  average: number;
+  frequency: string;
+  nextDate: string;
+}
+
+const Recurring: NextPage = () => {
+  const [recurrings, setRecurrings] = useState<RecurringItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -56,4 +65,6 @@ export default function Recurring() {
       </div>
     </AnimatedPage>
   );
-}
+};
+
+export default Recurring;
