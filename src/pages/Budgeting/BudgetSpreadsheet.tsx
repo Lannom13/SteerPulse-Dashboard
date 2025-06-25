@@ -1,5 +1,4 @@
 // File: /pages/budgeting/spreadsheet.tsx
-// ✅ Final version with BudgetRow integration
 import { useEffect, useState } from 'react';
 import { Trash2 } from 'lucide-react';
 import AnimatedPage from '../../components/AnimatedPage';
@@ -29,10 +28,8 @@ export default function BudgetSpreadsheet() {
   const user = useUser();
   const [rows, setRows] = useState<any[]>([]);
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
-  const [showModal, setShowModal] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [selectedCategoryForInsights, setSelectedCategoryForInsights] = useState(null);
-  const [lastUsedGroup, setLastUsedGroup] = useState('');
   const [showPrompt, setShowPrompt] = useState(false);
   const [hasPreviousMonth, setHasPreviousMonth] = useState(false);
 
@@ -54,7 +51,7 @@ export default function BudgetSpreadsheet() {
         .eq('month', prevMonth)
         .limit(1);
 
-      setHasPreviousMonth(previous.length > 0);
+      setHasPreviousMonth(Array.isArray(previous) && previous.length > 0);
 
       if (current.length === 0) {
         setShowPrompt(true);
@@ -151,28 +148,6 @@ export default function BudgetSpreadsheet() {
     else setHasChanges(false);
   };
 
-  const handleAddRow = (newRow: any) => {
-    const row = {
-      id: uuidv4(),
-      user_id: user.id,
-      month: selectedMonth,
-      actual: 0,
-      notes: '',
-      sort_order: rows.length,
-      ...newRow,
-    };
-
-    setRows(prev => {
-      const index = prev.findLastIndex(r => r.group === row.group);
-      const insertAt = index >= 0 ? index + 1 : prev.length;
-      const updated = [...prev];
-      updated.splice(insertAt, 0, row);
-      return updated;
-    });
-    setLastUsedGroup(newRow.group);
-    setHasChanges(true);
-  };
-
   const groupedRows = rows.reduce((acc, row) => {
     if (!acc[row.group]) acc[row.group] = [];
     acc[row.group].push(row);
@@ -210,7 +185,7 @@ export default function BudgetSpreadsheet() {
           <div className={showPrompt ? 'blur-sm pointer-events-none' : ''}>
             <div className="flex justify-between mb-4 border-b border-gray-700 pb-2">
               <div className="flex gap-3 text-sm items-center">
-                <button onClick={() => setShowModal(true)} className="bg-sky-600 hover:bg-sky-700 px-3 py-1 rounded">Add Row</button>
+                <button onClick={() => alert('Add row feature coming soon')} className="bg-sky-600 hover:bg-sky-700 px-3 py-1 rounded">Add Row</button>
                 <button onClick={handleSave} disabled={!hasChanges} className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded disabled:opacity-40">Save</button>
               </div>
             </div>
@@ -270,14 +245,6 @@ export default function BudgetSpreadsheet() {
               <InsightsPanel
                 category={selectedCategoryForInsights}
                 onClose={() => setSelectedCategoryForInsights(null)}
-              />
-            )}
-
-            {showModal && (
-              <AddRowModal
-                onClose={() => setShowModal(false)}
-                onAdd={handleAddRow}
-                defaultGroup={lastUsedGroup}
               />
             )}
           </div>
