@@ -11,7 +11,7 @@ import BudgetMonthHeader from '../../components/BudgetMonthHeader';
 import StartMonthPrompt from '../../components/StartMonthPrompt';
 import ProtectedRoute from '../../utils/ProtectedRoute';
 
-interface BudgetRow {
+interface BudgetRowType {
   id: string;
   user_id: string;
   group: string;
@@ -38,10 +38,10 @@ const PRESET_STRUCTURE = [
 
 export default function BudgetSpreadsheet() {
   const user = useUser();
-  const [rows, setRows] = useState<BudgetRow[]>([]);
+  const [rows, setRows] = useState<BudgetRowType[]>([]);
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
   const [hasChanges, setHasChanges] = useState(false);
-  const [selectedCategoryForInsights, setSelectedCategoryForInsights] = useState<BudgetRow | null>(null);
+  const [selectedCategoryForInsights, setSelectedCategoryForInsights] = useState<BudgetRowType | null>(null);
   const [showPrompt, setShowPrompt] = useState(false);
   const [hasPreviousMonth, setHasPreviousMonth] = useState(false);
 
@@ -145,8 +145,10 @@ export default function BudgetSpreadsheet() {
     }
   };
 
-  const handleChange = (id: string, key: keyof BudgetRow, value: any) => {
-    setRows(prev => prev.map(row => row.id === id ? { ...row, [key]: value } : row));
+  const handleChange = (id: string, key: string, value: any) => {
+    setRows(prev =>
+      prev.map(row => row.id === id ? { ...row, [key]: value } : row)
+    );
     setHasChanges(true);
   };
 
@@ -162,11 +164,11 @@ export default function BudgetSpreadsheet() {
     else setHasChanges(false);
   };
 
-  const groupedRows: Record<string, BudgetRow[]> = rows.reduce((acc, row) => {
+  const groupedRows: Record<string, BudgetRowType[]> = rows.reduce((acc, row) => {
     if (!acc[row.group]) acc[row.group] = [];
     acc[row.group].push(row);
     return acc;
-  }, {} as Record<string, BudgetRow[]>);
+  }, {} as Record<string, BudgetRowType[]>);
 
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
