@@ -1,4 +1,3 @@
-// File: /pages/budgeting/spreadsheet.tsx
 import { useEffect, useState } from 'react';
 import { Trash2 } from 'lucide-react';
 import AnimatedPage from '../../components/AnimatedPage';
@@ -7,11 +6,26 @@ import InsightsPanel from '../../components/InsightsPanel';
 import { supabase } from '../../utils/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 import { useUser } from '@supabase/auth-helpers-react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import BudgetMonthHeader from '../../components/BudgetMonthHeader';
 import StartMonthPrompt from '../../components/StartMonthPrompt';
 import ProtectedRoute from '../../utils/ProtectedRoute';
 
+// --- Type Definitions ---
+interface BudgetRow {
+  id: string;
+  user_id: string;
+  group: string;
+  category: string;
+  planned?: number;
+  budgeted?: number;
+  actual: number;
+  notes: string;
+  month: string;
+  sort_order: number;
+}
+
+// --- Preset Template ---
 const PRESET_STRUCTURE = [
   { group: 'Income', category: 'Salary', planned: 5000 },
   { group: 'Food', category: 'Groceries', planned: 300 },
@@ -26,17 +40,17 @@ const PRESET_STRUCTURE = [
 
 export default function BudgetSpreadsheet() {
   const user = useUser();
-  const [rows, setRows] = useState<any[]>([]);
+  const [rows, setRows] = useState<BudgetRow[]>([]);
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
   const [hasChanges, setHasChanges] = useState(false);
-  const [selectedCategoryForInsights, setSelectedCategoryForInsights] = useState(null);
+  const [selectedCategoryForInsights, setSelectedCategoryForInsights] = useState<BudgetRow | null>(null);
   const [showPrompt, setShowPrompt] = useState(false);
   const [hasPreviousMonth, setHasPreviousMonth] = useState(false);
 
   useEffect(() => {
-    if (!user) return;
-
     const checkMonth = async () => {
+      if (!user) return;
+
       const { data: current } = await supabase
         .from('budgets')
         .select('*')
@@ -65,11 +79,13 @@ export default function BudgetSpreadsheet() {
   }, [user, selectedMonth]);
 
   const handlePromptChoice = async (choice: string) => {
+    if (!user) return;
+
     setShowPrompt(false);
     const prevMonth = getPreviousMonth(selectedMonth);
 
     if (choice === 'copy') {
-      const { data: prevRows } = await supabase
+      const { data: prevRows = [] } = await supabase
         .from('budgets')
         .select('*')
         .eq('user_id', user.id)
@@ -88,14 +104,14 @@ export default function BudgetSpreadsheet() {
     }
 
     if (choice === 'coach') {
-      const { data: prevRows } = await supabase
+      const { data: prevRows = [] } = await supabase
         .from('budgets')
         .select('*')
         .eq('user_id', user.id)
         .eq('month', prevMonth);
 
       const adjusted = prevRows.map((r, i) => {
-        let newBudget = r.budgeted;
+        let newBudget = r.budgeted ?? 0;
         const usage = r.actual / (r.budgeted || 1);
         if (usage > 1.1) newBudget += 50;
         if (usage < 0.5) newBudget -= 25;
@@ -131,7 +147,7 @@ export default function BudgetSpreadsheet() {
     }
   };
 
-  const handleChange = (id: string, key: string, value: any) => {
+  const handleChange = (id: string, key: keyof BudgetRow, value: any) => {
     setRows(prev => prev.map(row => row.id === id ? { ...row, [key]: value } : row));
     setHasChanges(true);
   };
@@ -148,13 +164,13 @@ export default function BudgetSpreadsheet() {
     else setHasChanges(false);
   };
 
-  const groupedRows = rows.reduce((acc, row) => {
+  const groupedRows: Record<string, BudgetRow[]> = rows.reduce((acc, row) => {
     if (!acc[row.group]) acc[row.group] = [];
     acc[row.group].push(row);
     return acc;
-  }, {});
+  }, {} as Record<string, BudgetRow[]>);
 
-  const handleDragEnd = (result: any) => {
+  const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
     const updated = [...rows];
     const [moved] = updated.splice(result.source.index, 1);
@@ -194,7 +210,7 @@ export default function BudgetSpreadsheet() {
               <Droppable droppableId="budget-table">
                 {(provided) => (
                   <div ref={provided.innerRef} {...provided.droppableProps}>
-                    {Object.entries(groupedRows).map(([groupName, entries]: [string, any[]]) => (
+                    {Object.entries(groupedRows).map(([groupName, entries]) => (
                       <table key={groupName} className="w-full mb-6">
                         <thead>
                           <tr className="bg-gray-800 text-left text-white text-sm uppercase">
@@ -212,7 +228,7 @@ export default function BudgetSpreadsheet() {
                           </tr>
                         </thead>
                         <tbody>
-                          {entries.map((row: any) => (
+                          {entries.map((row) => (
                             <Draggable draggableId={row.id} index={rows.findIndex(r => r.id === row.id)} key={row.id}>
                               {(provided) => (
                                 <tr ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
@@ -254,6 +270,7 @@ export default function BudgetSpreadsheet() {
   );
 }
 
+// --- Helpers ---
 function getCurrentMonth() {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
