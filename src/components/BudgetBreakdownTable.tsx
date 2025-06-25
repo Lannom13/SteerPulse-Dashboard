@@ -1,5 +1,15 @@
-// src/components/BudgetBreakdownTable.jsx
-export default function BudgetBreakdownTable({ data }) {
+// File: /src/components/BudgetBreakdownTable.tsx
+interface BudgetItem {
+  category: string;
+  budget: number;
+  spent: number;
+}
+
+interface BudgetBreakdownTableProps {
+  data: BudgetItem[];
+}
+
+export default function BudgetBreakdownTable({ data }: BudgetBreakdownTableProps) {
   return (
     <div className="bg-gray-800 p-4 rounded-xl shadow mt-10">
       <h2 className="text-white text-md font-semibold mb-2">📊 Budget Breakdown</h2>
@@ -15,9 +25,9 @@ export default function BudgetBreakdownTable({ data }) {
         </thead>
         <tbody>
           {data.map((item) => {
-            const diff = item.budget - item.spent
-            const percent = ((item.spent / item.budget) * 100).toFixed(0)
-            const isOver = diff < 0
+            const diff = item.budget - item.spent;
+            const percent = ((item.spent / item.budget) * 100).toFixed(0);
+            const isOver = diff < 0;
             return (
               <tr key={item.category} className="border-b border-gray-700">
                 <td>{item.category}</td>
@@ -28,10 +38,10 @@ export default function BudgetBreakdownTable({ data }) {
                 </td>
                 <td>{percent}%</td>
               </tr>
-            )
+            );
           })}
         </tbody>
       </table>
     </div>
-  )
+  );
 }
