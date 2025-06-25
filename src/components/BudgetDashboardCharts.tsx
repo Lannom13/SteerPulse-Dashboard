@@ -1,14 +1,19 @@
-// BudgetDashboardCharts.jsx
+// File: /src/components/BudgetDashboardCharts.tsx
 import { useState, useEffect } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell,
   LineChart, Line, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 const COLORS = ['#38bdf8', '#60a5fa', '#a78bfa', '#f472b6', '#facc15'];
 
-const CustomTooltip = ({ active, payload }) => {
+interface TooltipProps {
+  active?: boolean;
+  payload?: { name: string; value: number }[];
+}
+
+const CustomTooltip = ({ active, payload }: TooltipProps) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-gray-900 text-white text-xs rounded shadow px-3 py-2 border border-sky-500">
@@ -23,7 +28,7 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-const CountUp = ({ end }) => {
+const CountUp = ({ end }: { end: number }) => {
   const [value, setValue] = useState(0);
   useEffect(() => {
     const duration = 600;
@@ -44,8 +49,14 @@ const CountUp = ({ end }) => {
   return <>{value.toLocaleString()}</>;
 };
 
-export default function BudgetDashboardCharts({ data }) {
-  const [viewMode, setViewMode] = useState('month');
+interface DataRow {
+  category: string;
+  planned: number;
+  actual: number;
+}
+
+export default function BudgetDashboardCharts({ data }: { data: DataRow[] }) {
+  const [viewMode, setViewMode] = useState<'month' | 'ytd'>('month');
   const [showPriorYear, setShowPriorYear] = useState(false);
 
   const summary = data.map(row => ({
