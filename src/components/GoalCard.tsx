@@ -1,13 +1,28 @@
-import { useEffect, useState } from 'react'
+// File: /src/components/GoalCard.tsx
+import { useEffect, useState } from 'react';
 
-export default function GoalCard({ goal, onEdit, onDelete }) {
-  const finalPercent = Math.min((goal.saved / goal.target) * 100, 100)
-  const [animatedPercent, setAnimatedPercent] = useState(0)
+interface Goal {
+  id: number;
+  name: string;
+  target: number;
+  saved: number;
+  date: string;
+}
+
+interface GoalCardProps {
+  goal: Goal;
+  onEdit: () => void;
+  onDelete: () => void;
+}
+
+export default function GoalCard({ goal, onEdit, onDelete }: GoalCardProps) {
+  const finalPercent = Math.min((goal.saved / goal.target) * 100, 100);
+  const [animatedPercent, setAnimatedPercent] = useState(0);
 
   useEffect(() => {
-    const timeout = setTimeout(() => setAnimatedPercent(finalPercent), 50)
-    return () => clearTimeout(timeout)
-  }, [finalPercent])
+    const timeout = setTimeout(() => setAnimatedPercent(finalPercent), 50);
+    return () => clearTimeout(timeout);
+  }, [finalPercent]);
 
   return (
     <div className="bg-gray-800 p-5 rounded-xl shadow transition-transform duration-300 hover:shadow-lg hover:scale-[1.02] relative group">
@@ -16,7 +31,7 @@ export default function GoalCard({ goal, onEdit, onDelete }) {
         Target: ${goal.target.toLocaleString()} by{' '}
         {new Date(goal.date).toLocaleDateString('en-US', {
           month: 'short',
-          year: 'numeric',
+          year: 'numeric'
         })}
       </div>
       <div className="w-full h-4 bg-gray-700 rounded-full overflow-hidden">
@@ -46,5 +61,5 @@ export default function GoalCard({ goal, onEdit, onDelete }) {
         </button>
       </div>
     </div>
-  )
+  );
 }
