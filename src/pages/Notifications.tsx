@@ -1,6 +1,8 @@
-import AnimatedPage from '../components/AnimatedPage'
+// File: /pages/notifications.tsx
+import AnimatedPage from '@/components/AnimatedPage';
+import { NextPage } from 'next';
 
-export default function Notifications() {
+const Notifications: NextPage = () => {
   return (
     <AnimatedPage>
       <div className="text-white">
@@ -19,5 +21,7 @@ export default function Notifications() {
         </p>
       </div>
     </AnimatedPage>
-  )
-}
+  );
+};
+
+export default Notifications;
