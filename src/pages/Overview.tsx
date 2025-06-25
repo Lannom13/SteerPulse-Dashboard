@@ -1,18 +1,19 @@
-// File: /pages/overview.tsx (Next.js version of Overview page)
-import AnimatedPage from '../src/components/AnimatedPage';
+// File: /pages/overview.tsx
+import AnimatedPage from '@/components/AnimatedPage';
 import { useState } from 'react';
-import KpiCard from '../src/components/KpiCard';
-import BudgetRing from '../src/components/BudgetRing';
-import CashFlowChart from '../src/components/CashFlowChart';
-import InsightCard from '../src/components/InsightCard';
-import TransactionPreview from '../src/components/TransactionPreview';
-import InvestmentSnapshot from '../src/components/InvestmentSnapshot';
-import NetWorthChart from '../src/components/NetWorthChart';
-import PlaidConnectButton from '../src/components/PlaidConnectButton';
-import useNetWorth from '../src/hooks/useNetWorth';
-import ProtectedRoute from '../src/utils/ProtectedRoute';
+import KpiCard from '@/components/KpiCard';
+import BudgetRing from '@/components/BudgetRing';
+import CashFlowChart from '@/components/CashFlowChart';
+import InsightCard from '@/components/InsightCard';
+import TransactionPreview from '@/components/TransactionPreview';
+import InvestmentSnapshot from '@/components/InvestmentSnapshot';
+import NetWorthChart from '@/components/NetWorthChart';
+import PlaidConnectButton from '@/components/PlaidConnectButton';
+import useNetWorth from '@/hooks/useNetWorth';
+import ProtectedRoute from '@/utils/ProtectedRoute';
+import { NextPage } from 'next';
 
-export default function Overview() {
+const Overview: NextPage = () => {
   const [scenario, setScenario] = useState('MTD');
   const { netWorth, loading: loadingNetWorth } = useNetWorth();
 
@@ -35,21 +36,13 @@ export default function Overview() {
           <div className="flex flex-wrap items-center gap-4 mb-6">
             <button
               onClick={() => setScenario('MTD')}
-              className={`${
-                scenario === 'MTD'
-                  ? 'bg-brand-500 text-white'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-              } text-sm font-medium px-4 py-2 rounded-full`}
+              className={`$${scenario === 'MTD' ? 'bg-brand-500 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'} text-sm font-medium px-4 py-2 rounded-full`}
             >
               MTD
             </button>
             <button
               onClick={() => setScenario('YTD')}
-              className={`${
-                scenario === 'YTD'
-                  ? 'bg-brand-500 text-white'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-              } text-sm font-medium px-4 py-2 rounded-full`}
+              className={`$${scenario === 'YTD' ? 'bg-brand-500 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'} text-sm font-medium px-4 py-2 rounded-full`}
             >
               YTD
             </button>
@@ -120,4 +113,6 @@ export default function Overview() {
       </AnimatedPage>
     </ProtectedRoute>
   );
-}
+};
+
+export default Overview;
