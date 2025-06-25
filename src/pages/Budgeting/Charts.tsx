@@ -1,6 +1,19 @@
-// src/pages/budgeting/Charts.jsx
-import AnimatedPage from '../../components/AnimatedPage';
-import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
+// File: /pages/budgeting/charts.tsx
+import AnimatedPage from '@/components/AnimatedPage';
+import {
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Legend
+} from 'recharts';
+import { NextPage } from 'next';
 
 const dummyData = [
   { category: 'Groceries', planned: 500, actual: 420 },
@@ -13,7 +26,7 @@ const dummyData = [
 
 const COLORS = ['#0284c7', '#06b6d4', '#9333ea', '#facc15', '#f97316', '#ef4444'];
 
-export default function Charts() {
+const Charts: NextPage = () => {
   return (
     <AnimatedPage>
       <div className="text-white">
@@ -54,4 +67,6 @@ export default function Charts() {
       </div>
     </AnimatedPage>
   );
-}
+};
+
+export default Charts;
