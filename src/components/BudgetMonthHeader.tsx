@@ -1,26 +1,33 @@
-// components/BudgetMonthHeader.tsx
+// File: /src/components/BudgetMonthHeader.tsx
 import { ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
 
-export default function BudgetMonthHeader({ month, onPrev, onNext, onOpenPicker }) {
+interface BudgetMonthHeaderProps {
+  month: string;
+  onPrev: () => void;
+  onNext: () => void;
+  onOpenPicker: () => void;
+}
+
+export default function BudgetMonthHeader({
+  month,
+  onPrev,
+  onNext,
+  onOpenPicker
+}: BudgetMonthHeaderProps) {
   return (
     <div className="flex items-center justify-between py-4 px-4 bg-gray-900 rounded-xl shadow mb-6">
       <button onClick={onPrev} className="hover:text-white text-gray-400 flex items-center gap-2">
-        <ChevronLeft size={18} /> Previous
+        <ChevronLeft />
+        Previous
       </button>
-      <div className="text-white font-semibold text-lg">{formatMonth(month)}</div>
-      <div className="flex items-center gap-3">
-        <button onClick={onNext} className="hover:text-white text-gray-400 flex items-center gap-2">
-          Next <ChevronRight size={18} />
-        </button>
-        <button onClick={onOpenPicker} className="hover:text-white text-gray-400">
-          <CalendarDays size={18} />
-        </button>
+      <div className="text-white font-semibold flex items-center gap-2 cursor-pointer" onClick={onOpenPicker}>
+        <CalendarDays size={18} />
+        {month}
       </div>
+      <button onClick={onNext} className="hover:text-white text-gray-400 flex items-center gap-2">
+        Next
+        <ChevronRight />
+      </button>
     </div>
   );
-}
-
-function formatMonth(monthString: string) {
-  const [year, month] = monthString.split('-');
-  return new Date(+year, +month - 1).toLocaleString('default', { month: 'long', year: 'numeric' });
 }
