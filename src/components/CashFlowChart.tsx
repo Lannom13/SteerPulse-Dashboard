@@ -1,4 +1,4 @@
-// src/components/CashFlowChart.jsx
+// File: /src/components/CashFlowChart.tsx
 import {
   ResponsiveContainer,
   LineChart,
@@ -7,7 +7,7 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid
-} from 'recharts'
+} from 'recharts';
 
 const data = [
   { month: 'Jan', cashflow: 1200 },
@@ -16,7 +16,7 @@ const data = [
   { month: 'Apr', cashflow: 1000 },
   { month: 'May', cashflow: 1700 },
   { month: 'Jun', cashflow: 1100 }
-]
+];
 
 export default function CashFlowChart() {
   return (
@@ -32,5 +32,5 @@ export default function CashFlowChart() {
         </LineChart>
       </ResponsiveContainer>
     </div>
-  )
+  );
 }
