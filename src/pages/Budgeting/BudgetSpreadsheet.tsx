@@ -11,7 +11,6 @@ import BudgetMonthHeader from '../../components/BudgetMonthHeader';
 import StartMonthPrompt from '../../components/StartMonthPrompt';
 import ProtectedRoute from '../../utils/ProtectedRoute';
 
-// --- Type Definitions ---
 interface BudgetRow {
   id: string;
   user_id: string;
@@ -25,7 +24,6 @@ interface BudgetRow {
   sort_order: number;
 }
 
-// --- Preset Template ---
 const PRESET_STRUCTURE = [
   { group: 'Income', category: 'Salary', planned: 5000 },
   { group: 'Food', category: 'Groceries', planned: 300 },
@@ -85,7 +83,7 @@ export default function BudgetSpreadsheet() {
     const prevMonth = getPreviousMonth(selectedMonth);
 
     if (choice === 'copy') {
-      const { data: prevRows = [] } = await supabase
+      const { data: prevRows } = await supabase
         .from('budgets')
         .select('*')
         .eq('user_id', user.id)
@@ -104,13 +102,13 @@ export default function BudgetSpreadsheet() {
     }
 
     if (choice === 'coach') {
-      const { data: prevRows = [] } = await supabase
+      const { data: prevRows } = await supabase
         .from('budgets')
         .select('*')
         .eq('user_id', user.id)
         .eq('month', prevMonth);
 
-      const adjusted = prevRows.map((r, i) => {
+      const adjusted = (prevRows ?? []).map((r, i) => {
         let newBudget = r.budgeted ?? 0;
         const usage = r.actual / (r.budgeted || 1);
         if (usage > 1.1) newBudget += 50;
@@ -270,7 +268,6 @@ export default function BudgetSpreadsheet() {
   );
 }
 
-// --- Helpers ---
 function getCurrentMonth() {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
