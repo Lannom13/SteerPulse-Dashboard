@@ -9,7 +9,6 @@ import { supabase } from '../../utils/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 import { useUser } from '@supabase/auth-helpers-react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import AddRowModal from '../../components/AddRowModal';
 import BudgetMonthHeader from '../../components/BudgetMonthHeader';
 import StartMonthPrompt from '../../components/StartMonthPrompt';
 import ProtectedRoute from '../../utils/ProtectedRoute';
